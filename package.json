@@ -1,0 +1,32 @@
+{
+  "name": "simple-project-template",
+  "version": "1.0.0",
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "start-watch": "nodemon app.js",
+    "dev": "concurrently \"yarn run start-watch\" \"cd client && yarn start\"",
+    "postinstall": "npm --prefix ./client install"
+  },
+  "author": "Stephen Kempisty",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "moment": "^2.24.0",
+    "mongoose": "^5.7.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-router-dom": "^5.1.1",
+    "react-scripts": "3.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/skempisty/horsies-crawler.git"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.2",
+    "nodemon": "^1.19.2"
+  }
+}

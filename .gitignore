@@ -1,0 +1,26 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.idea
+.DS_Store
+.env
+captcha_key.png
+captcha_lock.png
+
+# python
+/env
+src/python/__pycache__/
+src/python/solver.pyc
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
