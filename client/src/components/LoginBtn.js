@@ -10,6 +10,7 @@ function LoginBtn(props) {
       buttonText="Login with Google"
       onSuccess={onLogin}
       onFailure={onFailure}
+      isSignedIn={true}
       cookiePolicy={'single_host_origin'}
     />
   )

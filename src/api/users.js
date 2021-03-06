@@ -1,45 +1,27 @@
-const User = require('../models/User');
+const db = require('../connectDb')
 
 exports.getUsers = async () => {
-  return [
-    {
-      _id: 0,
-      name: 'Stephen Kempisty'
-    },
-    {
-      _id: 1,
-      name: 'Mitchell Kempisty'
-    },
-    {
-      _id: 2,
-      name: 'Some Guy'
-    }
-  ];
+  const users = await db.query('SELECT * FROM users')
+
+  console.log('users', users)
+
+  return users
+};
+
+exports.getUser = async (id) => {
+  const user = await db.query('SELECT * FROM users WHERE google_id = ?', [id])
+
+  console.log('user', user)
+
+  return user
 };
 
 exports.createUser = async (body) => {
-  const { googleId, } = body;
-
-  try {
-    const user = await User.findOne({ googleId });
-
-    if (user) {
-
-    }
-    //   if (user) {return cb(null, user)};
-    //   var newUser = new User({
-    //     handle: profile.displayName,
-    //     flickrId: profile.id,
-    //     name: profile.fullName
-    //   });
-    //   getBuddyIcon(newUser, profile).then(function(newUser) {
-    //     newUser.save(function(err) {
-    //       if (err) {return cb(err)};
-    //       return cb(null, newUser);
-    //     });
-    //   });
-    // });
-  } catch (error) {
-    console.error(error);
-  }
+  // const { googleId, } = body;
+  //
+  // const user = await User.findOne({ googleId });
+  //
+  // if (user) {
+  //
+  // }
 };

@@ -1,4 +1,4 @@
-import Constants from '../../utils/constants';
+import Constants from '../utils/constants';
 
 /**
  * Posts a google profile for user creation or if already existing, a user update
