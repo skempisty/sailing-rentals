@@ -1,39 +1,31 @@
-// require npm packages
-const express = require ('express');
-// require files
-const api = require('./apiDispatcher');
+const express = require ('express')
 
-const router = express.Router();
+const api = require('./apiDispatcher')
+const googleTokenIdToUser = require('./utils/googleTokenIdToUser')
 
-/**
- * Get all Users
- */
-router.get('/users', async (req, res) => {
-  const users = await api.users.getUsers();
-
-  res.send(users);
-});
+const router = express.Router()
 
 /**
- * Get a User
+ * Get the logged in User. If doesn't exist, create an unapproved new user.
  */
-router.get('/user/:id', async (req, res) => {
-  const { id: googleId } = req.params
+router.get('/users/logged_in', async (req, res) => {
+  const { authorization: token } = req.headers
 
-  const user = await api.users.getUser(googleId);
+  const googleUser = await googleTokenIdToUser(token)
 
-  res.send(user);
-});
+  if (googleUser) {
+    const user = await api.users.getUser(googleUser.sub);
 
-/**
- * Create a User
- */
-router.post('/users', async (req, res) => {
-  const { body } = req;
+    if (user[0]) {
+      res.send(user);
+    } else {
+      await api.users.createUser(googleUser)
 
-  const broadcast = await api.users.createUser(body);
-
-  return res.json(broadcast)
+      res.send('new user created')
+    }
+  } else {
+    res.status(401).send('Unauthorized Google login')
+  }
 });
 
 module.exports = router;

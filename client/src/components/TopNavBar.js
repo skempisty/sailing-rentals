@@ -6,22 +6,26 @@ import { Nav, Navbar, Button } from "react-bootstrap";
 import LoginBtn from "./LoginBtn";
 import createLoginSession from "../utils/createLoginSession";
 
-import getUser from "../api/getUser";
+import getLoggedInUser from "../api/getLoggedInUser";
 
 export default class TopNavBar extends React.Component {
-  async handleLoginSuccess(res) {
-    console.log('res', res)
-    console.log('profileObj', res.profileObj)
+  async handleLoginSuccess(loginRes) {
+    console.log('loginRes', loginRes)
+    console.log('profileObj', loginRes.profileObj)
+
+    window.localStorage.setItem('tokenId', loginRes.tokenId);
 
     // check if account already created and get Status (approved or not)
-    const user = await getUser(res.profileObj);
+    const user = await getLoggedInUser(loginRes.profileObj.googleId);
 
     console.log("USER!", user)
 
     if (user[0]) {
       // login the user
     } else {
-
+      console.log('user not found!')
+      // create unapproved user
+      // await createUser()
     }
 
 

@@ -1,27 +1,13 @@
 const db = require('../connectDb')
 
-exports.getUsers = async () => {
-  const users = await db.query('SELECT * FROM users')
-
-  console.log('users', users)
-
-  return users
-};
-
 exports.getUser = async (id) => {
-  const user = await db.query('SELECT * FROM users WHERE google_id = ?', [id])
+  return await db.query('SELECT * FROM sailing.users WHERE google_id = ?', [id])
+}
 
-  console.log('user', user)
+exports.createUser = async (googleUser) => {
+  const { sub: googleId, email, name, picture: imageUrl } = googleUser
 
-  return user
-};
+  const newUser = [ googleId, name, email, imageUrl ]
 
-exports.createUser = async (body) => {
-  // const { googleId, } = body;
-  //
-  // const user = await User.findOne({ googleId });
-  //
-  // if (user) {
-  //
-  // }
-};
+  await db.query('INSERT INTO sailing.users (google_id, name, email, image_url) VALUES (?, ?, ?, ?)', newUser)
+}
