@@ -1,33 +1,35 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import createLoginSession from "../utils/createLoginSession";
-
 const generalSlice = createSlice({
   name: 'general',
   initialState: {
     loggedInUser: {
-      imageUrl: ''
+      name: '',
+      email: '',
+      imageUrl: '',
+      isApproved: false,
+      isAdmin: false
     }
   },
   reducers: {
     loginUser: (state, action) => {
-      /**
-       * Create Login session
-       * @property {string} payloadOne
-       */
-      const { profileObj } = action.payload;
-      const { email, imageUrl } = profileObj;
+      const { userObj } = action.payload;
 
-      // create session storage entry
-      createLoginSession()
+      const {
+        name,
+        email,
+        image_url: imageUrl,
+        is_approved: isApproved,
+        is_admin: isAdmin
+      } = userObj;
 
-      state.loggedInUser = { email, imageUrl };
+      state.loggedInUser = { name, email, imageUrl, isApproved, isAdmin };
     }
   }
 });
 
 export const {
-  exampleActionCreator
+  loginUser
 } = generalSlice.actions;
 
 export default generalSlice.reducer;

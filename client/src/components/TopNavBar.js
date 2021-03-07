@@ -1,37 +1,29 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
-
-import { Nav, Navbar, Button } from "react-bootstrap";
+import { connect } from 'react-redux';
+import { Nav, Navbar } from "react-bootstrap";
+import { withRouter } from 'react-router';
 
 import LoginBtn from "./LoginBtn";
-import createLoginSession from "../utils/createLoginSession";
 
 import getLoggedInUser from "../api/getLoggedInUser";
 
-export default class TopNavBar extends React.Component {
-  async handleLoginSuccess(loginRes) {
-    console.log('loginRes', loginRes)
-    console.log('profileObj', loginRes.profileObj)
+import { loginUser } from '../store/general';
 
+class TopNavBar extends React.Component {
+  async handleLoginSuccess(loginRes) {
+    const { loginUser, history } = this.props;
+
+    // will include this tokenId with every request
     window.localStorage.setItem('tokenId', loginRes.tokenId);
 
-    // check if account already created and get Status (approved or not)
     const user = await getLoggedInUser(loginRes.profileObj.googleId);
 
-    console.log("USER!", user)
-
     if (user[0]) {
-      // login the user
+      loginUser({ userObj: user[0] });
+      history.push('/')
     } else {
-      console.log('user not found!')
-      // create unapproved user
-      // await createUser()
+      history.push('/sign-up')
     }
-
-
-    // const user = await loginUser(res.profileObj);
-
-    // createLoginSession(user);
   }
 
   handleLoginFailure(res) {
@@ -39,6 +31,10 @@ export default class TopNavBar extends React.Component {
   }
 
   render() {
+    const { loggedInUser } = this.props;
+
+    console.log('loggedInUser', loggedInUser)
+
     return (
       <Navbar bg="dark" variant="dark">
         <Navbar.Brand href="#home">NPSFYC</Navbar.Brand>
@@ -58,3 +54,16 @@ export default class TopNavBar extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  const { loggedInUser } = state.general;
+
+  return { loggedInUser };
+};
+
+const mapDispatchToProps = { loginUser };
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(TopNavBar));

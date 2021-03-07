@@ -1,9 +1,11 @@
 (async () => {
   const db = require('../src/connectDb')
 
+  const SAILING_DB_NAME = 'sailing'
+
   await db.connect()
 
-  await db.query('CREATE DATABASE sailing')
+  await db.query(`CREATE DATABASE IF NOT EXISTS ${SAILING_DB_NAME}`)
 
   await db.query('CREATE TABLE sailing.users (' +
     'id INT PRIMARY KEY,' +
