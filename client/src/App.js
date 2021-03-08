@@ -1,17 +1,47 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { connect } from "react-redux";
 
-import Dashboard from './components/pages/Dashboard';
+import Dashboard from './components/pages/HomePage';
 import SignUp from './components/pages/SignUp';
 import TopNavBar from "./components/TopNavBar";
 
-export default function App() {
-  return (
-    <Router>
-      <TopNavBar />
+import getLoggedInUser from "../src/api/getLoggedInUser";
 
-      <Route exact path="/" component={Dashboard} />
-      <Route exact path="/sign-up" component={SignUp} />
-    </Router>
-  );
+import { loginUser } from "./store/general";
+
+class App extends React.Component {
+  async componentDidMount() {
+    const { loginUser } = this.props;
+
+    if (localStorage.getItem('tokenId')) {
+      const user = await getLoggedInUser();
+
+      loginUser({ userObj: user[0] });
+    }
+  }
+
+  render() {
+    return (
+      <Router>
+        <TopNavBar />
+
+        <Route exact path="/" component={Dashboard} />
+        <Route exact path="/sign-up" component={SignUp} />
+      </Router>
+    )
+  }
 }
+
+const mapStateToProps = (state) => {
+  const { loggedInUser } = state.general;
+
+  return { loggedInUser };
+};
+
+const mapDispatchToProps = { loginUser };
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

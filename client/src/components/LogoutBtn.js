@@ -3,8 +3,9 @@ import { GoogleLogout } from 'react-google-login';
 
 function LogoutBtn() {
   const responseGoogle = () => {
-    window.localStorage.removeItem('sailing-session');
+    localStorage.removeItem('tokenId');
 
+    // TODO: use history instead
     window.location = '/';
   };
 

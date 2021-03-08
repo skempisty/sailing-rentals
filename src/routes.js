@@ -21,7 +21,9 @@ router.get('/users/logged_in', async (req, res) => {
     } else {
       await api.users.createUser(googleUser)
 
-      res.send([])
+      const newUser = await api.users.getUser(googleUser.sub);
+
+      res.send(newUser)
     }
   } else {
     res.status(401).send('Unauthorized Google login')

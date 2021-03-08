@@ -3,27 +3,22 @@ import { createSlice } from '@reduxjs/toolkit';
 const generalSlice = createSlice({
   name: 'general',
   initialState: {
-    loggedInUser: {
-      name: '',
-      email: '',
-      imageUrl: '',
-      isApproved: false,
-      isAdmin: false
-    }
+    loggedInUser: null
   },
   reducers: {
     loginUser: (state, action) => {
       const { userObj } = action.payload;
 
       const {
-        name,
+        first_name: firstName,
+        last_name: lastName,
         email,
         image_url: imageUrl,
         is_approved: isApproved,
         is_admin: isAdmin
       } = userObj;
 
-      state.loggedInUser = { name, email, imageUrl, isApproved, isAdmin };
+      state.loggedInUser = { firstName, lastName, email, imageUrl, isApproved, isAdmin };
     }
   }
 });

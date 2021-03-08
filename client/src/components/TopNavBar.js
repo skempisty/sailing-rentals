@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Nav, Navbar } from "react-bootstrap";
+import { Nav, Navbar, Dropdown } from "react-bootstrap";
 import { withRouter } from 'react-router';
 
 import LoginBtn from "./LoginBtn";
+import LogoutBtn from "./LogoutBtn";
 
 import getLoggedInUser from "../api/getLoggedInUser";
 
@@ -14,14 +15,14 @@ class TopNavBar extends React.Component {
     const { loginUser, history } = this.props;
 
     // will include this tokenId with every request
-    window.localStorage.setItem('tokenId', loginRes.tokenId);
+    localStorage.setItem('tokenId', loginRes.tokenId);
 
-    const user = await getLoggedInUser(loginRes.profileObj.googleId);
+    const user = await getLoggedInUser();
 
-    if (user[0]) {
-      loginUser({ userObj: user[0] });
-      history.push('/')
-    } else {
+    loginUser({ userObj: user[0] });
+
+    if (!user[0].isApproved) {
+      // put user on sign-up page to complete profile
       history.push('/sign-up')
     }
   }
@@ -31,24 +32,57 @@ class TopNavBar extends React.Component {
   }
 
   render() {
-    const { loggedInUser } = this.props;
-
-    console.log('loggedInUser', loggedInUser)
+    const { loggedInUser, history } = this.props;
 
     return (
       <Navbar bg="dark" variant="dark">
         <Navbar.Brand href="#home">NPSFYC</Navbar.Brand>
         <Nav className="mr-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
+          <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
           <Nav.Link href="#features">Features</Nav.Link>
           <Nav.Link href="#pricing">Pricing</Nav.Link>
         </Nav>
 
         <Nav>
-          <LoginBtn
-            onLogin={(res) => this.handleLoginSuccess(res)}
-            onFailure={(res) => this.handleLoginFailure(res)}
-          />
+          {!loggedInUser ?
+            <LoginBtn
+              onLogin={(res) => this.handleLoginSuccess(res)}
+              onFailure={(res) => this.handleLoginFailure(res)}
+            />
+            :
+            <Dropdown alignRight>
+              <Dropdown.Toggle variant="dark" id="dropdown-basic">
+                <img
+                  src={loggedInUser.imageUrl}
+                  style={{ height: '3em', marginRight: '1em' }}
+                />
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => history.push('/sign-up')}>
+                    Profile
+                </Dropdown.Item>
+
+                <Dropdown.Item onClick={() => history.push('/my-rentals')}>My Rentals</Dropdown.Item>
+
+                <Dropdown.Item><LogoutBtn/></Dropdown.Item>
+
+                {!!loggedInUser.isAdmin &&
+                  <React.Fragment>
+                    <h3>Admins Only</h3>
+
+                    <Dropdown.Item href="#/action-4">Post</Dropdown.Item>
+
+                    <Dropdown.Item href="#/action-4">User List</Dropdown.Item>
+
+                    <Dropdown.Item href="#/action-5">Boat List</Dropdown.Item>
+
+                    <Dropdown.Item href="#/action-6">Rental List</Dropdown.Item>
+                  </React.Fragment>
+                }
+              </Dropdown.Menu>
+            </Dropdown>
+          }
         </Nav>
       </Navbar>
     )
