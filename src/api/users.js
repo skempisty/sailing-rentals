@@ -11,3 +11,7 @@ exports.createUser = async (googleUser) => {
 
   await db.query('INSERT INTO sailing.users (google_id, first_name, last_name, email, image_url) VALUES (?, ?, ?, ?, ?)', newUser)
 }
+
+exports.getUserList = async () => {
+  return await db.query('SELECT * FROM sailing.users')
+}

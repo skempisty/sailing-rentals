@@ -2,9 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from "react-redux";
 
+import TopNavBar from "./components/TopNavBar";
 import Dashboard from './components/pages/HomePage';
 import SignUp from './components/pages/SignUp';
-import TopNavBar from "./components/TopNavBar";
+import UserList from './components/pages/UserList';
 
 import getLoggedInUser from "../src/api/getLoggedInUser";
 
@@ -28,6 +29,7 @@ class App extends React.Component {
 
         <Route exact path="/" component={Dashboard} />
         <Route exact path="/sign-up" component={SignUp} />
+        <Route exact path="/user-list" component={UserList} />
       </Router>
     )
   }

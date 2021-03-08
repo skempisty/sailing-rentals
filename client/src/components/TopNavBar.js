@@ -39,8 +39,12 @@ class TopNavBar extends React.Component {
         <Navbar.Brand href="#home">NPSFYC</Navbar.Brand>
         <Nav className="mr-auto">
           <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
-          <Nav.Link href="#features">Features</Nav.Link>
-          <Nav.Link href="#pricing">Pricing</Nav.Link>
+
+          <Nav.Link href="https://ca-logos.printavo.com/merch/npsfyc" target='_blank'>
+            Apparel
+          </Nav.Link>
+
+          <Nav.Link href="#pricing">Contact Us</Nav.Link>
         </Nav>
 
         <Nav>
@@ -73,7 +77,9 @@ class TopNavBar extends React.Component {
 
                     <Dropdown.Item href="#/action-4">Post</Dropdown.Item>
 
-                    <Dropdown.Item href="#/action-4">User List</Dropdown.Item>
+                    <Dropdown.Item onClick={() => history.push('/user-list')}>
+                      User List
+                    </Dropdown.Item>
 
                     <Dropdown.Item href="#/action-5">Boat List</Dropdown.Item>
 

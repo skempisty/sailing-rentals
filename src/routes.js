@@ -28,6 +28,26 @@ router.get('/users/logged_in', async (req, res) => {
   } else {
     res.status(401).send('Unauthorized Google login')
   }
-});
+})
+
+router.get('/users', async (req, res) => {
+  const { authorization: token } = req.headers
+
+  const googleUser = await googleTokenIdToUser(token)
+
+  if (googleUser) {
+    const requestingUser = await api.users.getUser(googleUser.sub);
+
+    if (requestingUser[0].is_admin) {
+      const users = await api.users.getUserList();
+
+      res.send(users)
+    } else {
+      res.status(401).send('Unauthorized user')
+    }
+  } else {
+    res.status(401).send('Unauthorized Google login token detected')
+  }
+})
 
 module.exports = router;
