@@ -5,9 +5,9 @@ exports.getUser = async (id) => {
 }
 
 exports.createUser = async (googleUser) => {
-  const { sub: googleId, email, name, picture: imageUrl } = googleUser
+  const { sub: googleId, email, given_name: firstName, family_name: lastName, picture: imageUrl } = googleUser
 
-  const newUser = [ googleId, name, email, imageUrl ]
+  const newUser = [ googleId, firstName, lastName, email, imageUrl ]
 
-  await db.query('INSERT INTO sailing.users (google_id, name, email, image_url) VALUES (?, ?, ?, ?)', newUser)
+  await db.query('INSERT INTO sailing.users (google_id, first_name, last_name, email, image_url) VALUES (?, ?, ?, ?, ?)', newUser)
 }
