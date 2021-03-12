@@ -75,6 +75,8 @@ class TopNavBar extends React.Component {
                   <React.Fragment>
                     <h3>Admins Only</h3>
 
+                    <Dropdown.Item onClick={() => history.push('/homepage-management  ')}>Homepage Management</Dropdown.Item>
+
                     <Dropdown.Item href="#/action-4">Post</Dropdown.Item>
 
                     <Dropdown.Item onClick={() => history.push('/user-list')}>

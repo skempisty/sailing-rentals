@@ -15,3 +15,11 @@ exports.createUser = async (googleUser) => {
 exports.getUserList = async () => {
   return await db.query('SELECT * FROM sailing.users')
 }
+
+exports.approveUser = async (id) => {
+  return await db.query('UPDATE sailing.users SET is_approved = true WHERE id = ?', [id])
+}
+
+exports.deleteUser = async (id) => {
+  return await db.query('UPDATE sailing.users SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?', [id])
+}

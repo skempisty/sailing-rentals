@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from "react-redux";
 
 import TopNavBar from "./components/TopNavBar";
-import Dashboard from './components/pages/HomePage';
+import HomePage from './components/pages/HomePage/index';
 import SignUp from './components/pages/SignUp';
 import UserList from './components/pages/UserList';
+import HomepageManagement from './components/pages/HomePageManagement';
 
 import getLoggedInUser from "../src/api/getLoggedInUser";
 
@@ -27,9 +28,10 @@ class App extends React.Component {
       <Router>
         <TopNavBar />
 
-        <Route exact path="/" component={Dashboard} />
+        <Route exact path="/" component={HomePage} />
         <Route exact path="/sign-up" component={SignUp} />
         <Route exact path="/user-list" component={UserList} />
+        <Route exact path="/homepage-management" component={HomepageManagement} />
       </Router>
     )
   }

@@ -31,6 +31,18 @@
     ');'
   )
 
+  await db.query('CREATE TABLE sailing.homepage_carousel_slides (' +
+    'id INT PRIMARY KEY AUTO_INCREMENT,' +
+    'created_by INT,' +
+    'FOREIGN KEY (created_by) REFERENCES users(id),' +
+    'label VARCHAR(255),' +
+    'sub_text TEXT,' +
+    'image_url VARCHAR(255),' +
+    'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+    'deleted_at TIMESTAMP' +
+    ');'
+  )
+
   await db.query('CREATE TABLE sailing.posts (' +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'created_by INT,' +
