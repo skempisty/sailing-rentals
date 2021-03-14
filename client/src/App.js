@@ -5,8 +5,8 @@ import { connect } from "react-redux";
 import TopNavBar from "./components/TopNavBar";
 import HomePage from './components/pages/HomePage/index';
 import SignUp from './components/pages/SignUp';
-import UserList from './components/pages/UserList';
-import HomepageManagement from './components/pages/HomePageManagement';
+import ShowPost from './components/pages/ShowPost';
+import AdminPanel from './components/pages/AdminPanel';
 
 import getLoggedInUser from "../src/api/getLoggedInUser";
 
@@ -30,8 +30,8 @@ class App extends React.Component {
 
         <Route exact path="/" component={HomePage} />
         <Route exact path="/sign-up" component={SignUp} />
-        <Route exact path="/user-list" component={UserList} />
-        <Route exact path="/homepage-management" component={HomepageManagement} />
+        <Route exact path="/posts/:id" component={ShowPost} />
+        <Route exact path="/admin-panel" component={AdminPanel} />
       </Router>
     )
   }

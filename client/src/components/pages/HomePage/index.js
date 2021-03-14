@@ -1,13 +1,16 @@
 import React from 'react';
 import { Carousel, Card, Button } from "react-bootstrap";
 
-import getHomePageCarouselSlides from "../../../api/getHomePageCarouselSlides";
+import ContentWrapper from "../../ContentWrapper";
+import getCarouselSlides from "../../../api/getCarouselSlides";
+import getPosts from "../../../api/getPosts";
 
 export default class HomePage extends React.Component {
   constructor(props) {
     super(props);
 
     this.carouselSlides = [];
+    this.posts = [];
 
     this.state = {
       loadingPage: true
@@ -16,7 +19,8 @@ export default class HomePage extends React.Component {
 
   async componentDidMount() {
     try {
-      this.carouselSlides = await getHomePageCarouselSlides();
+      this.carouselSlides = await getCarouselSlides();
+      this.posts = await getPosts();
 
       this.setState({ loadingPage: false });
     } catch (err) {
@@ -25,6 +29,7 @@ export default class HomePage extends React.Component {
   }
 
   render() {
+    const { history } = this.props;
     const { carouselSlides } = this;
 
     return (
@@ -49,49 +54,43 @@ export default class HomePage extends React.Component {
           )}
         </Carousel>
 
-        <div style={{ margin: '0 auto', maxWidth: '45em' }}>
-          <h2
-            style={{
-              margin: '1em auto',
-              color: 'white',
-              textAlign: 'center'
-            }}
-          >
-            News/Announcements
-          </h2>
+        <ContentWrapper>
+          <div style={{ margin: '0 auto', maxWidth: '45em' }}>
+            <h2
+              style={{
+                marginBottom: '1em',
+                color: 'white',
+                textAlign: 'center'
+              }}
+            >
+              News/Announcements
+            </h2>
 
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-around',
-              margin: '1em auto 0 auto'
-            }}
-          >
-            <Card style={{ width: '18rem' }}>
-              <Card.Img variant="top" src="http://loremflickr.com/400/200/sailor" />
-              <Card.Body>
-                <Card.Title>Card Title</Card.Title>
-                <Card.Text>
-                  Some quick example text to build on the card title and make up the bulk of
-                  the card's content.
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-
-            <Card style={{ width: '18rem' }}>
-              <Card.Img variant="top" src="http://loremflickr.com/400/200/captain" />
-              <Card.Body>
-                <Card.Title>Card Title</Card.Title>
-                <Card.Text>
-                  Some quick example text to build on the card title and make up the bulk of
-                  the card's content.
-                </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                margin: '1em auto 0 auto'
+              }}
+            >
+              {this.posts.map(post =>
+                <Card style={{ width: '18rem' }}>
+                  <Card.Img variant="top" src={post.img_src} />
+                  <Card.Body>
+                    <Card.Title>{post.title}</Card.Title>
+                    <Card.Text>{post.short_description}</Card.Text>
+                    <Button
+                      variant="primary"
+                      onClick={() => history.push(`/posts/${post.id}`)}
+                    >
+                      See more
+                    </Button>
+                  </Card.Body>
+                </Card>
+              )}
+            </div>
           </div>
-        </div>
+        </ContentWrapper>
       </React.Fragment>
     )
   }

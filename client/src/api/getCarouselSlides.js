@@ -1,6 +1,6 @@
 // import Constants from '../utils/constants';
 
-export default async function getHomePageCarouselSlides() {
+export default async function getCarouselSlides() {
   return [
     {
       img_src: 'http://loremflickr.com/1600/400/sailing',

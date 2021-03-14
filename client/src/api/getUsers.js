@@ -1,6 +1,6 @@
 import Constants from '../utils/constants';
 
-export default async function getUserList() {
+export default async function getUsers() {
   const url = `${Constants.baseUrl}/api/users`;
 
   const getOptions = {
