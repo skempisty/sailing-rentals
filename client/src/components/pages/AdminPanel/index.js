@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from "styled-components";
 import { Tabs, Tab } from "react-bootstrap";
 
 import LoadingPageMessage from '../../LoadingPageMessage';
@@ -8,6 +9,15 @@ import getCarouselSlides from '../../../api/getCarouselSlides';
 import getPosts from "../../../api/getPosts";
 import getUsers from "../../../api/getUsers";
 import ContentWrapper from "../../ContentWrapper";
+
+const StyledWrapper = styled.div`
+  [role='tab'] {
+    color: white;
+    
+    &.disabled {
+      color: grey;
+    }
+`;
 
 export default class AdminPanel extends React.Component {
   constructor(props) {
@@ -41,6 +51,7 @@ export default class AdminPanel extends React.Component {
 
     return (
       <ContentWrapper>
+        <StyledWrapper>
         {!loadingPage ?
           <Tabs
             activeKey={activeKey}
@@ -76,6 +87,7 @@ export default class AdminPanel extends React.Component {
           :
           <LoadingPageMessage/>
         }
+        </StyledWrapper>
       </ContentWrapper>
     )
   }
