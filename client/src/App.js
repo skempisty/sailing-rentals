@@ -14,8 +14,6 @@ import { loginUser } from "./store/general";
 
 class App extends React.Component {
   async componentDidMount() {
-    console.log(process.env.NODE_ENV)
-
     const { loginUser } = this.props;
 
     if (localStorage.getItem('tokenId')) {

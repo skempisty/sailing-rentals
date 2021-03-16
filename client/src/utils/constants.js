@@ -1,3 +1,3 @@
 module.exports = {
-    baseUrl: process.env.BASE_URL
+    baseUrl: process.env.REACT_APP_BACKEND_BASE_URL
 };
