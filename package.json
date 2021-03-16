@@ -4,7 +4,7 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "concurrently \"node app.js\" \"cd client && yarn start\"",
     "start-watch": "nodemon app.js",
     "dev": "concurrently \"yarn run start-watch\" \"cd client && yarn start\"",
     "postinstall": "npm --prefix ./client install"
