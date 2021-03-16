@@ -12,8 +12,8 @@ module.exports = {
 
     connection = mysql.createConnection({
       host: process.env.DATABASE_HOST,
-      user: 'root',
-      password: '',
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       charset: MYSQL_CHARSET,
       timezone: MYSQL_TIMEZONE

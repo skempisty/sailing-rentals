@@ -19,9 +19,13 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 
-app.use('/api', routes);
+app.use('/api', routes)
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'))
+}
 
 app.use((err, req, res, next) => {
   console.log(err);

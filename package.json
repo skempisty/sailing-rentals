@@ -4,10 +4,13 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "server",
   "scripts": {
-    "start": "concurrently \"node server\" \"cd react-ui && yarn start\"",
+    "start": "node server",
+    "build": "cd client && npm run build",
+    "install-client": "cd client && npm install",
+    "heroku-postbuild": "npm run install-client && npm run build",
     "start-watch": "nodemon server",
-    "dev": "concurrently \"yarn run start-watch\" \"cd react-ui && yarn start\"",
-    "postinstall": "npm --prefix react-ui install"
+    "dev": "concurrently \"yarn run start-watch\" \"cd client && yarn start\"",
+    "postinstall": "npm --prefix client install"
   },
   "author": "Stephen Kempisty",
   "license": "ISC",
