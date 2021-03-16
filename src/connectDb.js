@@ -11,8 +11,7 @@ module.exports = {
   connect() {
     console.log('Connecting to the DB...')
 
-    connection = mysql.createPool({
-      connectionLimit : 10,
+    connection = mysql.createConnection({
       host: process.env.DATABASE_HOST,
       user: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
