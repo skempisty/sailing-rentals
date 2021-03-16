@@ -1,19 +1,21 @@
 (async () => {
   const db = require('../src/connectDb')
 
-  const SAILING_DB_NAME = 'sailing'
+  const SAILING_DB_NAME = process.env.DATABASE_NAME || 'sailing'
 
   await db.connect()
 
-  await db.query(`CREATE DATABASE IF NOT EXISTS ${SAILING_DB_NAME}`)
+  if (process.env.NODE_ENV !== 'production') {
+    await db.query(`CREATE DATABASE IF NOT EXISTS ${SAILING_DB_NAME}`)
+  }
 
-  await db.query('DROP TABLE IF EXISTS sailing.posts;')
-  await db.query('DROP TABLE IF EXISTS sailing.rentals;')
-  await db.query('DROP TABLE IF EXISTS sailing.payments;')
-  await db.query('DROP TABLE IF EXISTS sailing.boats;')
-  await db.query('DROP TABLE IF EXISTS sailing.users;')
+  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.posts;`)
+  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.rentals;`)
+  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.payments;`)
+  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.boats;`)
+  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.users;`)
 
-  await db.query('CREATE TABLE sailing.users (' +
+  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.users (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'google_id VARCHAR(255),' +
     'image_url VARCHAR(255),' +
@@ -31,7 +33,7 @@
     ');'
   )
 
-  await db.query('CREATE TABLE sailing.homepage_carousel_slides (' +
+  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.homepage_carousel_slides (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'created_by INT,' +
     'FOREIGN KEY (created_by) REFERENCES users(id),' +
@@ -43,7 +45,7 @@
     ');'
   )
 
-  await db.query('CREATE TABLE sailing.posts (' +
+  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.posts (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'created_by INT,' +
     'FOREIGN KEY (created_by) REFERENCES users(id),' +
@@ -55,7 +57,7 @@
     ');'
   )
 
-  await db.query('CREATE TABLE sailing.boats (' +
+  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.boats (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'created_by INT,' +
     'FOREIGN KEY (created_by) REFERENCES users(id),' +
@@ -64,7 +66,7 @@
     ');'
   )
 
-  await db.query('CREATE TABLE sailing.rentals (' +
+  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.rentals (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'boat_id INT,' +
     'rented_by INT,' +
@@ -76,7 +78,7 @@
     ');'
   )
 
-  await db.query('CREATE TABLE sailing.payments (' +
+  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.payments (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'rental_id INT,' +
     'paid_by INT,' +
