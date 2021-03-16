@@ -6,6 +6,13 @@ const googleTokenIdToUser = require('./utils/googleTokenIdToUser')
 const router = express.Router()
 
 /**
+ * Health Check
+ */
+router.get('/healthcheck', async (req, res) => {
+  res.send(`ok ${process.env.BASE_URL}`)
+})
+
+/**
  * Get the logged in User. If doesn't exist, create an unapproved new user.
  */
 router.get('/users/logged_in', async (req, res) => {
