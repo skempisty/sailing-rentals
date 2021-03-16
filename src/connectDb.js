@@ -7,6 +7,7 @@ const MYSQL_TIMEZONE = 'Z'
 let connection
 
 module.exports = {
+  name: process.env.DATABASE_NAME,
   connect() {
     console.log('Connecting to the DB...')
 
