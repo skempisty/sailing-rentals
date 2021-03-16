@@ -7,7 +7,8 @@
     "start": "concurrently \"node server\" \"cd react-ui && yarn start\"",
     "start-watch": "nodemon server",
     "dev": "concurrently \"yarn run start-watch\" \"cd react-ui && yarn start\"",
-    "postinstall": "npm --prefix react-ui install"
+    "postinstall": "npm --prefix react-ui install",
+    "heroku-prebuild": "npm install"
   },
   "author": "Stephen Kempisty",
   "license": "ISC",
