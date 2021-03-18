@@ -24,6 +24,7 @@
 
 #### Install dependencies
 
+- Stable with node `v13.12.0`. Use Nvm to ensure this node version is used
 - Yarn `npm install -g yarn`
 
 #### Run from terminal
