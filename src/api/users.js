@@ -18,6 +18,10 @@ exports.createUser = async (googleUser) => {
   const newUser = [ googleId, firstName, lastName, email, imageUrl ]
 
   await db.query(`INSERT INTO ${db.name}.users (google_id, first_name, last_name, email, image_url) VALUES (?, ?, ?, ?, ?)`, newUser)
+
+  const [ user ] = await db.query(`SELECT * FROM ${db.name}.users WHERE google_id = ?`, [googleId])
+
+  return user
 }
 
 exports.getUserList = async () => {
