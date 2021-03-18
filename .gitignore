@@ -8,7 +8,7 @@
 
 # production
 #/build
-client/build
+/client/build
 
 # misc
 .idea
