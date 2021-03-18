@@ -6,24 +6,27 @@ import { withRouter } from 'react-router';
 import LoginBtn from "./LoginBtn";
 import LogoutBtn from "./LogoutBtn";
 
-import getLoggedInUser from "../api/getLoggedInUser";
+import loginOrCreateUser from "../api/loginOrCreateUser";
 
-import { loginUser } from '../store/general';
+import { assignCurrentUser, clearCurrentUser } from '../store/general';
 
 class TopNavBar extends React.Component {
-  async handleLoginSuccess(loginRes) {
-    const { loginUser, history } = this.props;
+  async handleLoginSuccess({ tokenId }) {
+    const { assignCurrentUser, history } = this.props;
 
-    // will include this tokenId with every request
-    localStorage.setItem('tokenId', loginRes.tokenId);
+    try {
+      const { user, jwt } = await loginOrCreateUser(tokenId);
 
-    const user = await getLoggedInUser();
+      sessionStorage.setItem('jwt', jwt);
 
-    loginUser({ userObj: user[0] });
+      assignCurrentUser({ user });
 
-    if (!user[0].isApproved) {
-      // put user on sign-up page to complete profile
-      history.push('/sign-up')
+      if (!user.isApproved) {
+        // put user on sign-up page to complete profile
+        history.push('/sign-up');
+      }
+    } catch (error) {
+      alert(`Login error: ${error}`);
     }
   }
 
@@ -31,8 +34,18 @@ class TopNavBar extends React.Component {
     console.log('res', res);
   }
 
+  handleLogout() {
+    const { clearCurrentUser, history } = this.props;
+
+    sessionStorage.removeItem('jwt');
+
+    clearCurrentUser();
+
+    history.push('/');
+  }
+
   render() {
-    const { loggedInUser, history } = this.props;
+    const { currentUser, history } = this.props;
 
     return (
       <Navbar bg="dark" variant="dark">
@@ -48,7 +61,7 @@ class TopNavBar extends React.Component {
         </Nav>
 
         <Nav>
-          {!loggedInUser ?
+          {!currentUser ?
             <LoginBtn
               onLogin={(res) => this.handleLoginSuccess(res)}
               onFailure={(res) => this.handleLoginFailure(res)}
@@ -57,8 +70,9 @@ class TopNavBar extends React.Component {
             <Dropdown alignRight>
               <Dropdown.Toggle variant="dark" id="dropdown-basic">
                 <img
-                  src={loggedInUser.imageUrl}
+                  src={currentUser.imageUrl}
                   style={{ height: '3em', marginRight: '1em' }}
+                  alt=''
                 />
               </Dropdown.Toggle>
 
@@ -69,13 +83,13 @@ class TopNavBar extends React.Component {
 
                 <Dropdown.Item onClick={() => history.push('/my-rentals')}>My Rentals</Dropdown.Item>
 
-                {!!loggedInUser.isAdmin &&
+                {!!currentUser.isAdmin &&
                   <React.Fragment>
                     <Dropdown.Item onClick={() => history.push('/admin-panel')}>Admin Panel</Dropdown.Item>
                   </React.Fragment>
                 }
 
-                <Dropdown.Item><LogoutBtn/></Dropdown.Item>
+                <Dropdown.Item><LogoutBtn onLogoutClick={this.handleLogout.bind(this)} /></Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           }
@@ -86,12 +100,15 @@ class TopNavBar extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { loggedInUser } = state.general;
+  const { currentUser } = state.general;
 
-  return { loggedInUser };
+  return { currentUser };
 };
 
-const mapDispatchToProps = { loginUser };
+const mapDispatchToProps = {
+  assignCurrentUser,
+  clearCurrentUser
+};
 
 export default connect(
   mapStateToProps,

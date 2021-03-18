@@ -10,16 +10,20 @@ import AdminPanel from './components/pages/AdminPanel';
 
 import getLoggedInUser from "../src/api/getLoggedInUser";
 
-import { loginUser } from "./store/general";
+import { assignCurrentUser } from "./store/general";
 
 class App extends React.Component {
   async componentDidMount() {
-    const { loginUser } = this.props;
+    const { assignCurrentUser } = this.props;
 
-    if (localStorage.getItem('tokenId')) {
+    // get from sessionStorage the jwt
+    const existingJwt = sessionStorage.getItem('jwt');
+
+    if (existingJwt) {
+      // get user and assign to redux
       const user = await getLoggedInUser();
 
-      loginUser({ userObj: user[0] });
+      await assignCurrentUser({ user })
     }
   }
 
@@ -43,7 +47,7 @@ const mapStateToProps = (state) => {
   return { loggedInUser };
 };
 
-const mapDispatchToProps = { loginUser };
+const mapDispatchToProps = { assignCurrentUser };
 
 export default connect(
   mapStateToProps,

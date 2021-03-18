@@ -7,7 +7,7 @@ export default async function getLoggedInUser() {
     method: 'GET',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': localStorage.getItem('tokenId'),
+      'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
     }
   };
 

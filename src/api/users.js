@@ -1,7 +1,15 @@
 const db = require('../connectDb')
 
-exports.getUser = async (id) => {
-  return await db.query(`SELECT * FROM ${db.name}.users WHERE google_id = ?`, [id])
+exports.getUserByGoogleId = async (id) => {
+  const [ user ] = await db.query(`SELECT * FROM ${db.name}.users WHERE google_id = ?`, [id])
+
+  return user
+}
+
+exports.getUserById = async (id) => {
+  const [ user ] = await db.query(`SELECT * FROM ${db.name}.users WHERE id = ?`, [id])
+
+  return user
 }
 
 exports.createUser = async (googleUser) => {

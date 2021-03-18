@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Card, Button} from "react-bootstrap";
+import { Table, Card } from "react-bootstrap";
 import approveUser from "../../../api/approveUser";
 import deleteUser from "../../../api/deleteUser";
 

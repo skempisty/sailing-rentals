@@ -3,11 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 const generalSlice = createSlice({
   name: 'general',
   initialState: {
-    loggedInUser: null
+    currentUser: null
   },
   reducers: {
-    loginUser: (state, action) => {
-      const { userObj } = action.payload;
+    assignCurrentUser: (state, action) => {
+      const { user } = action.payload
 
       const {
         first_name: firstName,
@@ -16,15 +16,19 @@ const generalSlice = createSlice({
         image_url: imageUrl,
         is_approved: isApproved,
         is_admin: isAdmin
-      } = userObj;
+      } = user;
 
-      state.loggedInUser = { firstName, lastName, email, imageUrl, isApproved, isAdmin };
+      state.currentUser = { firstName, lastName, email, imageUrl, isApproved, isAdmin };
+    },
+    clearCurrentUser: (state) => {
+      state.currentUser = null;
     }
   }
 });
 
 export const {
-  loginUser
+  assignCurrentUser,
+  clearCurrentUser
 } = generalSlice.actions;
 
 export default generalSlice.reducer;

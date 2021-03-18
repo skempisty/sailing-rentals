@@ -35,8 +35,8 @@ export default class HomePage extends React.Component {
     return (
       <React.Fragment>
         <Carousel controls>
-          {carouselSlides.map(slide =>
-            <Carousel.Item>
+          {carouselSlides.map((slide, index) =>
+            <Carousel.Item key={`carousel-slide-${slide.id}-${index}`}>
               <img
                 className="d-block w-100"
                 src={slide.img_src}
@@ -44,6 +44,7 @@ export default class HomePage extends React.Component {
                   height: '22.5em',
                   objectFit: 'cover'
                 }}
+                alt=''
               />
 
               <Carousel.Caption>
@@ -73,8 +74,8 @@ export default class HomePage extends React.Component {
                 margin: '1em auto 0 auto'
               }}
             >
-              {this.posts.map(post =>
-                <Card style={{ width: '18rem' }}>
+              {this.posts.map((post, index) =>
+                <Card style={{ width: '18rem' }} key={`post-${post.id}-${index}`}>
                   <Card.Img variant="top" src={post.img_src} />
                   <Card.Body>
                     <Card.Title>{post.title}</Card.Title>

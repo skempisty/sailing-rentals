@@ -35,7 +35,7 @@ export default class ShowPost extends React.Component {
         {!loading ?
           <React.Fragment>
             <h3>{post.title}</h3>
-            <img src={post.img_src} />
+            <img src={post.img_src} alt='' />
             <div>{post.description}</div>
           </React.Fragment>
           :
