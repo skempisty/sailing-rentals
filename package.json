@@ -4,12 +4,11 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "server",
   "scripts": {
-    "start": "node server",
-    "build": "cd client && npm run build",
+    "start": "npm install && npm run install-client && npm run build && node server",
     "install-client": "cd client && npm install",
-    "heroku-postbuild": "npm run install-client && npm run build",
-    "start-watch": "nodemon server",
+    "build": "cd client && npm run build",
     "dev": "concurrently \"yarn run start-watch\" \"cd client && yarn start\"",
+    "start-watch": "nodemon server",
     "postinstall": "npm --prefix client install"
   },
   "author": "Stephen Kempisty",
