@@ -1,7 +1,25 @@
-# Simple-Project-Template
+# NPS Yacht Club site 
 
-This is a template for a basic unirepo for a standard MERN stack application. Contains
-scaffolding code for front and backend.
+                         _._
+                          :.
+                          : :
+                          :  .
+                         .:   :
+                        : :    .
+                       :  :     :
+                      .   :      .
+                     :    :       :
+                    :     :        .
+                   .      :         :
+                  :       :          .
+                 :        :           :
+                .=w=w=w=w=:            .
+                          :=w=w=w=w=w=w=.   ....
+           <--._______:U~~~~~~~~\_________.:---/
+            \      ____===================____/
+.,-~"^"~-,.,-~"^"~-,.,-~"^"~-,.,-~"^"~-,.,-~"^"~-,.,-~"^"~-,.,-~"^"~-,.
+
+"^"~-,.,-~"^"~-,.,-~"^"~-,.,-~"^"~-,.,-~"^"~-,.,-~"^"~-,.,-~"^"~-,.,-~"
 
 ## Development
 
@@ -39,6 +57,9 @@ Currently hosted for free on one Heroku dyno (server).
 A lot of deployment tools are included on Heroku such as
 - **Deploy** (https://dashboard.heroku.com/apps/nps-yacht-club/deploy/github). Can
   also be set to automatically deploy when master branch is updated.
+- **Restart Server** Look for `Restart all dynos` under the `More` dropdown next
+  to `Open app`. Sometimes you want to just restart the server instead of deploying
+  master all over again.
 - **Environment (env) Variables** (https://dashboard.heroku.com/apps/nps-yacht-club/settings).
   This is found under `Config Vars`. These are populated in the code the same way
   `env` vars show up. Such as `process.env.VAR_NAME`.
@@ -55,3 +76,9 @@ Find DB access information in Heroku Config Vars
 
 Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
+
+### Build for Heroku locally
+This is useful to try a Heroku deploy locally so we don't have to push to master in
+order to try a heroku deploy.
+
+`heroku local`
