@@ -7,6 +7,13 @@ const jwt = require('express-jwt')
  */
 const secret = process.env.JWT_SECRET
 
-const excludedPaths = ['/api/health', '/api/users/login']
+const pathFilter = function(req) {
+  const excludedPaths = ['/api/health', '/api/users/login']
 
-module.exports = jwt({ secret, algorithms: ['HS256'] }).unless({ path: excludedPaths })
+  return (
+    !/^\/api/.test(req.path) || // exclude any non-api paths
+    excludedPaths.includes(req.path)
+  )
+}
+
+module.exports = jwt({ secret, algorithms: ['HS256'] }).unless(pathFilter)
