@@ -29,7 +29,7 @@ class App extends React.Component {
       const posts = await getPosts();
 
       initializeAppData({
-        currentUser: loggedInUser,
+        user: loggedInUser,
         carouselSlides,
         posts
       });
