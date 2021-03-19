@@ -102,30 +102,23 @@ router.delete('/users/:id', async (req, res) => {
  */
 
 router.get('/carousel_slides', async (req, res) => {
-  const slides = await api.homepageCarouselSlides.getHomepageCarouselSlides();
+  const slides = await api.carouselSlides.getCarouselSlides();
+
+  res.send(slides)
 })
 
-router.post('/carousel_slides', async (req, res) => {
-  const { authorization: token } = req.headers
+// router.post('/carousel_slides', async (req, res) => {
+//
+// })
 
-  // TODO: decode jwt and get userId
-  // const userId = getUserIdFromJwt(token);
+/*******************************************************************************
+ * POSTS
+ */
 
-  if (userId && userId.isAdmin) {
-    const requestingUser = await api.homepageCarouselSlides.getHomepageCarouselSlides(userId);
-  } else {
+router.get('/posts', async (req, res) => {
+  const posts = await api.posts.getPosts();
 
-  }
-
-  const requestingUser = await api.homepageCarouselSlides.getHomepageCarouselSlides(googleUser.sub);
-
-  if (requestingUser[0].is_admin) {
-    const users = await api.users.getUserList();
-
-    res.send(users)
-  } else {
-    res.status(401).send('Unauthorized user')
-  }
+  res.send(posts)
 })
 
 module.exports = router;

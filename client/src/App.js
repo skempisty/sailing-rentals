@@ -1,53 +1,77 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
-import TopNavBar from "./components/TopNavBar";
+import TopNavBar from './components/TopNavBar';
 import HomePage from './components/pages/HomePage/index';
 import SignUp from './components/pages/SignUp';
 import ShowPost from './components/pages/ShowPost';
 import AdminPanel from './components/pages/AdminPanel';
 
-import getLoggedInUser from "../src/api/getLoggedInUser";
+import getLoggedInUser from './api/getLoggedInUser';
+import getCarouselSlides from './api/getCarouselSlides';
+import getPosts from './api/getPosts';
 
-import { assignCurrentUser } from "./store/general";
+import { toggleLoading, initializeAppData } from './store/general';
 
+/**
+ * Root App component. Initialize app data here and add to Redux.
+ */
 class App extends React.Component {
   async componentDidMount() {
-    const { assignCurrentUser } = this.props;
+    const { toggleLoading, initializeAppData } = this.props;
 
-    // get from sessionStorage the jwt
     const existingJwt = sessionStorage.getItem('jwt');
 
-    if (existingJwt) {
-      // get user and assign to redux
-      const user = await getLoggedInUser();
+    try {
+      const loggedInUser = existingJwt ? await getLoggedInUser() : null;
+      const carouselSlides = await getCarouselSlides();
+      const posts = await getPosts();
 
-      await assignCurrentUser({ user })
+      initializeAppData({
+        currentUser: loggedInUser,
+        carouselSlides,
+        posts
+      });
+
+      toggleLoading({ newToggleState: false });
+    } catch (error) {
+      alert('Error initializing app: ' + error);
     }
   }
 
   render() {
-    return (
-      <Router>
-        <TopNavBar />
+    const { loading } = this.props;
 
-        <Route exact path="/" component={HomePage} />
-        <Route exact path="/sign-up" component={SignUp} />
-        <Route exact path="/posts/:id" component={ShowPost} />
-        <Route exact path="/admin-panel" component={AdminPanel} />
-      </Router>
+    return (
+      <React.Fragment>
+        {!loading ?
+          <Router>
+            <TopNavBar />
+
+            <Route exact path='/' component={HomePage} />
+            <Route exact path='/sign-up' component={SignUp} />
+            <Route exact path='/posts/:id' component={ShowPost} />
+            <Route exact path='/admin-panel' component={AdminPanel} />
+          </Router>
+          :
+          <div>loading....</div>
+        }
+      </React.Fragment>
     )
   }
 }
 
 const mapStateToProps = (state) => {
-  const { loggedInUser } = state.general;
+  const { loading } = state.general;
 
-  return { loggedInUser };
+  return { loading };
 };
 
-const mapDispatchToProps = { assignCurrentUser };
+const mapDispatchToProps = {
+  toggleLoading,
+  initializeAppData
+};
 
 export default connect(
   mapStateToProps,

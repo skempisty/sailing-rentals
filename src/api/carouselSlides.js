@@ -1,7 +1,7 @@
 const db = require('../connectDb')
 
-exports.getHomepageCarouselSlides = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.homepage_carousel_slides WHERE deleted_at = NULL`)
+exports.getCarouselSlides = async () => {
+  return await db.query(`SELECT * FROM ${db.name}.carousel_slides WHERE deleted_at = NULL`)
 }
 
 // exports.createHomepageCarouselSlide = async ({ label, subText, imgBlob, createdBy }) => {

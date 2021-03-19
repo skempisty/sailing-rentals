@@ -8,7 +8,12 @@ const jwt = require('express-jwt')
 const secret = process.env.JWT_SECRET
 
 const pathFilter = function(req) {
-  const excludedPaths = ['/api/health', '/api/users/login']
+  const excludedPaths = [
+    '/api/health',
+    '/api/users/login',
+    '/api/carousel_slides', // TODO: need to lock down POST endpoint
+    '/api/posts' // TODO: need to lock down POST endpoint
+  ]
 
   return (
     !/^\/api/.test(req.path) || // exclude any non-api paths

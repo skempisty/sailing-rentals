@@ -9,6 +9,7 @@
     await db.query(`CREATE DATABASE IF NOT EXISTS ${SAILING_DB_NAME}`)
   }
 
+  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.carousel_slides;`)
   await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.posts;`)
   await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.rentals;`)
   await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.payments;`)
@@ -33,7 +34,7 @@
     ');'
   )
 
-  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.homepage_carousel_slides (` +
+  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.carousel_slides (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'created_by INT,' +
     'FOREIGN KEY (created_by) REFERENCES users(id),' +

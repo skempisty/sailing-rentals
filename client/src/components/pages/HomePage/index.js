@@ -1,44 +1,20 @@
 import React from 'react';
-import { Carousel, Card, Button } from "react-bootstrap";
+import { connect } from 'react-redux';
+import { Carousel, Card, Button } from 'react-bootstrap';
 
-import ContentWrapper from "../../ContentWrapper";
-import getCarouselSlides from "../../../api/getCarouselSlides";
-import getPosts from "../../../api/getPosts";
+import ContentWrapper from '../../ContentWrapper';
 
-export default class HomePage extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.carouselSlides = [];
-    this.posts = [];
-
-    this.state = {
-      loadingPage: true
-    }
-  }
-
-  async componentDidMount() {
-    try {
-      this.carouselSlides = await getCarouselSlides();
-      this.posts = await getPosts();
-
-      this.setState({ loadingPage: false });
-    } catch (err) {
-      alert(err)
-    }
-  }
-
+class HomePage extends React.Component {
   render() {
-    const { history } = this.props;
-    const { carouselSlides } = this;
+    const { carouselSlides, posts, history } = this.props;
 
     return (
       <React.Fragment>
-        <Carousel controls>
+        <Carousel controls={carouselSlides.length > 1}>
           {carouselSlides.map((slide, index) =>
             <Carousel.Item key={`carousel-slide-${slide.id}-${index}`}>
               <img
-                className="d-block w-100"
+                className='d-block w-100'
                 src={slide.img_src}
                 style={{
                   height: '22.5em',
@@ -74,14 +50,14 @@ export default class HomePage extends React.Component {
                 margin: '1em auto 0 auto'
               }}
             >
-              {this.posts.map((post, index) =>
+              {posts.map((post, index) =>
                 <Card style={{ width: '18rem' }} key={`post-${post.id}-${index}`}>
-                  <Card.Img variant="top" src={post.img_src} />
+                  <Card.Img variant='top' src={post.img_src} />
                   <Card.Body>
                     <Card.Title>{post.title}</Card.Title>
                     <Card.Text>{post.short_description}</Card.Text>
                     <Button
-                      variant="primary"
+                      variant='primary'
                       onClick={() => history.push(`/posts/${post.id}`)}
                     >
                       See more
@@ -96,3 +72,14 @@ export default class HomePage extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  const { carouselSlides, posts } = state.general;
+
+  return { carouselSlides, posts };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(HomePage);
