@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import LoadingPageMessage from './components/LoadingPageMessage';
 import TopNavBar from './components/TopNavBar';
 import HomePage from './components/pages/HomePage/index';
 import SignUp from './components/pages/SignUp';
@@ -11,6 +12,7 @@ import AdminPanel from './components/pages/AdminPanel';
 import getLoggedInUser from './api/getLoggedInUser';
 import getCarouselSlides from './api/getCarouselSlides';
 import getPosts from './api/getPosts';
+import getUsers from './api/getUsers';
 
 import { toggleLoading, initializeAppData } from './store/general';
 
@@ -24,14 +26,22 @@ class App extends React.Component {
     const existingJwt = sessionStorage.getItem('jwt');
 
     try {
+      let users = [];
+
       const loggedInUser = existingJwt ? await getLoggedInUser() : null;
       const carouselSlides = await getCarouselSlides();
       const posts = await getPosts();
 
+      // admin data
+      if (loggedInUser && loggedInUser.is_admin) {
+        users = await getUsers()
+      }
+
       initializeAppData({
         user: loggedInUser,
         carouselSlides,
-        posts
+        posts,
+        users
       });
 
       toggleLoading({ newToggleState: false });
@@ -55,7 +65,7 @@ class App extends React.Component {
             <Route exact path='/admin-panel' component={AdminPanel} />
           </Router>
           :
-          <div>loading....</div>
+          <LoadingPageMessage/>
         }
       </React.Fragment>
     )
