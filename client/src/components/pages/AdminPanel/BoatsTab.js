@@ -1,36 +1,76 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Card, Button, Modal } from 'react-bootstrap';
+import { Card, Button, Modal, Form } from 'react-bootstrap';
+
+import createBoat from "../../../api/createBoat";
+
+import { addNewBoat } from '../../../store/general';
 
 class BoatsTab extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { showAddBoatModal: false };
+    this.state = {
+      name: '',
+      showAddBoatModal: false
+    };
   }
 
   hideAddBoatModal() {
     this.setState({ showAddBoatModal: false });
   }
 
+  async handleAddBoatClick() {
+    const { addNewBoat } = this.props;
+    const { name } = this.state;
+
+    const newBoat = await createBoat(name);
+
+    addNewBoat({
+      name: newBoat.name,
+      model: 'Cutter22',
+      description: 'what a magnificent vessel'
+    })
+
+    this.hideAddBoatModal();
+  }
+
   render() {
     const { boats } = this.props;
-    const { showAddBoatModal } = this.state;
+    const {
+      name,
+      showAddBoatModal
+    } = this.state;
 
     return (
       <React.Fragment>
         <Modal show={showAddBoatModal} onHide={this.hideAddBoatModal.bind(this)}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>Add Boat</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="addBoatForm">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Boat name"
+                  value={name}
+                  onChange={(e) => this.setState({ name: e.target.value })}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+
           <Modal.Footer>
             <Button variant="secondary" onClick={this.hideAddBoatModal.bind(this)}>
-              Close
+              Cancel
             </Button>
-            <Button variant="primary" onClick={this.hideAddBoatModal.bind(this)}>
-              Save Changes
+
+            <Button variant="primary" onClick={this.handleAddBoatClick.bind(this)}>
+              Add Boat
             </Button>
           </Modal.Footer>
         </Modal>
@@ -44,8 +84,8 @@ class BoatsTab extends React.Component {
 
         <Card>
           <Card.Body>
-            {boats.map(boat =>
-              <div>{boat.name}</div>
+            {boats.map((boat, index) =>
+              <div key={index}>{boat.name}</div>
             )}
           </Card.Body>
         </Card>
@@ -60,7 +100,11 @@ const mapStateToProps = (state) => {
   return { boats };
 };
 
+const mapDispatchToProps = {
+  addNewBoat
+};
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(BoatsTab);

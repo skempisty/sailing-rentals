@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 
 import { Card, Accordion, Badge, Button } from 'react-bootstrap';
-import { FaChevronDown } from 'react-icons/fa';
+import { FaEnvelope, FaChevronDown } from 'react-icons/fa';
 import Switch from 'react-switch';
 
 /**
@@ -55,6 +55,10 @@ export default class AccordionItem extends React.Component {
                 style={{ maxWidth: '2em', height: '2em', marginRight: '1em' }}
               />
 
+              <b>{this.fullName}</b>
+
+              <FaEnvelope/>
+
               {user.email}
 
               {this.isAdmin &&
@@ -80,9 +84,6 @@ export default class AccordionItem extends React.Component {
             }}
           >
             <div>
-              <b style={{ textDecoration: '3px underline' }}>Name</b>
-              <div>{this.fullName}</div>
-
               <b style={{ textDecoration: '3px underline' }}>Joined</b>
               <div>{this.joinedOn}</div>
             </div>

@@ -2,6 +2,7 @@ const express = require ('express')
 const jwt = require('jsonwebtoken')
 
 const api = require('./apiDispatcher')
+const decodeJwt = require('./utils/decodeJwt')
 const googleTokenIdToUser = require('./utils/googleTokenIdToUser')
 
 const router = express.Router()
@@ -54,11 +55,9 @@ router.post('/users/login', async (req, res) => {
 router.get('/users/logged_in', async (req, res) => {
   const { authorization: jwtToken } = req.headers
 
-  const decoded = jwt.verify(jwtToken.split(' ')[1], process.env.JWT_SECRET)
+  const { userId } = await decodeJwt(jwtToken);
 
-  if (decoded) {
-    const userId = decoded.userId;
-
+  if (userId) {
     const user = await api.users.getUserById(userId)
 
     res.send(user);
@@ -70,9 +69,9 @@ router.get('/users/logged_in', async (req, res) => {
 router.get('/users', async (req, res) => {
   const { authorization: jwtToken } = req.headers
 
-  const decoded = jwt.verify(jwtToken.split(' ')[1], process.env.JWT_SECRET)
+  const { isAdmin } = await decodeJwt(jwtToken)
 
-  if (decoded.isAdmin) {
+  if (isAdmin) {
     const users = await api.users.getUserList();
 
     res.send(users)
@@ -127,6 +126,17 @@ router.get('/posts', async (req, res) => {
 
 router.get('/boats', async (req, res) => {
   const boats = await api.boats.getBoats();
+
+  res.send(boats)
+})
+
+router.post('/boats', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+  const { name } = req.body
+
+  const creatorId = decodeJwt(jwtToken).userId;
+
+  const boats = await api.boats.createBoat(creatorId, name);
 
   res.send(boats)
 })

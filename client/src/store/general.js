@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import Boat from '../models/Boat';
+
 const generalSlice = createSlice({
   name: 'general',
   initialState: {
@@ -74,6 +76,13 @@ const generalSlice = createSlice({
     },
     clearCurrentUser: (state) => {
       state.currentUser = null;
+    },
+    addNewBoat: (state, action) => {
+      const { name } = action.payload
+
+      state.boats.push(new Boat({
+        name
+      }))
     }
   }
 });
@@ -82,7 +91,8 @@ export const {
   toggleLoading,
   initializeAppData,
   assignCurrentUser,
-  clearCurrentUser
+  clearCurrentUser,
+  addNewBoat
 } = generalSlice.actions;
 
 export default generalSlice.reducer;

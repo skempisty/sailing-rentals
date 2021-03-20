@@ -25,7 +25,7 @@ exports.createUser = async (googleUser) => {
 }
 
 exports.getUserList = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.users`)
+  return await db.query(`SELECT * FROM ${db.name}.users ORDER BY users.is_admin DESC`)
 }
 
 exports.approveUser = async (id) => {
