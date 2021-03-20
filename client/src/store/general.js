@@ -17,7 +17,8 @@ const generalSlice = createSlice({
       short_description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
       description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).'
     }],
-    users: []
+    users: [],
+    boats: []
   },
   reducers: {
     toggleLoading: (state, action) => {
@@ -26,7 +27,7 @@ const generalSlice = createSlice({
       state.loading = newToggleState;
     },
     initializeAppData: (state, action) => {
-      const { user, carouselSlides, posts, users } = action.payload
+      const { user, carouselSlides, posts, users, boats } = action.payload
 
       if (user) {
         const {
@@ -41,16 +42,20 @@ const generalSlice = createSlice({
         state.currentUser = { firstName, lastName, email, imageUrl, isApproved, isAdmin };
       }
 
-      if (carouselSlides.length) { // otherwise leave default slide
+      if (carouselSlides && carouselSlides.length) { // otherwise leave default slide
         state.carouselSlides = carouselSlides;
       }
 
-      if (posts.length) { // otherwise leave default post
+      if (posts && posts.length) { // otherwise leave default post
         state.posts = posts;
       }
 
-      if (users.length) { // otherwise leave default post
+      if (users && users.length) {
         state.users = users;
+      }
+
+      if (boats && boats.length) {
+        state.boats = boats;
       }
     },
     assignCurrentUser: (state, action) => {

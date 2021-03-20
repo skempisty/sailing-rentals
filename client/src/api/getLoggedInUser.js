@@ -13,5 +13,9 @@ export default async function getLoggedInUser() {
 
   const userRes = await fetch(url, getOptions);
 
-  return await userRes.json();
+  try {
+    return await userRes.json();
+  } catch (error) {
+    return null;
+  }
 }

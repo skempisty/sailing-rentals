@@ -62,6 +62,8 @@
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'created_by INT,' +
     'FOREIGN KEY (created_by) REFERENCES users(id),' +
+    'name VARCHAR(255),' +
+    'image_url VARCHAR(255),' +
     'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deleted_at TIMESTAMP' +
     ');'

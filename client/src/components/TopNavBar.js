@@ -1,18 +1,33 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Nav, Navbar, Dropdown } from "react-bootstrap";
+import { Nav, Navbar, Dropdown } from 'react-bootstrap';
 import { withRouter } from 'react-router';
 
-import LoginBtn from "./LoginBtn";
-import LogoutBtn from "./LogoutBtn";
+import LoginBtn from './LoginBtn';
+import LogoutBtn from './LogoutBtn';
 
-import loginOrCreateUser from "../api/loginOrCreateUser";
+import loginOrCreateUser from '../api/loginOrCreateUser';
+import getUsers from '../api/getUsers';
+import getBoats from '../api/getBoats';
 
-import { assignCurrentUser, clearCurrentUser } from '../store/general';
+import {
+  initializeAppData,
+  assignCurrentUser,
+  clearCurrentUser,
+  toggleLoading
+} from '../store/general';
 
+/**
+ * Main site top navbar
+ */
 class TopNavBar extends React.Component {
   async handleLoginSuccess({ tokenId }) {
-    const { assignCurrentUser, history } = this.props;
+    const {
+      initializeAppData,
+      assignCurrentUser,
+      toggleLoading,
+      history
+    } = this.props;
 
     try {
       const { user, jwt } = await loginOrCreateUser(tokenId);
@@ -21,7 +36,21 @@ class TopNavBar extends React.Component {
 
       assignCurrentUser({ user });
 
-      if (!user.isApproved) {
+      if (user.is_admin) {
+        toggleLoading(true);
+
+        const users = await getUsers();
+        const boats = await getBoats();
+
+        initializeAppData({
+          users,
+          boats
+        })
+
+        toggleLoading(false);
+      }
+
+      if (!user.is_approved) {
         // put user on sign-up page to complete profile
         history.push('/sign-up');
       }
@@ -48,16 +77,16 @@ class TopNavBar extends React.Component {
     const { currentUser, history } = this.props;
 
     return (
-      <Navbar bg="dark" variant="dark">
-        <Navbar.Brand href="#home">NPSFYC</Navbar.Brand>
-        <Nav className="mr-auto">
+      <Navbar bg='dark' variant='dark'>
+        <Navbar.Brand href='#home'>NPSFYC</Navbar.Brand>
+        <Nav className='mr-auto'>
           <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
 
-          <Nav.Link href="https://ca-logos.printavo.com/merch/npsfyc" target='_blank'>
+          <Nav.Link href='https://ca-logos.printavo.com/merch/npsfyc' target='_blank'>
             Apparel
           </Nav.Link>
 
-          <Nav.Link href="#pricing">Contact Us</Nav.Link>
+          <Nav.Link href='#pricing'>Contact Us</Nav.Link>
         </Nav>
 
         <Nav>
@@ -68,7 +97,7 @@ class TopNavBar extends React.Component {
             />
             :
             <Dropdown alignRight>
-              <Dropdown.Toggle variant="dark" id="dropdown-basic">
+              <Dropdown.Toggle variant='dark' id='dropdown-basic'>
                 <img
                   src={currentUser.imageUrl}
                   style={{ height: '3em', marginRight: '1em' }}
@@ -106,8 +135,10 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
+  initializeAppData,
   assignCurrentUser,
-  clearCurrentUser
+  clearCurrentUser,
+  toggleLoading
 };
 
 export default connect(

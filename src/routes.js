@@ -121,4 +121,14 @@ router.get('/posts', async (req, res) => {
   res.send(posts)
 })
 
+/*******************************************************************************
+ * BOATS
+ */
+
+router.get('/boats', async (req, res) => {
+  const boats = await api.boats.getBoats();
+
+  res.send(boats)
+})
+
 module.exports = router;
