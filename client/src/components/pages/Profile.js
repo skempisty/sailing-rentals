@@ -12,6 +12,8 @@ import buildFullName from '../../utils/buildUserFullName'
 import formatDateTime from '../../utils/formatDateTime'
 import setStateAsync from '../../utils/setStateAsync';
 
+import { updateCurrentUser } from "../../store/general";
+
 class Profile extends React.Component {
   constructor(props) {
     super(props);
@@ -38,8 +40,15 @@ class Profile extends React.Component {
     }
   }
 
-  async handleSaveChangesClick() {
+  get profileIncomplete() {
     const { currentUser } = this.props;
+    const { phone, jobTitle, affiliation } = currentUser;
+
+    return (!phone || !jobTitle || !affiliation);
+  }
+
+  async handleSaveChangesClick() {
+    const { currentUser, updateCurrentUser } = this.props;
     const { phone, jobTitle, affiliation } = this.state;
 
     await setStateAsync({ savingProfile: true }, this);
@@ -48,6 +57,8 @@ class Profile extends React.Component {
 
     try {
       await updateUser(currentUser.id, updatedFields);
+
+      updateCurrentUser({ toUpdate: updatedFields });
 
       this.setState({ showProfileUpdateSuccess: true });
     } catch (error) {
@@ -59,17 +70,17 @@ class Profile extends React.Component {
     const { currentUser } = this.props;
     const { showProfileUpdateSuccess, phone, jobTitle, affiliation } = this.state;
 
-    console.log('showProfileUpdateSuccess', showProfileUpdateSuccess)
-
     return (
       <ContentWrapper>
         <h1 style={{ color: 'white' }}>Profile</h1>
 
         <Card><Card.Body>
-          <Alert variant='danger'>
-            Profile incomplete! Please fill out the missing fields in order for
-            your account to be approved for rentals.
-          </Alert>
+          {this.profileIncomplete &&
+            <Alert variant='danger'>
+              Profile incomplete! Please fill out the missing fields in order for
+              your account to be approved for rentals.
+            </Alert>
+          }
 
           <div style={{ display: 'flex', marginBottom: '1em' }}>
             <img
@@ -79,7 +90,7 @@ class Profile extends React.Component {
             />
 
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: '1em' }}>
-              {currentUser.isAdmin &&
+              {!!currentUser.isAdmin &&
                 <Badge variant='danger' style={{ width: '4.5em', marginRight: '0.5em' }}>Admin</Badge>
               }
 
@@ -179,7 +190,11 @@ const mapStateToProps = (state) => {
   return { currentUser };
 };
 
+const mapDispatchToProps = {
+  updateCurrentUser
+};
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Profile);

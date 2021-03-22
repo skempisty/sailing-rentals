@@ -84,8 +84,6 @@ router.put('/users/:id', async (req, res) => {
   const { id } = req.params
   const updateFields = req.body
 
-  console.log('updatedFields', updateFields)
-
   const updatedUser = await api.users.updateUser(id, updateFields);
 
   res.send(updatedUser)

@@ -82,6 +82,13 @@ const generalSlice = createSlice({
 
       state.currentUser = { id, firstName, lastName, email, imageUrl, isApproved, isAdmin, phone, jobTitle, affiliation };
     },
+    updateCurrentUser: (state, action) => {
+      const { toUpdate } = action.payload
+
+      if (toUpdate.phone !== null) state.currentUser.phone = toUpdate.phone
+      if (toUpdate.jobTitle !== null) state.currentUser.jobTitle = toUpdate.jobTitle
+      if (toUpdate.affiliation !== null) state.currentUser.affiliation = toUpdate.affiliation
+    },
     clearCurrentUser: (state) => {
       state.currentUser = null;
     },
@@ -99,6 +106,7 @@ export const {
   toggleLoading,
   initializeAppData,
   assignCurrentUser,
+  updateCurrentUser,
   clearCurrentUser,
   addNewBoat
 } = generalSlice.actions;

@@ -51,8 +51,8 @@ class TopNavBar extends React.Component {
       }
 
       if (!user.is_approved) {
-        // put user on sign-up page to complete profile
-        history.push('/sign-up');
+        // put user on profile page to complete profile
+        history.push('/profile');
       }
     } catch (error) {
       alert(`Login error: ${error}`);

@@ -30,17 +30,17 @@ exports.updateUser = async (id, updateFields) => {
   const updateSql = []
   const sqlArgs = []
 
-  if (phone) {
+  if (phone !== null) {
     updateSql.push('phone = ?')
     sqlArgs.push(phone)
   }
 
-  if (jobTitle) {
+  if (jobTitle !== null) {
     updateSql.push('job_title = ?')
     sqlArgs.push(jobTitle)
   }
 
-  if (affiliation) {
+  if (affiliation !== null) {
     updateSql.push('affiliation = ?')
     sqlArgs.push(affiliation)
   }
