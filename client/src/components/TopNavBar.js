@@ -66,11 +66,11 @@ class TopNavBar extends React.Component {
   handleLogout() {
     const { clearCurrentUser, history } = this.props;
 
+    history.push('/');
+
     sessionStorage.removeItem('jwt');
 
     clearCurrentUser();
-
-    history.push('/');
   }
 
   render() {
