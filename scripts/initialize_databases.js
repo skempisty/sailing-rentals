@@ -109,6 +109,6 @@
   `);
 
   await db.query(`INSERT INTO ${db.name}.boats (created_by, name, model, image_url, description) VALUES
-    ('1', 'Cloud Nine', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh what a faithful old barnacle!')
+    (LAST_INSERT_ID(), 'Cloud Nine', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh what a faithful old barnacle!')
   `);
 })()
