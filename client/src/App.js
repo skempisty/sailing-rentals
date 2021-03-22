@@ -5,9 +5,10 @@ import { connect } from 'react-redux';
 import LoadingPageMessage from './components/LoadingPageMessage';
 import TopNavBar from './components/TopNavBar';
 import HomePage from './components/pages/HomePage/index';
-import SignUp from './components/pages/SignUp';
+import Profile from './components/pages/Profile';
 import ShowPost from './components/pages/ShowPost';
 import AdminPanel from './components/pages/AdminPanel';
+import Rentals from "./components/pages/Rentals";
 
 import getLoggedInUser from './api/getLoggedInUser';
 import getCarouselSlides from './api/getCarouselSlides';
@@ -63,10 +64,11 @@ class App extends React.Component {
           <Router>
             <TopNavBar />
 
-            <Route exact path='/' component={HomePage} />
-            <Route exact path='/sign-up' component={SignUp} />
+            <Route exact path='/profile' component={Profile} />
             <Route exact path='/posts/:id' component={ShowPost} />
             <Route exact path='/admin-panel' component={AdminPanel} />
+            <Route exact path='/rentals' component={Rentals} />
+            <Route exact path='/' component={HomePage} />
           </Router>
           :
           <LoadingPageMessage/>

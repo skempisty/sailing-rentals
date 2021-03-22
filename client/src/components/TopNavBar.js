@@ -106,11 +106,11 @@ class TopNavBar extends React.Component {
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => history.push('/sign-up')}>
+                <Dropdown.Item onClick={() => history.push('/profile')}>
                     Profile
                 </Dropdown.Item>
 
-                <Dropdown.Item onClick={() => history.push('/my-rentals')}>My Rentals</Dropdown.Item>
+                <Dropdown.Item onClick={() => history.push('/rentals')}>Rentals</Dropdown.Item>
 
                 {!!currentUser.isAdmin &&
                   <React.Fragment>

@@ -18,7 +18,6 @@ export default class ShowPost extends React.Component {
 
     try {
       this.post = await getPost(id);
-      console.log('this.post', this.post)
 
       this.setState({ loading: false });
     } catch (err) {

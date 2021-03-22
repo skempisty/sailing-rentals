@@ -33,15 +33,19 @@ const generalSlice = createSlice({
 
       if (user) {
         const {
+          id,
           first_name: firstName,
           last_name: lastName,
           email,
           image_url: imageUrl,
           is_approved: isApproved,
-          is_admin: isAdmin
+          is_admin: isAdmin,
+          phone,
+          job_title: jobTitle,
+          affiliation
         } = user;
 
-        state.currentUser = { firstName, lastName, email, imageUrl, isApproved, isAdmin };
+        state.currentUser = { id, firstName, lastName, email, imageUrl, isApproved, isAdmin, phone, jobTitle, affiliation };
       }
 
       if (carouselSlides && carouselSlides.length) { // otherwise leave default slide
@@ -64,15 +68,19 @@ const generalSlice = createSlice({
       const { user } = action.payload
 
       const {
+        id,
         first_name: firstName,
         last_name: lastName,
         email,
         image_url: imageUrl,
         is_approved: isApproved,
-        is_admin: isAdmin
+        is_admin: isAdmin,
+        phone,
+        job_title: jobTitle,
+        affiliation
       } = user;
 
-      state.currentUser = { firstName, lastName, email, imageUrl, isApproved, isAdmin };
+      state.currentUser = { id, firstName, lastName, email, imageUrl, isApproved, isAdmin, phone, jobTitle, affiliation };
     },
     clearCurrentUser: (state) => {
       state.currentUser = null;

@@ -10,6 +10,10 @@ import BoatsTab from './BoatsTab';
 import RentalsTab from './RentalsTab';
 
 const StyledWrapper = styled.div`
+  h1 {
+    color: white;
+  }
+  
   [role='tab'] {
     color: white;
     
@@ -32,6 +36,8 @@ export default class AdminPanel extends React.Component {
     return (
       <ContentWrapper>
         <StyledWrapper>
+          <h1>Admin Panel</h1>
+
           <Tabs
             activeKey={activeKey}
             onSelect={(tab) => this.setState({activeKey: tab})}
@@ -46,11 +52,11 @@ export default class AdminPanel extends React.Component {
               <UsersTab/>
             </Tab>
 
-            <Tab eventKey='carousel' title='Carousel'>
+            <Tab eventKey='carousel' title='Carousel' disabled>
               <CarouselTab/>
             </Tab>
 
-            <Tab eventKey='posts' title='Posts'>
+            <Tab eventKey='posts' title='Posts' disabled>
               <PostsTab/>
             </Tab>
 
@@ -58,7 +64,7 @@ export default class AdminPanel extends React.Component {
               <BoatsTab/>
             </Tab>
 
-            <Tab eventKey='rentals' title='Rentals'>
+            <Tab eventKey='rentals' title='Rentals' disabled>
               <RentalsTab/>
             </Tab>
           </Tabs>

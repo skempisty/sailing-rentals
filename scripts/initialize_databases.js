@@ -34,7 +34,7 @@
     'first_name VARCHAR(255),' +
     'last_name VARCHAR(255),' +
     'email VARCHAR(255),' +
-    'phone INT,' +
+    'phone BIGINT,' +
     'job_title VARCHAR(255),' +
     'affiliation VARCHAR(255)' +
     ');'

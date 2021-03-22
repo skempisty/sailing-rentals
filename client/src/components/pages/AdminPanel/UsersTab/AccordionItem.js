@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import moment from 'moment'
 
-import { Card, Accordion, Badge, Button } from 'react-bootstrap';
+import { Card, Accordion, Badge, Button, Container, Row, Col } from 'react-bootstrap';
 import { FaEnvelope, FaChevronDown } from 'react-icons/fa';
 import Switch from 'react-switch';
+
+import formatDateTime from '../../../../utils/formatDateTime';
+import buildFullName from '../../../../utils/buildUserFullName';
 
 /**
  * Represents the information and certain toggles for one user
@@ -16,18 +18,6 @@ export default class AccordionItem extends React.Component {
     this.state = {
       enabled: props.user.is_approved === 1
     }
-  }
-
-  get fullName() {
-    const { user } = this.props;
-
-    return [user.first_name, user.last_name].filter(Boolean).join(' ');
-  }
-
-  get joinedOn() {
-    const { created_at } = this.props.user;
-
-    return moment.utc(created_at).format('MM/DD/YY LT');
   }
 
   get isAdmin() {
@@ -55,58 +45,69 @@ export default class AccordionItem extends React.Component {
                 style={{ maxWidth: '2em', height: '2em', marginRight: '1em' }}
               />
 
-              <b>{this.fullName}</b>
+              <b>{buildFullName(user.first_name, user.last_name)}</b>
+            </div>
 
-              <FaEnvelope/>
-
-              {user.email}
-
+            <div>
               {this.isAdmin &&
                 <Badge
                   variant="danger"
-                  style={{ marginLeft: '0.5em' }}
+                  style={{ marginRight: '0.5em' }}
                 >
                   Admin
                 </Badge>
               }
-            </div>
 
-            <FaChevronDown style={{ width: '1.5em', height: '1.5em' }}/>
+              <FaEnvelope style={{ marginRight: '0.25em' }} />
+
+              {user.email}
+
+              <FaChevronDown style={{ marginLeft: '1em', width: '1.5em', height: '1.5em' }}/>
+            </div>
           </div>
         </Accordion.Toggle>
 
         <Accordion.Collapse eventKey={eventKey}>
-          <Card.Body
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              borderLeft: '0.5em solid #007bff'
-            }}
-          >
-            <div>
-              <b style={{ textDecoration: '3px underline' }}>Joined</b>
-              <div>{this.joinedOn}</div>
-            </div>
+          <Card.Body style={{ borderLeft: '0.5em solid #007bff' }}>
+            <Container>
+              <Row>
+                {/* Column 1 */}
+                <Col>
+                  <b style={{ textDecoration: '3px underline' }}>Joined</b>
+                  <div>{formatDateTime(user.created_at)}</div>
 
-            <div>
-              <b style={{ textDecoration: '3px underline' }}>Phone</b>
-              <div>{this.showValueOrMissingBadge(user.phone)}</div>
+                  <b style={{ textDecoration: '3px underline' }}>Phone</b>
+                  <div>{this.showValueOrMissingBadge(user.phone)}</div>
 
-              <b style={{ textDecoration: '3px underline' }}>Job Title</b>
-              <div>{this.showValueOrMissingBadge(user.job_title)}</div>
+                  <b style={{ textDecoration: '3px underline' }}>Job Title</b>
+                  <div>{this.showValueOrMissingBadge(user.job_title)}</div>
 
-              <b style={{ textDecoration: '3px underline' }}>Affiliation</b>
-              <div>{this.showValueOrMissingBadge(user.affiliation)}</div>
-            </div>
+                  <b style={{ textDecoration: '3px underline' }}>Affiliation</b>
+                  <div>{this.showValueOrMissingBadge(user.affiliation)}</div>
+                </Col>
 
-            <div>
-              <label style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ marginRight: '1em' }}>Enabled</span>
-                <Switch onChange={() => this.setState({ enabled: !enabled })} checked={enabled} />
-              </label>
+                {/* Column 2 */}
+                <Col>
+                  <label style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ marginRight: '1em' }}>Enabled</span>
+                    <Switch onChange={() => this.setState({ enabled: !enabled })} checked={enabled} />
+                  </label>
 
-              <Button variant="primary" style={{ marginTop: '1em' }}>Rentals</Button>
-            </div>
+                  <p>
+                    <Button variant="primary" style={{ marginTop: '1em' }}>See Rentals</Button>
+                  </p>
+
+                  <p>
+                    <Button variant="warning" style={{ marginTop: '1em' }}>See Payments</Button>
+                  </p>
+                </Col>
+
+                {/* Column 3 */}
+                <Col>
+
+                </Col>
+              </Row>
+            </Container>
           </Card.Body>
         </Accordion.Collapse>
       </Card>
