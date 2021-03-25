@@ -15,6 +15,7 @@ import getCarouselSlides from './api/getCarouselSlides';
 import getPosts from './api/getPosts';
 import getUsers from './api/getUsers';
 import getBoats from './api/getBoats';
+import getMyRentals from './api/getMyRentals';
 
 import { toggleLoading, initializeAppData } from './store/general';
 
@@ -29,16 +30,22 @@ class App extends React.Component {
 
     try {
       let users = [];
-      let boats = [];
+      // let payments = [];
+
+      let myRentals = [];
 
       const loggedInUser = existingJwt ? await getLoggedInUser() : null;
       const carouselSlides = await getCarouselSlides();
       const posts = await getPosts();
+      const boats = await getBoats();
 
-      // admin data
-      if (loggedInUser && loggedInUser.is_admin) {
-        users = await getUsers();
-        boats = await getBoats();
+      if (loggedInUser) {
+        myRentals = await getMyRentals();
+
+        if (loggedInUser.is_admin) {
+          users = await getUsers();
+          // payments = await getPayments();
+        }
       }
 
       initializeAppData({
@@ -46,7 +53,9 @@ class App extends React.Component {
         carouselSlides,
         posts,
         users,
-        boats
+        boats,
+        // payments
+        myRentals
       });
 
       toggleLoading({ newToggleState: false });

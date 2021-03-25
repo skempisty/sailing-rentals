@@ -55,12 +55,12 @@ router.post('/users/login', async (req, res) => {
 router.get('/users/logged_in', async (req, res) => {
   const { authorization: jwtToken } = req.headers
 
-  const { userId } = await decodeJwt(jwtToken);
+  const { userId } = await decodeJwt(jwtToken)
 
   if (userId) {
     const user = await api.users.getUserById(userId)
 
-    res.send(user);
+    res.send(user)
   } else {
     res.status(401).send('Error accessing logged in user')
   }
@@ -72,7 +72,7 @@ router.get('/users', async (req, res) => {
   const { isAdmin } = await decodeJwt(jwtToken)
 
   if (isAdmin) {
-    const users = await api.users.getUserList();
+    const users = await api.users.getUserList()
 
     res.send(users)
   } else {
@@ -84,7 +84,7 @@ router.put('/users/:id', async (req, res) => {
   const { id } = req.params
   const updateFields = req.body
 
-  const updatedUser = await api.users.updateUser(id, updateFields);
+  const updatedUser = await api.users.updateUser(id, updateFields)
 
   res.send(updatedUser)
 })
@@ -92,7 +92,7 @@ router.put('/users/:id', async (req, res) => {
 router.put('/users/:id/approve', async (req, res) => {
   const { id } = req.params
 
-  await api.users.approveUser(id);
+  await api.users.approveUser(id)
 
   return true
 })
@@ -143,11 +143,31 @@ router.post('/boats', async (req, res) => {
   const { authorization: jwtToken } = req.headers
   const { name } = req.body
 
-  const creatorId = decodeJwt(jwtToken).userId;
+  const { userId: creatorId } = await decodeJwt(jwtToken);
 
   const boats = await api.boats.createBoat(creatorId, name);
 
   res.send(boats)
+})
+
+/*******************************************************************************
+ * RENTALS
+ */
+
+router.get('/rentals', async (req, res) => {
+  const rentals = await api.rentals.getAllRentals();
+
+  res.send(rentals)
+})
+
+router.get('/rentals/my', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+
+  const { userId } = await decodeJwt(jwtToken)
+
+  const rentals = await api.rentals.getMyRentals(userId)
+
+  res.send(rentals)
 })
 
 module.exports = router;

@@ -20,7 +20,8 @@ const generalSlice = createSlice({
       description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).'
     }],
     users: [],
-    boats: []
+    boats: [],
+    myRentals: []
   },
   reducers: {
     toggleLoading: (state, action) => {
@@ -29,7 +30,15 @@ const generalSlice = createSlice({
       state.loading = newToggleState;
     },
     initializeAppData: (state, action) => {
-      const { user, carouselSlides, posts, users, boats } = action.payload
+      const {
+        user,
+        carouselSlides,
+        posts,
+        users,
+        boats,
+        myRentals,
+        rentals
+      } = action.payload
 
       if (user) {
         const {
@@ -62,6 +71,10 @@ const generalSlice = createSlice({
 
       if (boats && boats.length) {
         state.boats = boats;
+      }
+
+      if (myRentals && myRentals.length) {
+        state.myRentals = myRentals;
       }
     },
     assignCurrentUser: (state, action) => {

@@ -11,8 +11,9 @@ const pathFilter = function(req) {
   const excludedPaths = [
     '/api/health',
     '/api/users/login',
-    '/api/carousel_slides', // TODO: need to lock down POST endpoint
-    '/api/posts' // TODO: need to lock down POST endpoint
+    '/api/carousel_slides', // TODO: need to lock down all but GET endpoint
+    '/api/posts', // TODO: need to lock down all but GET endpoint
+    '/api/boats' // TODO: need to lock down all but GET endpoint
   ]
 
   return (

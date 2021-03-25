@@ -84,6 +84,8 @@
     'FOREIGN KEY (boat_id) REFERENCES boats(id),' +
     'FOREIGN KEY (rented_by) REFERENCES users(id),' +
     'crew_member_count INT,' +
+    'rental_start TIMESTAMP NOT NULL' +
+    'rental_end TIMESTAMP NOT NULL' +
     'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deleted_at TIMESTAMP' +
     ');'
