@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from "react-redux";
-import ContentWrapper from "../../ContentWrapper";
 
-import { Card, Table, Badge, Button, Container, Row, Col } from 'react-bootstrap';
+import { Card, Table, Button, Modal } from 'react-bootstrap';
+
+import ContentWrapper from "../../ContentWrapper";
 
 class Rentals extends React.Component {
   constructor(props) {
@@ -13,11 +14,51 @@ class Rentals extends React.Component {
     }
   }
 
+  hideAddRentalModal() {
+    this.setState({ showAddRentalModal: false });
+  }
+
+  async handleAddRentalClick() {
+    // const { addNewBoat } = this.props;
+    // const { name } = this.state;
+    //
+    // const newBoat = await createBoat(name);
+    //
+    // addNewBoat({
+    //   name: newBoat.name,
+    //   model: 'Cutter22',
+    //   description: 'what a magnificent vessel'
+    // })
+
+    this.hideAddRentalModal();
+  }
+
   render() {
     const { myRentals } = this.props;
+    const { showAddRentalModal } = this.state;
 
     return (
       <ContentWrapper>
+        <Modal show={showAddRentalModal} onHide={this.hideAddRentalModal.bind(this)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Rental</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            Hello
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.hideAddRentalModal.bind(this)}>
+              Cancel
+            </Button>
+
+            <Button variant="primary" onClick={this.handleAddRentalClick.bind(this)}>
+              Add Rental
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
         <h1 style={{ color: 'white' }}>Rentals</h1>
 
         <Button
