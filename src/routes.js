@@ -82,11 +82,19 @@ router.get('/users', async (req, res) => {
 
 router.put('/users/:id', async (req, res) => {
   const { id } = req.params
+  const { authorization: jwtToken } = req.headers
   const updateFields = req.body
 
-  const updatedUser = await api.users.updateUser(id, updateFields)
+  const { userId, isAdmin } = await decodeJwt(jwtToken)
 
-  res.send(updatedUser)
+  // only allow this action if the logged in user matches the id, or token belongs to an admin
+  if (isAdmin || id === String(userId)) {
+    const updatedUser = await api.users.updateUser(id, updateFields)
+
+    res.send(updatedUser)
+  } else {
+    res.status(401).send('You don\'t have permission to update this user')
+  }
 })
 
 router.put('/users/:id/approve', async (req, res) => {
