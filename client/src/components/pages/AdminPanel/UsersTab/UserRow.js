@@ -62,7 +62,7 @@ class UserRow extends React.Component {
 
             <b>{buildFullName(user.first_name, user.last_name)}</b>
 
-            {user.is_admin == 1 &&
+            {user.is_admin === 1 &&
               <Badge
                 variant='danger'
                 style={{ marginLeft: '0.5em' }}
