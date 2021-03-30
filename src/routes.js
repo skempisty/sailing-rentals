@@ -89,20 +89,12 @@ router.put('/users/:id', async (req, res) => {
 
   // only allow this action if the logged in user matches the id, or token belongs to an admin
   if (isAdmin || id === String(userId)) {
-    const updatedUser = await api.users.updateUser(id, updateFields)
+    const updatedUser = await api.users.updateUser(id, updateFields, isAdmin)
 
     res.send(updatedUser)
   } else {
     res.status(401).send('You don\'t have permission to update this user')
   }
-})
-
-router.put('/users/:id/approve', async (req, res) => {
-  const { id } = req.params
-
-  await api.users.approveUser(id)
-
-  return true
 })
 
 router.delete('/users/:id', async (req, res) => {

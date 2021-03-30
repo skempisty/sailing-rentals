@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import Switch from 'react-switch';
 import { FaInfoCircle } from 'react-icons/fa';
 import { Button, Col, Form, InputGroup, Modal } from 'react-bootstrap';
 
@@ -12,36 +13,48 @@ class UserInfoModal extends React.Component {
   constructor(props) {
     super(props);
 
-    const { phone, job_title: jobTitle, affiliation } = props.user;
+    const {
+      phone,
+      job_title: jobTitle,
+      affiliation,
+      is_approved: isApproved
+    } = props.user;
 
-    this.savedProfileFields = { phone, jobTitle, affiliation };
+    const incomingUserObj = {
+      phone,
+      jobTitle,
+      affiliation,
+      isApproved: isApproved === 1
+    }
 
-    this.state = { phone, jobTitle, affiliation };
+    this.savedProfileFields = incomingUserObj;
+    this.state = incomingUserObj;
   }
 
   get savedProfileFields() {
-    const { phone, jobTitle, affiliation } = this;
+    const { phone, jobTitle, affiliation, isApproved } = this;
 
-    return { phone, jobTitle, affiliation };
+    return { phone, jobTitle, affiliation, isApproved };
   }
 
-  set savedProfileFields({ phone, jobTitle, affiliation }) {
+  set savedProfileFields({ phone, jobTitle, affiliation, isApproved }) {
     this.phone = phone;
     this.jobTitle = jobTitle;
     this.affiliation = affiliation;
+    this.isApproved = isApproved;
   }
 
   get profileNotEdited() {
-    const { phone, jobTitle, affiliation } = this.state;
+    const { phone, jobTitle, affiliation, isApproved } = this.state;
 
-    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, jobTitle, affiliation });
+    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, jobTitle, affiliation, isApproved });
   }
 
   async handleSaveEditsClick() {
     const { user, onHide } = this.props;
-    const { phone, jobTitle, affiliation } = this.state;
+    const { phone, jobTitle, affiliation, isApproved } = this.state;
 
-    const updatedFields = { phone, jobTitle, affiliation };
+    const updatedFields = { phone, jobTitle, affiliation, isApproved };
 
     try {
       await updateUser(user.id, updatedFields);
@@ -56,7 +69,7 @@ class UserInfoModal extends React.Component {
 
   render() {
     const { user, show, onHide } = this.props;
-    const { phone, jobTitle, affiliation } = this.state;
+    const { phone, jobTitle, affiliation, isApproved } = this.state;
 
     return (
       <Modal show={show} onHide={onHide}>
@@ -130,7 +143,16 @@ class UserInfoModal extends React.Component {
         </Form>
         </Modal.Body>
 
-        <Modal.Footer>
+        <Modal.Footer style={{ justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Switch
+              checked={isApproved}
+              onChange={() => this.setState({ isApproved: !isApproved })}
+            />
+
+            <div style={{ marginLeft: '0.5em' }}>Approved</div>
+          </div>
+
           <Button
             disabled={this.profileNotEdited}
             style={{ width: '8.5em' }}
