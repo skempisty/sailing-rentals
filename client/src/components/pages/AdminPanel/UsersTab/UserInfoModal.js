@@ -9,6 +9,8 @@ import { Button, Col, Form, InputGroup, Modal } from 'react-bootstrap';
 import buildFullName from '../../../../utils/buildUserFullName';
 import updateUser from '../../../../api/updateUser';
 
+import { updateUserById } from '../../../../store/general';
+
 class UserInfoModal extends React.Component {
   constructor(props) {
     super(props);
@@ -51,14 +53,17 @@ class UserInfoModal extends React.Component {
   }
 
   async handleSaveEditsClick() {
-    const { user, onHide } = this.props;
+    const { user, onHide, updateUserById } = this.props;
     const { phone, jobTitle, affiliation, isApproved } = this.state;
 
     const updatedFields = { phone, jobTitle, affiliation, isApproved };
 
     try {
+      // update DB
       await updateUser(user.id, updatedFields);
-
+      // update Redux
+      updateUserById({ id: user.id, toUpdate: updatedFields });
+      // update last saved field local state
       this.savedProfileFields = updatedFields;
 
       onHide();
@@ -167,9 +172,13 @@ class UserInfoModal extends React.Component {
   }
 }
 
+const mapDispatchToProps = {
+  updateUserById
+};
+
 export default connect(
   null,
-  null
+  mapDispatchToProps
 )(UserInfoModal);
 
 UserInfoModal.propTypes = {

@@ -64,11 +64,15 @@ class UserRow extends React.Component {
 
             {user.is_admin === 1 &&
               <Badge
-                variant='danger'
+                variant='warning'
                 style={{ marginLeft: '0.5em' }}
               >
                 Admin
               </Badge>
+            }
+
+            {user.is_approved !== 1 &&
+              <span style={{ marginLeft: '0.5em' }}><RiSailboatFill color='red' /></span>
             }
           </td>
 

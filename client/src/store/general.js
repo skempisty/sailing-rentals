@@ -102,6 +102,16 @@ const generalSlice = createSlice({
       if (toUpdate.jobTitle !== null) state.currentUser.jobTitle = toUpdate.jobTitle
       if (toUpdate.affiliation !== null) state.currentUser.affiliation = toUpdate.affiliation
     },
+    updateUserById: (state, action) => {
+      const { id, toUpdate } = action.payload
+
+      const toChangeUserIndex = state.users.findIndex(user => user.id === id);
+
+      if (toUpdate.phone !== null) state.users[toChangeUserIndex].phone = toUpdate.phone
+      if (toUpdate.jobTitle !== null) state.users[toChangeUserIndex].jobTitle = toUpdate.jobTitle
+      if (toUpdate.affiliation !== null) state.users[toChangeUserIndex].affiliation = toUpdate.affiliation
+      if (toUpdate.isApproved !== null) state.users[toChangeUserIndex].is_approved = toUpdate.isApproved ? 1 : 0
+    },
     clearCurrentUser: (state) => {
       state.currentUser = null;
     },
@@ -120,6 +130,7 @@ export const {
   initializeAppData,
   assignCurrentUser,
   updateCurrentUser,
+  updateUserById,
   clearCurrentUser,
   addNewBoat
 } = generalSlice.actions;
