@@ -18,6 +18,10 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
 
+    const { phone, jobTitle, affiliation } = props.currentUser;
+
+    this.savedProfileFields = { phone, jobTitle, affiliation };
+
     this.state = this.initialState;
   }
 
@@ -40,6 +44,24 @@ class Profile extends React.Component {
     }
   }
 
+  get savedProfileFields() {
+    const { phone, jobTitle, affiliation } = this;
+
+    return { phone, jobTitle, affiliation };
+  }
+
+  set savedProfileFields({ phone, jobTitle, affiliation }) {
+    this.phone = phone;
+    this.jobTitle = jobTitle;
+    this.affiliation = affiliation;
+  }
+
+  get profileNotEdited() {
+    const { phone, jobTitle, affiliation } = this.state;
+
+    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, jobTitle, affiliation });
+  }
+
   get profileIncomplete() {
     const { currentUser } = this.props;
     const { phone, jobTitle, affiliation } = currentUser;
@@ -59,6 +81,8 @@ class Profile extends React.Component {
       await updateUser(currentUser.id, updatedFields);
 
       updateCurrentUser({ toUpdate: updatedFields });
+
+      this.savedProfileFields = updatedFields;
 
       this.setState({ showProfileUpdateSuccess: true });
     } catch (error) {
@@ -162,6 +186,7 @@ class Profile extends React.Component {
 
             <div style={{ display: 'flex' }}>
               <Button
+                disabled={this.profileNotEdited}
                 style={{ width: '8.5em' }}
                 onClick={this.handleSaveChangesClick.bind(this)}
               >

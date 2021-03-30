@@ -12,13 +12,29 @@ class UserInfoModal extends React.Component {
   constructor(props) {
     super(props);
 
-    const { user } = props;
+    const { phone, job_title: jobTitle, affiliation } = props.user;
 
-    this.state = {
-      phone: user.phone,
-      jobTitle: user.job_title,
-      affiliation: user.affiliation
-    }
+    this.savedProfileFields = { phone, jobTitle, affiliation };
+
+    this.state = { phone, jobTitle, affiliation };
+  }
+
+  get savedProfileFields() {
+    const { phone, jobTitle, affiliation } = this;
+
+    return { phone, jobTitle, affiliation };
+  }
+
+  set savedProfileFields({ phone, jobTitle, affiliation }) {
+    this.phone = phone;
+    this.jobTitle = jobTitle;
+    this.affiliation = affiliation;
+  }
+
+  get profileNotEdited() {
+    const { phone, jobTitle, affiliation } = this.state;
+
+    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, jobTitle, affiliation });
   }
 
   async handleSaveEditsClick() {
@@ -29,6 +45,8 @@ class UserInfoModal extends React.Component {
 
     try {
       await updateUser(user.id, updatedFields);
+
+      this.savedProfileFields = updatedFields;
 
       onHide();
     } catch (error) {
@@ -114,6 +132,7 @@ class UserInfoModal extends React.Component {
 
         <Modal.Footer>
           <Button
+            disabled={this.profileNotEdited}
             style={{ width: '8.5em' }}
             onClick={this.handleSaveEditsClick.bind(this)}
           >
