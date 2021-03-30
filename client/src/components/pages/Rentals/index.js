@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from "react-redux";
 
-import { Card, Table, Button, Modal } from 'react-bootstrap';
+import { Card, Table, Button } from 'react-bootstrap';
 
 import ContentWrapper from "../../ContentWrapper";
+import AddRentalModal from "./AddRentalModal";
 
 class Rentals extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class Rentals extends React.Component {
     this.setState({ showAddRentalModal: false });
   }
 
-  async handleAddRentalClick() {
+  async handleAddRental() {
     // const { addNewBoat } = this.props;
     // const { name } = this.state;
     //
@@ -39,25 +40,11 @@ class Rentals extends React.Component {
 
     return (
       <ContentWrapper>
-        <Modal show={showAddRentalModal} onHide={this.hideAddRentalModal.bind(this)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add Rental</Modal.Title>
-          </Modal.Header>
-
-          <Modal.Body>
-            Hello
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.hideAddRentalModal.bind(this)}>
-              Cancel
-            </Button>
-
-            <Button variant="primary" onClick={this.handleAddRentalClick.bind(this)}>
-              Add Rental
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <AddRentalModal
+          show={showAddRentalModal}
+          onHide={this.hideAddRentalModal.bind(this)}
+          onRentalAdd={this.handleAddRental.bind(this)}
+        />
 
         <h1 style={{ color: 'white' }}>Rentals</h1>
 
