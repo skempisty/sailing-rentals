@@ -152,7 +152,7 @@ class Profile extends React.Component {
 
                 <InputGroup>
                   <Form.Control
-                    value={phone}
+                    value={phone || ''}
                     onChange={(e) => this.setState({ phone: e.target.value })}
                   />
                 </InputGroup>
@@ -164,7 +164,7 @@ class Profile extends React.Component {
 
                 <InputGroup>
                   <Form.Control
-                    value={jobTitle}
+                    value={jobTitle || ''}
                     onChange={(e) => this.setState({ jobTitle: e.target.value })}
                   />
                 </InputGroup>
@@ -177,7 +177,7 @@ class Profile extends React.Component {
 
                 <InputGroup>
                   <Form.Control
-                    value={affiliation}
+                    value={affiliation || ''}
                     onChange={(e) => this.setState({ affiliation: e.target.value })}
                   />
                 </InputGroup>
