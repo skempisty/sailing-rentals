@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { FaInfoCircle } from 'react-icons/fa';
-import { Col, Form, InputGroup, Modal } from 'react-bootstrap';
+import { Button, Col, Form, InputGroup, Modal } from 'react-bootstrap';
 
 import buildFullName from '../../../../utils/buildUserFullName';
+import updateUser from '../../../../api/updateUser';
 
 class UserInfoModal extends React.Component {
   constructor(props) {
@@ -17,6 +18,21 @@ class UserInfoModal extends React.Component {
       phone: user.phone,
       jobTitle: user.job_title,
       affiliation: user.affiliation
+    }
+  }
+
+  async handleSaveEditsClick() {
+    const { user, onHide } = this.props;
+    const { phone, jobTitle, affiliation } = this.state;
+
+    const updatedFields = { phone, jobTitle, affiliation };
+
+    try {
+      await updateUser(user.id, updatedFields);
+
+      onHide();
+    } catch (error) {
+      alert('Error saving user edits: ' + error);
     }
   }
 
@@ -95,6 +111,16 @@ class UserInfoModal extends React.Component {
             </Form.Row>
         </Form>
         </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            style={{ width: '8.5em' }}
+            onClick={this.handleSaveEditsClick.bind(this)}
+          >
+            <span>Save Edits</span>
+          </Button>
+
+        </Modal.Footer>
       </Modal>
     )
   }
