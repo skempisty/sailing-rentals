@@ -9,27 +9,27 @@ import UserInfoModal from './UserInfoModal';
 import buildFullName from '../../../../utils/buildUserFullName';
 
 const StyledDropDownToggle = styled.div`
-      button {
-        display: flex;
-        align-items: center;
-        height: 2em;
-        
-        &:after {
-          display: none;
-        }
-      }
-    `;
+  button {
+    display: flex;
+    align-items: center;
+    height: 2em;
+    
+    &:after {
+      display: none;
+    }
+  }
+`;
 
 const StyledDropDownItem = styled.div`
-      a.dropdown-item {
-        display: flex;
-        align-items: center;
-        
-        span {
-          margin-left: 0.5em;
-        }
-      }
-    `;
+  a.dropdown-item {
+    display: flex;
+    align-items: center;
+    
+    span {
+      margin-left: 0.5em;
+    }
+  }
+`;
 
 class UserRow extends React.Component {
   constructor(props) {
