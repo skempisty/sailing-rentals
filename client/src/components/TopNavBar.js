@@ -10,6 +10,8 @@ import loginOrCreateUser from '../api/loginOrCreateUser';
 import getUsers from '../api/getUsers';
 import getBoats from '../api/getBoats';
 
+import logo from '../images/logo.png'
+
 import {
   initializeAppData,
   assignCurrentUser,
@@ -78,7 +80,19 @@ class TopNavBar extends React.Component {
 
     return (
       <Navbar bg='dark' variant='dark'>
-        <Navbar.Brand href='#home'>NPSFYC</Navbar.Brand>
+        <Navbar.Brand href='#home' style={{ display: 'flex', alignItems: 'center' }}>
+          <img src={logo} style={{ height: '2.5em' }} alt=""/>
+
+          <span
+            style={{
+              marginLeft: '0.5em',
+              color: '#fec114',
+              fontFamily: 'arial'
+            }}
+          >
+            NPSF YACHT CLUB
+          </span>
+        </Navbar.Brand>
         <Nav className='mr-auto'>
           <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
 
