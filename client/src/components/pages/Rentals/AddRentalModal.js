@@ -1,15 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
+import { Calendar, momentLocalizer } from 'react-big-calendar'
 
 import { Button, Form, Modal, Dropdown } from 'react-bootstrap';
+
+const localizer = momentLocalizer(moment)
 
 class AddRentalModal extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedBoatId: ''
+      selectedBoatId: '',
+      view: 'month',
+      date: new Date()
     }
   }
 
@@ -25,12 +31,46 @@ class AddRentalModal extends React.Component {
     return '';
   }
 
+  handleSelectSlot(e) {
+    console.log('select slot', e)
+
+    const clickMoment = moment(e.slots[0]);
+
+    const isSingleDateClick = e.slots.length === 1 && clickMoment.hour() === 0
+
+    if (isSingleDateClick) {
+      this.setState({
+        view: 'day',
+        date: new Date(clickMoment.year(), clickMoment.month(), clickMoment.day())
+      })
+    }
+    // else nothing for now
+  }
+
+  handleOnNavigate(e) {
+    console.log('nav', e)
+  }
+
+  get minTime() {
+    const minTime = new Date();
+    minTime.setHours(8,30,0);
+
+    return minTime;
+  }
+
+  get maxTime() {
+    const maxTime = new Date();
+    maxTime.setHours(19,30,0);
+
+    return maxTime;
+  }
+
   render() {
     const { show, onHide, onRentalAdd, boats } = this.props;
-    const { selectedBoatId } = this.state;
+    const { selectedBoatId, view, date } = this.state;
 
     return (
-      <Modal show={show} onHide={onHide}>
+      <Modal show={show} onHide={onHide} size='lg'>
         <Modal.Header closeButton>
           <Modal.Title>Add Rental</Modal.Title>
         </Modal.Header>
@@ -60,16 +100,20 @@ class AddRentalModal extends React.Component {
             <Form.Label><b>Crew Members</b></Form.Label>
             <Form.Control value='5' readOnly/>
 
-            {/* Date */}
-            <Form.Label><b>Date</b></Form.Label>
-            <p>
-              <input type="date"/>
-            </p>
-
-
-            {/* Time Slot */}
-            <Form.Label><b>Time Slot</b></Form.Label>
-            <Form.Control value='noon' readOnly/>
+            <Calendar
+              localizer={localizer}
+              views={['month', 'day']}
+              view={view}
+              onView={(view) => this.setState({ view })} // fires when one of the view buttons is pressed
+              date={date}
+              onNavigate={(date) => this.setState({ date })}
+              selectable
+              events={[]} // TODO: add existing rental times here
+              style={{ height: "30em", marginTop: '1em' }}
+              onSelectSlot={this.handleSelectSlot.bind(this)}
+              min={this.minTime} // set earliest time visible on calendar
+              max={this.maxTime} // set latest time visible on calendar
+            />
           </Form>
         </Modal.Body>
 
