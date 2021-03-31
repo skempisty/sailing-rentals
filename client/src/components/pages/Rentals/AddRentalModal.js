@@ -43,7 +43,7 @@ class AddRentalModal extends React.Component {
     if (isSingleDateClick) {
       this.setState({
         view: 'day',
-        date: new Date(clickMoment.year(), clickMoment.month(), clickMoment.day())
+        date: new Date(clickMoment.year(), clickMoment.month(), clickMoment.date())
       })
     } else if (isDayRangeSelect) {
       const newEvent = {
