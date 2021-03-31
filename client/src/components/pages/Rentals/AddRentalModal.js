@@ -15,7 +15,8 @@ class AddRentalModal extends React.Component {
     this.state = {
       selectedBoatId: '',
       view: 'month',
-      date: new Date()
+      date: new Date(),
+      newRentalEvent: {}
     }
   }
 
@@ -32,23 +33,27 @@ class AddRentalModal extends React.Component {
   }
 
   handleSelectSlot(e) {
-    console.log('select slot', e)
+    const { start, end, slots } = e;
 
-    const clickMoment = moment(e.slots[0]);
+    const clickMoment = moment(slots[0]);
 
-    const isSingleDateClick = e.slots.length === 1 && clickMoment.hour() === 0
+    const isSingleDateClick = slots.length === 1 && clickMoment.hour() === 0
+    const isDayRangeSelect = moment(start).hour() !== 0
 
     if (isSingleDateClick) {
       this.setState({
         view: 'day',
         date: new Date(clickMoment.year(), clickMoment.month(), clickMoment.day())
       })
-    }
-    // else nothing for now
-  }
+    } else if (isDayRangeSelect) {
+      const newEvent = {
+        title: 'New Rental', // TODO: make this something more specific
+        start,
+        end
+      }
 
-  handleOnNavigate(e) {
-    console.log('nav', e)
+      this.setState({ newRentalEvent: newEvent })
+    }
   }
 
   get minTime() {
@@ -63,6 +68,16 @@ class AddRentalModal extends React.Component {
     maxTime.setHours(19,30,0);
 
     return maxTime;
+  }
+
+  get events() {
+    const { existingEvents } = this.props;
+    const { newRentalEvent } = this.state;
+
+    return [
+      newRentalEvent,
+      ...existingEvents
+    ];
   }
 
   render() {
@@ -108,7 +123,7 @@ class AddRentalModal extends React.Component {
               date={date}
               onNavigate={(date) => this.setState({ date })}
               selectable
-              events={[]} // TODO: add existing rental times here
+              events={this.events}
               style={{ height: "30em", marginTop: '1em' }}
               onSelectSlot={this.handleSelectSlot.bind(this)}
               min={this.minTime} // set earliest time visible on calendar
@@ -146,4 +161,8 @@ AddRentalModal.propTypes = {
   show: PropTypes.bool,
   onHide: PropTypes.func,
   onRentalAdd: PropTypes.func
+}
+
+AddRentalModal.defaultProps = {
+  existingEvents: []
 }
