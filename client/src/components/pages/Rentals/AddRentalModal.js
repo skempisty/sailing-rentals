@@ -20,7 +20,11 @@ class AddRentalModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
+    this.state = this.initialState;
+  }
+
+  get initialState() {
+    return {
       selectedBoatId: '',
       crewCount: 0,
       view: 'month',
@@ -77,9 +81,9 @@ class AddRentalModal extends React.Component {
       crewCount
     });
 
-    console.log('formData', newRental)
+    onRentalAdd(newRental);
 
-    onRentalAdd(newRental)
+    this.resetAndHide();
   }
 
   get minTime() {
@@ -114,6 +118,14 @@ class AddRentalModal extends React.Component {
 
     return hours === 3;
   }
+
+  resetAndHide() {
+    const { onHide } = this.props;
+
+    this.setState(this.initialState);
+    onHide();
+  }
+
 
   get events() {
     const { existingEvents } = this.props;
@@ -182,11 +194,11 @@ class AddRentalModal extends React.Component {
   }
 
   render() {
-    const { show, onHide, boats } = this.props;
+    const { show, boats } = this.props;
     const { selectedBoatId, crewCount, view, date } = this.state;
 
     return (
-      <Modal show={show} onHide={onHide} size='lg'>
+      <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
         <Modal.Header closeButton>
           <Modal.Title>Add Rental</Modal.Title>
         </Modal.Header>
@@ -249,7 +261,7 @@ class AddRentalModal extends React.Component {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant='secondary' onClick={onHide}>
+          <Button variant='secondary' onClick={this.resetAndHide.bind(this)}>
             Cancel
           </Button>
 
