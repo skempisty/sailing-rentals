@@ -1,10 +1,14 @@
 import React from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 import { Card, Table, Button } from 'react-bootstrap';
 
-import ContentWrapper from "../../ContentWrapper";
-import AddRentalModal from "./AddRentalModal";
+import ContentWrapper from '../../ContentWrapper';
+import AddRentalModal from './AddRentalModal';
+
+import createRental from '../../../api/createRental';
+
+import { addNewRental } from "../../../store/general";
 
 class Rentals extends React.Component {
   constructor(props) {
@@ -19,19 +23,24 @@ class Rentals extends React.Component {
     this.setState({ showAddRentalModal: false });
   }
 
-  async handleAddRental() {
-    // const { addNewBoat } = this.props;
-    // const { name } = this.state;
-    //
-    // const newBoat = await createBoat(name);
-    //
-    // addNewBoat({
-    //   name: newBoat.name,
-    //   model: 'Cutter22',
-    //   description: 'what a magnificent vessel'
-    // })
+  /**
+   * Takes a rental object from a submitted add rental modal and calls the
+   * createRental api function, updates Redux
+   * @param {Rental} rental object from addRentalModal
+   */
+  async handleAddRental(rental) {
+    const { addNewRental } = this.props;
 
-    this.hideAddRentalModal();
+    try {
+      // TODO: combine api and redux functions into a async thunk
+      const newRental = await createRental(rental);
+
+      addNewRental({ newRental })
+
+      this.hideAddRentalModal();
+    } catch (error) {
+      alert('Error adding your rental')
+    }
   }
 
   render() {
@@ -99,7 +108,11 @@ const mapStateToProps = (state) => {
   return { myRentals };
 };
 
+const mapDispatchToProps = {
+  addNewRental
+};
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Rentals);

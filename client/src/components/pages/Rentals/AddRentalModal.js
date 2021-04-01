@@ -4,8 +4,11 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import styled from 'styled-components'
 
+import { FaExclamationTriangle } from 'react-icons/fa';
+
 import { Calendar, momentLocalizer } from 'react-big-calendar'
-import { Button, Form, Modal, Dropdown } from 'react-bootstrap';
+import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap';
+import Rental from "../../../models/Rental";
 
 const localizer = momentLocalizer(moment)
 
@@ -19,9 +22,10 @@ class AddRentalModal extends React.Component {
 
     this.state = {
       selectedBoatId: '',
+      crewCount: 0,
       view: 'month',
       date: new Date(),
-      newRentalEvent: {}
+      newRentalPeriod: {}
     }
   }
 
@@ -46,19 +50,36 @@ class AddRentalModal extends React.Component {
     const isDayRangeSelect = moment(start).hour() !== 0
 
     if (isSingleDateClick) {
+      // drill down to clicked day on calendar
       this.setState({
         view: 'day',
         date: new Date(clickMoment.year(), clickMoment.month(), clickMoment.date())
       })
     } else if (isDayRangeSelect) {
-      const newEvent = {
-        title: 'New Rental', // TODO: make this something more specific
+      const newRentalPeriod = {
         start,
         end
       }
 
-      this.setState({ newRentalEvent: newEvent })
+      this.setState({ newRentalPeriod })
     }
+  }
+
+  handleProceedClick() {
+    const { currentUser, onRentalAdd } = this.props;
+    const { newRentalPeriod, crewCount, selectedBoatId } = this.state;
+
+    const newRental = new Rental({
+      start: newRentalPeriod.start,
+      end: newRentalPeriod.end,
+      rentedBy: currentUser.id,
+      boatId: selectedBoatId,
+      crewCount
+    });
+
+    console.log('formData', newRental)
+
+    onRentalAdd(newRental)
   }
 
   get minTime() {
@@ -96,12 +117,28 @@ class AddRentalModal extends React.Component {
 
   get events() {
     const { existingEvents } = this.props;
-    const { newRentalEvent } = this.state;
+    const { newRentalPeriod } = this.state;
 
     return [
-      newRentalEvent,
+      newRentalPeriod,
       ...existingEvents
     ];
+  }
+
+  get validRental() {
+    const MINIMUM_CREW_COUNT = 1
+
+    const {
+      selectedBoatId,
+      newRentalPeriod,
+      crewCount
+    } = this.state;
+
+    return (
+      this.selectedThreeHourSlot(newRentalPeriod) &&
+      !!selectedBoatId &&
+      crewCount >= MINIMUM_CREW_COUNT
+    )
   }
 
   eventStyleGetter(event) {
@@ -117,15 +154,36 @@ class AddRentalModal extends React.Component {
   titleAccessor(event) {
     const { selectedBoatId } = this.state;
 
-    return this.selectedThreeHourSlot(event) ?
-      <b>Sailing on the {this.getBoatNameById(selectedBoatId)}</b>
-      :
-      <b>Please select a 3 hour time slot</b>;
+    const boatName = this.getBoatNameById(selectedBoatId);
+
+    if (!this.selectedThreeHourSlot(event)) {
+      return <div
+        style={{
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        <FaExclamationTriangle/>
+        <b style={{ marginLeft: '0.5em' }}>Please select a 3 hour time slot</b>
+      </div>
+    } else if (!boatName) {
+      return <div
+        style={{
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        <FaExclamationTriangle/>
+        <b style={{ marginLeft: '0.5em' }}>Select a boat</b>
+      </div>
+    } else {
+      return <b>Sailing on the {boatName}</b>
+    }
   }
 
   render() {
-    const { show, onHide, onRentalAdd, boats } = this.props;
-    const { selectedBoatId, view, date } = this.state;
+    const { show, onHide, boats } = this.props;
+    const { selectedBoatId, crewCount, view, date } = this.state;
 
     return (
       <Modal show={show} onHide={onHide} size='lg'>
@@ -135,49 +193,59 @@ class AddRentalModal extends React.Component {
 
         <Modal.Body>
           <Form>
-            {/* Boat Select */}
-            <Form.Label><b>Boat</b></Form.Label>
-            <Dropdown alignRight>
-              <Dropdown.Toggle variant='dark' id='dropdown-basic'>
-                {this.getBoatNameById(selectedBoatId) || 'Select a boat'}
-              </Dropdown.Toggle>
+            <Form.Row>
+              <Form.Group as={Col}>
+                {/* Boat Select */}
+                <Form.Label><b>Boat</b></Form.Label>
+                <Dropdown>
+                  <Dropdown.Toggle variant='dark' id='dropdown-basic'>
+                    {this.getBoatNameById(selectedBoatId) || 'Select a boat'}
+                  </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                {boats.map((boat, index) =>
-                  <Dropdown.Item
-                    key={`boat-select-${boat.id}-${index}`}
-                    onSelect={() => this.setState({ selectedBoatId: boat.id })}
-                  >
-                    {boat.name}
-                  </Dropdown.Item>
-                )}
-              </Dropdown.Menu>
-            </Dropdown>
+                  <Dropdown.Menu>
+                    {boats.map((boat, index) =>
+                      <Dropdown.Item
+                        key={`boat-select-${boat.id}-${index}`}
+                        onSelect={() => this.setState({ selectedBoatId: boat.id })}
+                      >
+                        {boat.name}
+                      </Dropdown.Item>
+                    )}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Form.Group>
 
-            {/* Crew Members Select */}
-            <Form.Label><b>Crew Members</b></Form.Label>
-            <Form.Control value='5' readOnly/>
-
-            <StyledCalendar>
-              <Calendar
-                localizer={localizer}
-                style={{ height: '30em', marginTop: '1em' }}
-                views={['month', 'day']}
-                timeslots={1}
-                selectable
-                view={view}
-                date={date}
-                events={this.events}
-                min={this.minTime} // set earliest time visible on calendar
-                max={this.maxTime} // set latest time visible on calendar
-                eventPropGetter={(e) => this.eventStyleGetter(e)}
-                titleAccessor={(e) => this.titleAccessor(e)}
-                onView={(view) => this.setState({ view })} // fires when one of the view buttons is pressed
-                onNavigate={(date) => this.setState({ date })}
-                onSelectSlot={this.handleSelectSlot.bind(this)}
-              />
-            </StyledCalendar>
+              <Form.Group as={Col}>
+                {/* Crew Members Select */}
+                <Form.Label><b>Crew Members</b></Form.Label>
+                <Form.Control
+                  type='number'
+                  value={crewCount}
+                  onChange={(e) => this.setState({ crewCount: e.target.value })}
+                />
+              </Form.Group>
+            </Form.Row>
           </Form>
+
+          <StyledCalendar>
+            <Calendar
+              localizer={localizer}
+              style={{ height: '30em', marginTop: '1em' }}
+              views={['month', 'day']}
+              timeslots={1}
+              selectable
+              view={view}
+              date={date}
+              events={this.events}
+              min={this.minTime} // set earliest time visible on calendar
+              max={this.maxTime} // set latest time visible on calendar
+              eventPropGetter={(e) => this.eventStyleGetter(e)}
+              titleAccessor={(e) => this.titleAccessor(e)}
+              onView={(view) => this.setState({ view })} // fires when one of the view buttons is pressed
+              onNavigate={(date) => this.setState({ date })}
+              onSelectSlot={this.handleSelectSlot.bind(this)}
+            />
+          </StyledCalendar>
         </Modal.Body>
 
         <Modal.Footer>
@@ -185,7 +253,11 @@ class AddRentalModal extends React.Component {
             Cancel
           </Button>
 
-          <Button variant='primary' onClick={onRentalAdd}>
+          <Button
+            variant='primary'
+            disabled={!this.validRental}
+            onClick={this.handleProceedClick.bind(this)}
+          >
             Create Rental
           </Button>
         </Modal.Footer>
@@ -195,9 +267,9 @@ class AddRentalModal extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { boats } = state.general;
+  const { currentUser, boats } = state.general;
 
-  return { boats };
+  return { currentUser, boats };
 };
 
 export default connect(

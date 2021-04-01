@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import Boat from '../models/Boat';
+import Rental from '../models/Rental';
 
 const generalSlice = createSlice({
   name: 'general',
@@ -21,7 +22,8 @@ const generalSlice = createSlice({
     }],
     users: [],
     boats: [],
-    myRentals: []
+    myRentals: [],
+    allRentals: []
   },
   reducers: {
     toggleLoading: (state, action) => {
@@ -121,6 +123,11 @@ const generalSlice = createSlice({
       state.boats.push(new Boat({
         name
       }))
+    },
+    addNewRental: (state, action) => {
+      const { newRental } = action.payload
+
+      state.allRentals.push(new Rental(newRental))
     }
   }
 });
@@ -132,7 +139,8 @@ export const {
   updateCurrentUser,
   updateUserById,
   clearCurrentUser,
-  addNewBoat
+  addNewBoat,
+  addNewRental
 } = generalSlice.actions;
 
 export default generalSlice.reducer;
