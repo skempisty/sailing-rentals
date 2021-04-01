@@ -9,6 +9,7 @@ import AddRentalModal from './AddRentalModal';
 import createRental from '../../../api/createRental';
 
 import { addNewRental } from "../../../store/general";
+import RentalRow from "./RentalRow";
 
 class Rentals extends React.Component {
   constructor(props) {
@@ -65,32 +66,26 @@ class Rentals extends React.Component {
         </Button>
 
         <Card>
-          {myRentals ?
-            <Table striped bordered hover>
+          {myRentals.length > 0 ?
+            <Table>
               <thead>
               <tr>
+                <th>Start</th>
+                <th>End</th>
                 <th>Boat</th>
-                <th>Rental Period</th>
-                <th>Paid</th>
+                <th>Crew Count</th>
                 <th>Rented At</th>
-
+                <th/>
               </tr>
               </thead>
 
               <tbody>
-              <tr>
-                <td>Cloud Nine</td>
-                <td>Mark</td>
-                <td>3.50</td>
-                <td>noonthirty</td>
-              </tr>
-
-              <tr>
-                <td>Cloud Nine</td>
-                <td>Jacob</td>
-                <td>3.50</td>
-                <td>noon</td>
-              </tr>
+                {myRentals.map((rental, index) =>
+                 <RentalRow
+                   key={`rental-row-${rental.id}-${index}`}
+                   rental={rental}
+                 />
+                )}
               </tbody>
             </Table>
             :

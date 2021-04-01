@@ -18,6 +18,7 @@ import getBoats from './api/getBoats';
 import getMyRentals from './api/getMyRentals';
 
 import { toggleLoading, initializeAppData } from './store/general';
+import Rental from "./models/Rental";
 
 /**
  * Root App component. Initialize app data here and add to Redux.
@@ -55,7 +56,16 @@ class App extends React.Component {
         users,
         boats,
         // payments
-        myRentals
+        myRentals: myRentals.map(rental => {
+          return new Rental({
+            start: rental.start,
+            end: rental.end,
+            rentedBy: rental.rented_by,
+            boatId: rental.boat_id,
+            crewCount: rental.crew_count,
+            createdAt: rental.created_at
+          })
+        })
       });
 
       toggleLoading({ newToggleState: false });
