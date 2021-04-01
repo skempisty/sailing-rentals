@@ -6,6 +6,7 @@ import { withRouter } from 'react-router';
 import LoginBtn from './LoginBtn';
 import LogoutBtn from './LogoutBtn';
 
+import setLoginJwt from '../utils/setLoginJwt';
 import loginOrCreateUser from '../api/loginOrCreateUser';
 import getUsers from '../api/getUsers';
 import getBoats from '../api/getBoats';
@@ -34,7 +35,7 @@ class TopNavBar extends React.Component {
     try {
       const { user, jwt } = await loginOrCreateUser(tokenId);
 
-      sessionStorage.setItem('jwt', jwt);
+      setLoginJwt(jwt);
 
       assignCurrentUser({ user });
 
@@ -81,7 +82,7 @@ class TopNavBar extends React.Component {
     return (
       <Navbar bg='dark' variant='dark'>
         <Navbar.Brand href='#home' style={{ display: 'flex', alignItems: 'center' }}>
-          <img src={logo} style={{ height: '2.5em' }} alt=""/>
+          <img src={logo} style={{ height: '2.5em' }} alt=''/>
 
           <span
             style={{

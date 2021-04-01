@@ -1,8 +1,8 @@
 const express = require ('express')
-const jwt = require('jsonwebtoken')
 
 const api = require('./apiDispatcher')
 const decodeJwt = require('./utils/decodeJwt')
+const getNewLoginJwt = require('./utils/getNewLoginJwt')
 const googleTokenIdToUser = require('./utils/googleTokenIdToUser')
 
 const router = express.Router()
@@ -31,16 +31,13 @@ router.post('/users/login', async (req, res) => {
   const googleUser = await googleTokenIdToUser(googleTokenId)
 
   if (googleUser) { // Check if google login is authenticated
-    let user = await api.users.getUserByGoogleId(googleUser.sub); // .sub is users google id
+    let user = await api.users.getUserByGoogleId(googleUser.sub) // .sub is users google id
 
     if (!user) {
       user = await api.users.createUser(googleUser)
     }
 
-    const freshJwt = jwt.sign({
-      userId: user.id,
-      isAdmin: user.is_admin
-    }, process.env.JWT_SECRET)
+    const freshJwt = getNewLoginJwt(user)
 
     // return the user and a jwt
     res.send({ user, jwt: freshJwt });
@@ -60,7 +57,13 @@ router.get('/users/logged_in', async (req, res) => {
   if (userId) {
     const user = await api.users.getUserById(userId)
 
-    res.send(user)
+    /*
+     * JWT decoded earlier - can assume this is the rightful user.
+     * Issue a new token here in case user details have changed
+     */
+    const updatedJwt = getNewLoginJwt(user)
+
+    res.send({ user, updatedJwt })
   } else {
     res.status(401).send('Error accessing logged in user')
   }

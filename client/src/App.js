@@ -10,15 +10,16 @@ import ShowPost from './components/pages/ShowPost';
 import AdminPanel from './components/pages/AdminPanel';
 import Rentals from "./components/pages/Rentals";
 
+import setLoginJwt from './utils/setLoginJwt';
 import getLoggedInUser from './api/getLoggedInUser';
 import getCarouselSlides from './api/getCarouselSlides';
 import getPosts from './api/getPosts';
 import getUsers from './api/getUsers';
 import getBoats from './api/getBoats';
 import getMyRentals from './api/getMyRentals';
+import Rental from './models/Rental';
 
 import { toggleLoading, initializeAppData } from './store/general';
-import Rental from "./models/Rental";
 
 /**
  * Root App component. Initialize app data here and add to Redux.
@@ -30,32 +31,37 @@ class App extends React.Component {
     const existingJwt = sessionStorage.getItem('jwt');
 
     try {
-      let users = [];
-      // let payments = [];
+      let user = null
+      let users = []
 
-      let myRentals = [];
+      let myRentals = []
 
-      const loggedInUser = existingJwt ? await getLoggedInUser() : null;
-      const carouselSlides = await getCarouselSlides();
-      const posts = await getPosts();
-      const boats = await getBoats();
+      if (existingJwt) {
+        const { user: loggedInUser, updatedJwt } = await getLoggedInUser()
 
-      if (loggedInUser) {
-        myRentals = await getMyRentals();
+        user = loggedInUser
+        setLoginJwt(updatedJwt)
 
+        // Personal data
+        myRentals = await getMyRentals()
+
+        // Admin data
         if (loggedInUser.is_admin) {
-          users = await getUsers();
-          // payments = await getPayments();
+          users = await getUsers()
         }
       }
 
+      // Always load data
+      const posts = await getPosts();
+      const boats = await getBoats();
+      const carouselSlides = await getCarouselSlides();
+
       initializeAppData({
-        user: loggedInUser,
+        user,
         carouselSlides,
         posts,
         users,
         boats,
-        // payments
         myRentals: myRentals.map(rental => {
           return new Rental({
             start: rental.start,
@@ -68,6 +74,7 @@ class App extends React.Component {
         })
       });
 
+      // TODO: maybe initializing the app data should also toggle loading off afterwards
       toggleLoading({ newToggleState: false });
     } catch (error) {
       alert('Error initializing app: ' + error);
