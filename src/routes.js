@@ -170,4 +170,15 @@ router.get('/rentals/my', async (req, res) => {
   res.send(rentals)
 })
 
+router.post('/rentals', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+  const { event } = req.body
+
+  const { userId: creatorId } = await decodeJwt(jwtToken);
+
+  const boats = await api.rentals.createRental(creatorId, event);
+
+  res.send(boats)
+})
+
 module.exports = router;

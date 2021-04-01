@@ -83,9 +83,9 @@
     'rented_by INT,' +
     'FOREIGN KEY (boat_id) REFERENCES boats(id),' +
     'FOREIGN KEY (rented_by) REFERENCES users(id),' +
-    'crew_member_count INT,' +
-    'rental_start TIMESTAMP NOT NULL' +
-    'rental_end TIMESTAMP NOT NULL' +
+    'crew_count INT,' +
+    'start TIMESTAMP NOT NULL,' +
+    'end TIMESTAMP NOT NULL,' +
     'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deleted_at TIMESTAMP' +
     ');'
@@ -111,6 +111,6 @@
   `);
 
   await db.query(`INSERT INTO ${db.name}.boats (created_by, name, model, image_url, description) VALUES
-    (LAST_INSERT_ID(), 'Cloud Nine', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh what a faithful old barnacle!')
+    (LAST_INSERT_ID(), 'Cloud 9', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh what a faithful old barnacle!')
   `);
 })()
