@@ -35,7 +35,7 @@ class UsersTab extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { users } = state.general;
+  const { users } = state.users;
 
   return { users };
 };

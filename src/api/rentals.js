@@ -1,6 +1,8 @@
 const db = require('../connectDb')
 
 exports.getMyRentals = async (userId) => {
+  console.log('userId inside API', userId)
+
   return await db.query(`SELECT * FROM ${db.name}.rentals WHERE rented_by = '${userId}'`)
 }
 

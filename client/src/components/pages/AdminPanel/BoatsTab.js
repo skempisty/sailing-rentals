@@ -5,7 +5,7 @@ import { Card, Button, Modal, Form } from 'react-bootstrap';
 
 import createBoat from "../../../api/createBoat";
 
-import { addNewBoat } from '../../../store/general';
+import { addNewBoat } from '../../../store/boats';
 
 class BoatsTab extends React.Component {
   constructor(props) {
@@ -95,7 +95,7 @@ class BoatsTab extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { boats } = state.general;
+  const { boats } = state.boats;
 
   return { boats };
 };

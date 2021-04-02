@@ -8,7 +8,7 @@ import AddRentalModal from './AddRentalModal';
 
 import createRental from '../../../api/createRental';
 
-import { addNewRental } from "../../../store/general";
+import { addNewRental } from "../../../store/rentals";
 import RentalRow from "./RentalRow";
 
 class Rentals extends React.Component {
@@ -98,7 +98,7 @@ class Rentals extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { myRentals } = state.general;
+  const { myRentals } = state.rentals;
 
   return { myRentals };
 };

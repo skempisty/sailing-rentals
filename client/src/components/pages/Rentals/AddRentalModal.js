@@ -279,9 +279,10 @@ class AddRentalModal extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { currentUser, boats } = state.general;
+  const { currentUser } = state.session
+  const { boats } = state.boats
 
-  return { currentUser, boats };
+  return { currentUser, boats }
 };
 
 export default connect(

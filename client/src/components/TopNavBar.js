@@ -9,16 +9,17 @@ import LogoutBtn from './LogoutBtn';
 import setLoginJwt from '../utils/setLoginJwt';
 import loginOrCreateUser from '../api/loginOrCreateUser';
 import getUsers from '../api/getUsers';
-import getBoats from '../api/getBoats';
+import getMyRentals from "../api/getMyRentals";
 
 import logo from '../images/logo.png'
 
+import { initUsers } from '../store/users'
+import { initRentals } from "../store/rentals";
 import {
-  initializeAppData,
   assignCurrentUser,
   clearCurrentUser,
   toggleLoading
-} from '../store/general';
+} from '../store/session'
 
 /**
  * Main site top navbar
@@ -26,11 +27,14 @@ import {
 class TopNavBar extends React.Component {
   async handleLoginSuccess({ tokenId }) {
     const {
-      initializeAppData,
+      initUsers,
+      initRentals,
       assignCurrentUser,
       toggleLoading,
       history
     } = this.props;
+
+    toggleLoading(true);
 
     try {
       const { user, jwt } = await loginOrCreateUser(tokenId);
@@ -39,22 +43,19 @@ class TopNavBar extends React.Component {
 
       assignCurrentUser({ user });
 
+      const myRentals = await getMyRentals()
+      initRentals({ myRentals })
+
       if (user.is_admin) {
-        toggleLoading(true);
-
         const users = await getUsers();
-        const boats = await getBoats();
 
-        initializeAppData({
-          users,
-          boats
-        })
-
-        toggleLoading(false);
+        initUsers({ users })
       }
 
+      toggleLoading(false);
+
+      // put user on profile page to complete profile
       if (!user.is_approved) {
-        // put user on profile page to complete profile
         history.push('/profile');
       }
     } catch (error) {
@@ -144,13 +145,14 @@ class TopNavBar extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { currentUser } = state.general;
+  const { currentUser } = state.session;
 
   return { currentUser };
 };
 
 const mapDispatchToProps = {
-  initializeAppData,
+  initUsers,
+  initRentals,
   assignCurrentUser,
   clearCurrentUser,
   toggleLoading
