@@ -13,6 +13,7 @@ import EventLabel from './EventLabel'
 
 import Rental from '../../../models/Rental'
 import getBoatById from '../../../store/orm/boats/getBoatById'
+import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
 
 const localizer = momentLocalizer(moment)
 
@@ -147,9 +148,11 @@ class AddRentalModal extends React.Component {
       rental.end = new Date(rental.end)
     })
 
+    const { upcomingRentals } = splitUpcomingAndPastRentals(allRentals)
+
     const allEvents = [
       newRentalPeriod,
-      ...allRentals
+      ...upcomingRentals
     ]
 
     if (selectedBoatId) {
