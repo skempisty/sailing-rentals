@@ -1,29 +1,32 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import moment from 'moment';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import moment from 'moment'
 import styled from 'styled-components'
-
-import { FaExclamationTriangle } from 'react-icons/fa';
-import { RiSailboatFill } from 'react-icons/ri';
-
 import { Calendar, momentLocalizer } from 'react-big-calendar'
-import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap';
-import Rental from "../../../models/Rental";
 
+import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap'
+import { FaExclamationTriangle } from 'react-icons/fa'
+import { RiSailboatFill } from 'react-icons/ri'
+
+import EventLabel from './EventLabel'
+
+import Rental from '../../../models/Rental'
 import getBoatById from '../../../store/orm/boats/getBoatById'
 
 const localizer = momentLocalizer(moment)
 
 const StyledCalendar = styled.div`
+  .rbc-calendar { padding: 0 1em 1em 1em; }
+
   .rbc-time-slot { min-height: 3em; }
-`;
+`
 
 class AddRentalModal extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.state = this.initialState;
+    this.state = this.initialState
   }
 
   get initialState() {
@@ -40,7 +43,7 @@ class AddRentalModal extends React.Component {
     const { selectedBoatId } = this.state
     const { start, end, slots } = e
 
-    const clickMoment = moment(slots[0]);
+    const clickMoment = moment(slots[0])
 
     const isSingleDateClick = slots.length === 1 && clickMoment.hour() === 0
     const isDayRangeSelect = moment(start).hour() !== 0
@@ -63,15 +66,20 @@ class AddRentalModal extends React.Component {
   }
 
   handleBoatSelect(id) {
-    this.setState({
-      selectedBoatId: id,
-      newRentalPeriod: {}
-    })
+    const { selectedBoatId } = this.state
+
+    // only change state if selected boat changes
+    if (id !== selectedBoatId) {
+      this.setState({
+        selectedBoatId: id,
+        newRentalPeriod: {}
+      })
+    }
   }
 
   handleProceedClick() {
-    const { currentUser, onRentalAdd } = this.props;
-    const { newRentalPeriod, crewCount, selectedBoatId } = this.state;
+    const { currentUser, onRentalAdd } = this.props
+    const { newRentalPeriod, crewCount, selectedBoatId } = this.state
 
     const newRental = new Rental({
       start: newRentalPeriod.start,
@@ -79,25 +87,25 @@ class AddRentalModal extends React.Component {
       rentedBy: currentUser.id,
       boatId: selectedBoatId,
       crewCount
-    });
+    })
 
-    onRentalAdd(newRental);
+    onRentalAdd(newRental)
 
-    this.resetAndHide();
+    this.resetAndHide()
   }
 
   get minTime() {
-    const minTime = new Date();
-    minTime.setHours(7,0,0);
+    const minTime = new Date()
+    minTime.setHours(7,0,0)
 
-    return minTime;
+    return minTime
   }
 
   get maxTime() {
-    const maxTime = new Date();
-    maxTime.setHours(20,0,0);
+    const maxTime = new Date()
+    maxTime.setHours(20,0,0)
 
-    return maxTime;
+    return maxTime
   }
 
   /**
@@ -116,14 +124,14 @@ class AddRentalModal extends React.Component {
      */
     const hours = Math.round((duration.asHours() + Number.EPSILON) * 100) / 100
 
-    return hours === 3;
+    return hours === 3
   }
 
   resetAndHide() {
-    const { onHide } = this.props;
+    const { onHide } = this.props
 
-    this.setState(this.initialState);
-    onHide();
+    this.setState(this.initialState)
+    onHide()
   }
 
 
@@ -158,7 +166,7 @@ class AddRentalModal extends React.Component {
       selectedBoatId,
       newRentalPeriod,
       crewCount
-    } = this.state;
+    } = this.state
 
     return (
       this.selectedThreeHourSlot(newRentalPeriod) &&
@@ -184,49 +192,22 @@ class AddRentalModal extends React.Component {
   }
 
   titleAccessor(rental) {
-    const { name: boatName } = getBoatById(rental.boatId);
+    const { name: boatName } = getBoatById(rental.boatId)
 
-    // TODO: this looks like it should be a component
     if (rental.id) {
-      return <div
-        style={{
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      >
-        <RiSailboatFill/>
-        <b style={{ marginLeft: '0.5em' }}>Unavailable</b>
-      </div>
+      return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>}/>
     } else if (!this.selectedThreeHourSlot(rental)) {
-      return <div
-        style={{
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      >
-        <FaExclamationTriangle/>
-        <b style={{ marginLeft: '0.5em' }}>Please select a 3 hour time slot</b>
-      </div>
+      return <EventLabel label={'Please select a 3 hour time slot'} svgComponent={<FaExclamationTriangle/>}/>
     } else if (!boatName) {
-      return <div
-        style={{
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      >
-        <FaExclamationTriangle/>
-        <b style={{ marginLeft: '0.5em' }}>Select a boat</b>
-      </div>
+      return <EventLabel label={'Select a boat'} svgComponent={<FaExclamationTriangle/>}/>
     } else {
-      return <b>Sailing on the {boatName}</b>
+      return <EventLabel label={`Sailing on the ${boatName}`} svgComponent={<RiSailboatFill/>}/>
     }
   }
 
   render() {
-    const { show, boats } = this.props;
-    const { selectedBoatId, crewCount, view, date } = this.state;
-
-    console.log('boats', boats)
+    const { show, boats } = this.props
+    const { selectedBoatId, crewCount, view, date } = this.state
 
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
@@ -269,6 +250,24 @@ class AddRentalModal extends React.Component {
               </Form.Group>
             </Form.Row>
           </Form>
+        </Modal.Body>
+
+        <div style={{ position: 'relative' }}>
+          {/* Blocking overlay */}
+          <div style={{
+            display: selectedBoatId ? 'none' : 'flex',
+            pointerEvents: selectedBoatId ? 'none' : null,
+            position: 'absolute',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%',
+            color: 'white',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            zIndex: '5' // need 5 to fully overlay Calendar
+          }}>
+            <h2>Select a boat first!</h2>
+          </div>
 
           <StyledCalendar>
             <Calendar
@@ -289,7 +288,7 @@ class AddRentalModal extends React.Component {
               onSelectSlot={this.handleSelectSlot.bind(this)}
             />
           </StyledCalendar>
-        </Modal.Body>
+        </div>
 
         <Modal.Footer>
           <Button variant='secondary' onClick={this.resetAndHide.bind(this)}>
@@ -315,12 +314,12 @@ const mapStateToProps = (state) => {
   const { allRentals } = state.rentals
 
   return { currentUser, boats, allRentals }
-};
+}
 
 export default connect(
   mapStateToProps,
   null
-)(AddRentalModal);
+)(AddRentalModal)
 
 AddRentalModal.propTypes = {
   show: PropTypes.bool,
