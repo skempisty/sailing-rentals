@@ -14,9 +14,10 @@ const boatSlice = createSlice({
       state.boats = boats
     },
     addNewBoat: (state, action) => {
-      const { name } = action.payload
+      const { id, name } = action.payload
 
       state.boats.push(new Boat({
+        id,
         name
       }))
     }

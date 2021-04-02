@@ -1,5 +1,6 @@
 export default class Rental {
   constructor({
+    id,
     start,
     end,
     rentedBy,
@@ -7,11 +8,12 @@ export default class Rental {
     crewCount,
     createdAt
   }) {
-    this.start = start;
-    this.end = end;
-    this.rentedBy = rentedBy;
-    this.boatId = boatId;
-    this.crewCount = crewCount;
-    this.createdAt = createdAt || '';
+    this.id = id
+    this.start = start
+    this.end = end
+    this.rentedBy = rentedBy
+    this.boatId = boatId
+    this.crewCount = crewCount
+    this.createdAt = createdAt || ''
   }
 }

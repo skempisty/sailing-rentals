@@ -48,6 +48,7 @@ class TopNavBar extends React.Component {
 
       const myRentalsRemap = myRentals.map(rental => {
         return new Rental({
+          id: rental.id,
           start: rental.start,
           end: rental.end,
           rentedBy: rental.rented_by,

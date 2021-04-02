@@ -68,8 +68,9 @@ class App extends React.Component {
         posts,
         users,
         boats,
-        myRentals: myRentals.map(rental => {
+        myRentals: myRentals.map(rental => { // TODO: find a better way to do this
           return new Rental({
+            id: rental.id,
             start: rental.start,
             end: rental.end,
             rentedBy: rental.rented_by,
@@ -80,6 +81,7 @@ class App extends React.Component {
         }),
         allRentals: allRentals.map(rental => {
           return new Rental({
+            id: rental.id,
             start: rental.start,
             end: rental.end,
             rentedBy: rental.rented_by,

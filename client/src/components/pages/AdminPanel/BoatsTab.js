@@ -28,6 +28,7 @@ class BoatsTab extends React.Component {
     const newBoat = await createBoat(name);
 
     addNewBoat({
+      id: newBoat.id,
       name: newBoat.name,
       model: 'Cutter22',
       description: 'what a magnificent vessel'
