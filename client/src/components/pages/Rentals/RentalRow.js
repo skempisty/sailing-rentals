@@ -102,7 +102,7 @@ class RentalRow extends React.Component {
 
 RentalRow.propTypes = {
   options: PropTypes.bool,
-  rental: PropTypes.arrayOf(PropTypes.object).isRequired
+  rental: PropTypes.object.isRequired
 }
 
 export default connect(
