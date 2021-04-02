@@ -184,6 +184,26 @@ class AddRentalModal extends React.Component {
     return moment(rental.start).isBefore()
   }
 
+  alreadyRentedThisDay(rentalSelection) {
+    const { myRentals } = this.props
+
+    const selectionDate = {
+      day: moment(rentalSelection.end).date(),
+      month: moment(rentalSelection.end).month(),
+      year: moment(rentalSelection.end).year()
+    }
+
+    const selectionDateString = JSON.stringify(selectionDate)
+
+    return myRentals.some(rental => {
+      return selectionDateString === JSON.stringify({
+        day: moment(rental.end).date(),
+        month: moment(rental.end).month(),
+        year: moment(rental.end).year()
+      })
+    })
+  }
+
   eventStyleGetter(rental) {
     const {currentUser} = this.props
 
@@ -193,7 +213,11 @@ class AddRentalModal extends React.Component {
       backgroundColor = 'purple' // one of the user's other rental slots
     } else if (rental.id) {
       backgroundColor = 'grey' // someone else's rental slot
-    } else if (this.rentalStartsInPast(rental) || !this.selectedThreeHourSlot(rental)) {
+    } else if (
+      this.alreadyRentedThisDay(rental) ||
+      this.rentalStartsInPast(rental) ||
+      !this.selectedThreeHourSlot(rental)
+    ) {
       backgroundColor = 'red' // invalid time slot selection
     } else {
       backgroundColor = 'green' // valid time slot selection
@@ -216,6 +240,8 @@ class AddRentalModal extends React.Component {
       return <EventLabel label={'My rental'} svgComponent={<RiSailboatFill/>} view={view} />
     } else if (rental.id) {
       return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>} view={view} />
+    } else if (this.alreadyRentedThisDay(rental)) {
+      return <EventLabel label={'Cannot rent more than once per day'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (this.rentalStartsInPast(rental)) {
       return <EventLabel label={'Please select a time slot in the future'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (!this.selectedThreeHourSlot(rental)) {
@@ -333,9 +359,9 @@ class AddRentalModal extends React.Component {
 const mapStateToProps = (state) => {
   const { currentUser } = state.session
   const { boats } = state.boats
-  const { allRentals } = state.rentals
+  const { myRentals, allRentals } = state.rentals
 
-  return { currentUser, boats, allRentals }
+  return { currentUser, boats, myRentals, allRentals }
 }
 
 export default connect(
