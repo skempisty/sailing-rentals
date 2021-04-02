@@ -183,8 +183,10 @@ class AddRentalModal extends React.Component {
 
     if (rental.id) {
       backgroundColor = 'grey'
+    } else if (this.rentalStartsInPast(rental) || !this.selectedThreeHourSlot(rental)) {
+      backgroundColor = 'red'
     } else {
-      backgroundColor = this.selectedThreeHourSlot(rental) ? 'green' : 'red'
+      backgroundColor = 'green'
     }
 
     const style = {
@@ -194,11 +196,19 @@ class AddRentalModal extends React.Component {
     return { style }
   }
 
+  rentalStartsInPast(rental) {
+    if (!rental.start) return true
+
+    return moment(rental.start).isBefore()
+  }
+
   titleAccessor(rental) {
     const { name: boatName } = getBoatById(rental.boatId)
 
     if (rental.id) {
       return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>}/>
+    } else if (this.rentalStartsInPast(rental)) {
+      return <EventLabel label={'Please select a time slot in the future'} svgComponent={<FaExclamationTriangle/>}/>
     } else if (!this.selectedThreeHourSlot(rental)) {
       return <EventLabel label={'Please select a 3 hour time slot'} svgComponent={<FaExclamationTriangle/>}/>
     } else if (!boatName) {
@@ -210,7 +220,7 @@ class AddRentalModal extends React.Component {
 
   render() {
     const { show, boats } = this.props
-    const { selectedBoatId, crewCount, view, date } = this.state
+    const { selectedBoatId, crewCount, view, date, newRentalPeriod } = this.state
 
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
@@ -300,7 +310,7 @@ class AddRentalModal extends React.Component {
 
           <Button
             variant='primary'
-            disabled={!this.validRental}
+            disabled={!this.validRental || this.rentalStartsInPast(newRentalPeriod)}
             onClick={this.handleProceedClick.bind(this)}
           >
             Create Rental
