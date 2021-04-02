@@ -20,6 +20,7 @@ import {
   clearCurrentUser,
   toggleLoading
 } from '../store/session'
+import Rental from "../models/Rental";
 
 /**
  * Main site top navbar
@@ -44,7 +45,19 @@ class TopNavBar extends React.Component {
       assignCurrentUser({ user });
 
       const myRentals = await getMyRentals()
-      initRentals({ myRentals })
+
+      const myRentalsRemap = myRentals.map(rental => {
+        return new Rental({
+          start: rental.start,
+          end: rental.end,
+          rentedBy: rental.rented_by,
+          boatId: rental.boat_id,
+          crewCount: rental.crew_count,
+          createdAt: rental.created_at
+        })
+      })
+
+      initRentals({ myRentals: myRentalsRemap })
 
       if (user.is_admin) {
         const users = await getUsers();
@@ -68,7 +81,12 @@ class TopNavBar extends React.Component {
   }
 
   handleLogout() {
-    const { clearCurrentUser, history } = this.props;
+    const { clearCurrentUser, history, initRentals, initUsers } = this.props;
+
+    // clear admin data
+    initUsers({ users: [] })
+    // clear personal data
+    initRentals({ myRentals: [] })
 
     history.push('/');
 

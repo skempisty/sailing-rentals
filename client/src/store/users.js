@@ -9,9 +9,7 @@ const userSlice = createSlice({
     initUsers: (state, action) => {
       const { users } = action.payload
 
-      if (users && users.length) {
-        state.users = users;
-      }
+      state.users = users
     },
     updateUserById: (state, action) => {
       const { id, toUpdate } = action.payload

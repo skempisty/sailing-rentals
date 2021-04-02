@@ -12,9 +12,7 @@ const rentalSlice = createSlice({
     initRentals: (state, action) => {
       const { myRentals } = action.payload
 
-      if (myRentals && myRentals.length) {
-        state.myRentals = myRentals;
-      }
+      state.myRentals = myRentals
     },
     addNewRental: (state, action) => {
       const { newRental } = action.payload

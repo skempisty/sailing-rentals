@@ -78,7 +78,6 @@ class App extends React.Component {
         })
       });
 
-      // TODO: maybe initializing the app data should also toggle loading off afterwards
       toggleLoading({ newToggleState: false });
     } catch (error) {
       alert('Error initializing app: ' + error);

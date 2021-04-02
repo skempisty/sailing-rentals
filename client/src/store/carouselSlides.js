@@ -14,9 +14,9 @@ const carouselSlideSlice = createSlice({
       const { carouselSlides } = action.payload
 
       if (carouselSlides && carouselSlides.length) {
-        state.carouselSlides = carouselSlides;
+        state.carouselSlides = carouselSlides
       }
-    },
+    }
   }
 });
 

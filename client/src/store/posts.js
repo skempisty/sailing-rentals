@@ -16,9 +16,9 @@ const postSlice = createSlice({
       const { posts } = action.payload
 
       if (posts && posts.length) {
-        state.posts = posts;
+        state.posts = posts
       }
-    },
+    }
   }
 });
 

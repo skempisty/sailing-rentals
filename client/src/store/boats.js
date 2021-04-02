@@ -11,9 +11,7 @@ const boatSlice = createSlice({
     initBoats: (state, action) => {
       const { boats } = action.payload
 
-      if (boats && boats.length) {
-        state.boats = boats;
-      }
+      state.boats = boats
     },
     addNewBoat: (state, action) => {
       const { name } = action.payload
