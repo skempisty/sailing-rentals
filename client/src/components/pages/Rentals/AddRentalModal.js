@@ -208,21 +208,22 @@ class AddRentalModal extends React.Component {
 
   titleAccessor(rental) {
     const { currentUser } = this.props
+    const { view } = this.state
 
     const { name: boatName } = getBoatById(rental.boatId)
 
     if (rental.rentedBy === currentUser.id) {
-      return <EventLabel label={'My rental'} svgComponent={<RiSailboatFill/>}/>
+      return <EventLabel label={'My rental'} svgComponent={<RiSailboatFill/>} view={view} />
     } else if (rental.id) {
-      return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>}/>
+      return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>} view={view} />
     } else if (this.rentalStartsInPast(rental)) {
-      return <EventLabel label={'Please select a time slot in the future'} svgComponent={<FaExclamationTriangle/>}/>
+      return <EventLabel label={'Please select a time slot in the future'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (!this.selectedThreeHourSlot(rental)) {
-      return <EventLabel label={'Please select a 3 hour time slot'} svgComponent={<FaExclamationTriangle/>}/>
+      return <EventLabel label={'Please select a 3 hour time slot'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (!boatName) {
-      return <EventLabel label={'Select a boat'} svgComponent={<FaExclamationTriangle/>}/>
+      return <EventLabel label={'Select a boat'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else {
-      return <EventLabel label={`Sailing on the ${boatName}`} svgComponent={<RiSailboatFill/>}/>
+      return <EventLabel label={`Sailing on the ${boatName}`} svgComponent={<RiSailboatFill/>} view={view} />
     }
   }
 

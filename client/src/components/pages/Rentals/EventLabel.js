@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 export default class EventLabel extends React.Component {
   render() {
-    const { svgComponent, label } = this.props
+    const { label, svgComponent, view } = this.props
 
     return <div
       style={{
@@ -11,7 +11,10 @@ export default class EventLabel extends React.Component {
         alignItems: 'center'
       }}
     >
-      {svgComponent}
+      {view !== 'month' &&
+        <span>{svgComponent}</span>
+      }
+
       <b style={{ marginLeft: '0.5em' }}>{label}</b>
     </div>
   }
@@ -19,5 +22,6 @@ export default class EventLabel extends React.Component {
 
 EventLabel.propTypes = {
   label: PropTypes.string,
-  svgComponent: PropTypes.node
+  svgComponent: PropTypes.node,
+  view: PropTypes.string.isRequired
 }
