@@ -74,7 +74,8 @@ class HomePage extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { carouselSlides, posts } = state.general;
+  const { posts } = state.posts
+  const { carouselSlides } = state.carouselSlides
 
   return { carouselSlides, posts };
 };

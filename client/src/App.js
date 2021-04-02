@@ -19,27 +19,31 @@ import getBoats from './api/getBoats';
 import getMyRentals from './api/getMyRentals';
 import Rental from './models/Rental';
 
-import { toggleLoading, initializeAppData } from './store/general';
+import { toggleLoading, initSession } from './store/session'
+import { initUsers } from './store/users'
+import { initBoats } from './store/boats'
+import { initRentals } from './store/rentals'
+import { initPosts } from './store/posts'
+import { initCarousel } from './store/carouselSlides'
 
 /**
  * Root App component. Initialize app data here and add to Redux.
  */
 class App extends React.Component {
   async componentDidMount() {
-    const { toggleLoading, initializeAppData } = this.props;
+    const { toggleLoading } = this.props;
 
     const existingJwt = sessionStorage.getItem('jwt');
 
     try {
-      let user = null
+      let currentUser = null
       let users = []
-
       let myRentals = []
 
       if (existingJwt) {
         const { user: loggedInUser, updatedJwt } = await getLoggedInUser()
 
-        user = loggedInUser
+        currentUser = loggedInUser
         setLoginJwt(updatedJwt)
 
         // Personal data
@@ -56,8 +60,8 @@ class App extends React.Component {
       const boats = await getBoats();
       const carouselSlides = await getCarouselSlides();
 
-      initializeAppData({
-        user,
+      this.initializeData({
+        currentUser,
         carouselSlides,
         posts,
         users,
@@ -74,11 +78,36 @@ class App extends React.Component {
         })
       });
 
-      // TODO: maybe initializing the app data should also toggle loading off afterwards
       toggleLoading({ newToggleState: false });
     } catch (error) {
       alert('Error initializing app: ' + error);
     }
+  }
+
+  initializeData({
+    currentUser,
+    carouselSlides,
+    posts,
+    users,
+    boats,
+    myRentals
+  }) {
+    // call all slice init methods
+    const {
+      initSession,
+      initUsers,
+      initBoats,
+      initRentals,
+      initCarousel,
+      initPosts
+    } = this.props
+
+    initSession({ currentUser })
+    initUsers({ users })
+    initBoats({ boats })
+    initRentals({ myRentals })
+    initPosts({ posts })
+    initCarousel({ carouselSlides })
   }
 
   render() {
@@ -105,14 +134,19 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { loading } = state.general;
+  const { loading } = state.session;
 
   return { loading };
 };
 
 const mapDispatchToProps = {
   toggleLoading,
-  initializeAppData
+  initSession,
+  initUsers,
+  initBoats,
+  initRentals,
+  initPosts,
+  initCarousel
 };
 
 export default connect(

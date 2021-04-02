@@ -9,7 +9,7 @@ import { Button, Col, Form, InputGroup, Modal } from 'react-bootstrap';
 import buildFullName from '../../../../utils/buildUserFullName';
 import updateUser from '../../../../api/updateUser';
 
-import { updateUserById } from '../../../../store/general';
+import { updateUserById } from '../.././../../store/users';
 
 class UserInfoModal extends React.Component {
   constructor(props) {

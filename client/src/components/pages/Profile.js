@@ -12,7 +12,7 @@ import buildFullName from '../../utils/buildUserFullName'
 import formatDateTime from '../../utils/formatDateTime'
 import setStateAsync from '../../utils/setStateAsync';
 
-import { updateCurrentUser } from "../../store/general";
+import { updateCurrentUser } from "../../store/session";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -210,7 +210,7 @@ class Profile extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { currentUser } = state.general;
+  const { currentUser } = state.session;
 
   return { currentUser };
 };

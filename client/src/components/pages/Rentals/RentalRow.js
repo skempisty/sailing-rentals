@@ -8,6 +8,8 @@ import { FaEllipsisH, FaInfoCircle, FaSlash } from 'react-icons/fa';
 
 import AddRentalModal from "./AddRentalModal";
 
+import getBoatById from '../../../store/orm/boats/getBoatById'
+
 const StyledDropDownToggle = styled.div`
   button {
     display: flex;
@@ -57,7 +59,7 @@ class RentalRow extends React.Component {
 
           <td>{moment(rental.end).format('MM/DD/YY LT')}</td>
 
-          <td>{rental.boatId}</td>
+          <td>{getBoatById(rental.boatId).name}</td>
 
           <td>{rental.crewCount}</td>
 
