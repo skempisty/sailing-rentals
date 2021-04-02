@@ -2,22 +2,23 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import LoadingPageMessage from './components/LoadingPageMessage';
-import TopNavBar from './components/TopNavBar';
-import HomePage from './components/pages/HomePage/index';
-import Profile from './components/pages/Profile';
-import ShowPost from './components/pages/ShowPost';
-import AdminPanel from './components/pages/AdminPanel';
-import Rentals from "./components/pages/Rentals";
+import LoadingPageMessage from './components/LoadingPageMessage'
+import TopNavBar from './components/TopNavBar'
+import HomePage from './components/pages/HomePage/index'
+import Profile from './components/pages/Profile'
+import ShowPost from './components/pages/ShowPost'
+import AdminPanel from './components/pages/AdminPanel'
+import Rentals from './components/pages/Rentals'
 
-import setLoginJwt from './utils/setLoginJwt';
-import getLoggedInUser from './api/getLoggedInUser';
-import getCarouselSlides from './api/getCarouselSlides';
-import getPosts from './api/getPosts';
-import getUsers from './api/getUsers';
-import getBoats from './api/getBoats';
-import getMyRentals from './api/getMyRentals';
-import Rental from './models/Rental';
+import setLoginJwt from './utils/setLoginJwt'
+import getLoggedInUser from './api/getLoggedInUser'
+import getCarouselSlides from './api/getCarouselSlides'
+import getPosts from './api/getPosts'
+import getUsers from './api/getUsers'
+import getBoats from './api/getBoats'
+import getMyRentals from './api/getMyRentals'
+import getAllRentals from './api/getAllRentals'
+import Rental from './models/Rental'
 
 import { toggleLoading, initSession } from './store/session'
 import { initUsers } from './store/users'
@@ -56,9 +57,10 @@ class App extends React.Component {
       }
 
       // Always load data
-      const posts = await getPosts();
-      const boats = await getBoats();
-      const carouselSlides = await getCarouselSlides();
+      const posts = await getPosts()
+      const boats = await getBoats()
+      const allRentals = await getAllRentals()
+      const carouselSlides = await getCarouselSlides()
 
       this.initializeData({
         currentUser,
@@ -75,7 +77,17 @@ class App extends React.Component {
             crewCount: rental.crew_count,
             createdAt: rental.created_at
           })
-        })
+        }),
+        allRentals: allRentals.map(rental => {
+          return new Rental({
+            start: rental.start,
+            end: rental.end,
+            rentedBy: rental.rented_by,
+            boatId: rental.boat_id,
+            crewCount: rental.crew_count,
+            createdAt: rental.created_at
+          })
+        }),
       });
 
       toggleLoading({ newToggleState: false });
@@ -90,7 +102,8 @@ class App extends React.Component {
     posts,
     users,
     boats,
-    myRentals
+    myRentals,
+    allRentals
   }) {
     // call all slice init methods
     const {
@@ -105,7 +118,7 @@ class App extends React.Component {
     initSession({ currentUser })
     initUsers({ users })
     initBoats({ boats })
-    initRentals({ myRentals })
+    initRentals({ myRentals, allRentals })
     initPosts({ posts })
     initCarousel({ carouselSlides })
   }

@@ -128,13 +128,19 @@ class AddRentalModal extends React.Component {
 
 
   get events() {
-    const { existingEvents } = this.props;
-    const { newRentalPeriod } = this.state;
+    const { allRentals } = this.props
+    const { newRentalPeriod } = this.state
+
+    // event start/end times must be Date objects for React Big Calendar
+    allRentals.forEach(rental => {
+      rental.start = new Date(rental.start)
+      rental.end = new Date(rental.end)
+    })
 
     return [
       newRentalPeriod,
-      ...existingEvents
-    ];
+      ...allRentals
+    ]
   }
 
   get validRental() {
@@ -281,8 +287,9 @@ class AddRentalModal extends React.Component {
 const mapStateToProps = (state) => {
   const { currentUser } = state.session
   const { boats } = state.boats
+  const { allRentals } = state.rentals
 
-  return { currentUser, boats }
+  return { currentUser, boats, allRentals }
 };
 
 export default connect(
@@ -294,8 +301,4 @@ AddRentalModal.propTypes = {
   show: PropTypes.bool,
   onHide: PropTypes.func,
   onRentalAdd: PropTypes.func
-}
-
-AddRentalModal.defaultProps = {
-  existingEvents: []
 }

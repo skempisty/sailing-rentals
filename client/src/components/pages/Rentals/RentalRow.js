@@ -83,12 +83,13 @@ class RentalRow extends React.Component {
                     </Dropdown.Item>
                   </StyledDropDownItem>
 
-                  <StyledDropDownItem>
-                    <Dropdown.Item disabled onClick={() => console.log('Cancel Rental')}>
-                      <FaSlash/>
-                      <span>Cancel Rental</span>
-                    </Dropdown.Item>
-                  </StyledDropDownItem>
+                  {/* TODO: Add back when adding cancel rental functionality */}
+                  {/*<StyledDropDownItem>*/}
+                  {/*  <Dropdown.Item disabled onClick={() => console.log('Cancel Rental')}>*/}
+                  {/*    <FaSlash/>*/}
+                  {/*    <span>Cancel Rental</span>*/}
+                  {/*  </Dropdown.Item>*/}
+                  {/*</StyledDropDownItem>*/}
                 </Dropdown.Menu>
               </Dropdown>
             </td>
