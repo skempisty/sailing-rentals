@@ -31,13 +31,21 @@ class AddRentalModal extends React.Component {
   }
 
   get initialState() {
+    const { editRental } = this.props
+
     return {
-      selectedBoatId: '',
-      crewCount: 0,
+      selectedBoatId: editRental ? editRental.boatId : '',
+      crewCount: editRental ? editRental.crewCount : 0,
       view: 'month',
       date: new Date(),
-      newRentalPeriod: {}
+      newRentalPeriod: editRental ? this.convertRentalTimeToDates(editRental) : {}
     }
+  }
+
+  filterRentalBeingEdited(rentals) {
+    const { editRental } = this.props
+
+    return rentals.filter(rental => rental.id !== editRental.id)
   }
 
   handleSelectSlot(e) {
@@ -85,8 +93,8 @@ class AddRentalModal extends React.Component {
     const newRental = new Rental({
       start: newRentalPeriod.start,
       end: newRentalPeriod.end,
+      boatId: newRentalPeriod.boatId,
       rentedBy: currentUser.id,
-      boatId: selectedBoatId,
       crewCount
     })
 
@@ -128,6 +136,14 @@ class AddRentalModal extends React.Component {
     return hours === 3
   }
 
+  convertRentalTimeToDates(rental) {
+    return {
+      start: new Date(rental.start),
+      end: new Date(rental.end),
+      boatId: rental.boatId
+    }
+  }
+
   resetAndHide() {
     const { onHide } = this.props
 
@@ -136,7 +152,7 @@ class AddRentalModal extends React.Component {
   }
 
   get rentals() {
-    const { allRentals } = this.props
+    const { allRentals, editRental } = this.props
     const { newRentalPeriod, selectedBoatId } = this.state
 
     if (!selectedBoatId) return []
@@ -147,7 +163,11 @@ class AddRentalModal extends React.Component {
       rental.end = new Date(rental.end)
     })
 
-    const { upcomingRentals } = splitUpcomingAndPastRentals(allRentals)
+    let { upcomingRentals } = splitUpcomingAndPastRentals(allRentals)
+
+    if (editRental) {
+      upcomingRentals = this.filterRentalBeingEdited(upcomingRentals)
+    }
 
     const allEvents = [
       newRentalPeriod,
@@ -280,13 +300,13 @@ class AddRentalModal extends React.Component {
   }
 
   render() {
-    const { show, boats } = this.props
+    const { show, boats, editRental } = this.props
     const { selectedBoatId, crewCount, view, date } = this.state
 
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
         <Modal.Header closeButton>
-          <Modal.Title>Add Rental</Modal.Title>
+          <Modal.Title>{editRental ? 'Edit Rental' : 'Create Rental'}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -374,7 +394,7 @@ class AddRentalModal extends React.Component {
             disabled={!this.validRental}
             onClick={this.handleProceedClick.bind(this)}
           >
-            Create Rental
+            {editRental ? 'Edit Rental' : 'Create Rental'}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -396,6 +416,7 @@ export default connect(
 )(AddRentalModal)
 
 AddRentalModal.propTypes = {
+  editRental: PropTypes.object,
   show: PropTypes.bool,
   onHide: PropTypes.func,
   onRentalAdd: PropTypes.func
