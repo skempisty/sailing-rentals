@@ -171,6 +171,7 @@ class AddRentalModal extends React.Component {
     } = this.state
 
     return (
+      !this.alreadyRentedThisDay(newRentalPeriod) &&
       this.selectedThreeHourSlot(newRentalPeriod) &&
       !this.rentalStartsInPast(newRentalPeriod) &&
       !!selectedBoatId &&
