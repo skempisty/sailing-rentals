@@ -17,6 +17,7 @@ const rentalSlice = createSlice({
     addNewRental: (state, action) => {
       const { newRental } = action.payload
 
+      state.myRentals.push(new Rental(newRental))
       state.allRentals.push(new Rental(newRental))
     }
   }

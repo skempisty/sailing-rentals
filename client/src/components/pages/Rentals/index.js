@@ -5,11 +5,12 @@ import { Card, Table, Button } from 'react-bootstrap';
 
 import ContentWrapper from '../../ContentWrapper';
 import AddRentalModal from './AddRentalModal';
+import RentalRow from "./RentalRow"
 
-import createRental from '../../../api/createRental';
+import createRental from '../../../api/createRental'
 
-import { addNewRental } from "../../../store/rentals";
-import RentalRow from "./RentalRow";
+import { addNewRental } from "../../../store/rentals"
+import Rental from "../../../models/Rental";
 
 class Rentals extends React.Component {
   constructor(props) {
@@ -36,7 +37,16 @@ class Rentals extends React.Component {
       // TODO: combine api and redux functions into a async thunk
       const newRental = await createRental(rental);
 
-      addNewRental({ newRental })
+      addNewRental({
+        newRental: new Rental({
+          start: newRental.start,
+          end: newRental.end,
+          rentedBy: newRental.rented_by,
+          boatId: newRental.boat_id,
+          crewCount: newRental.crew_count,
+          createdAt: newRental.created_at
+        })
+      })
 
       this.hideAddRentalModal();
     } catch (error) {
