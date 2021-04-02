@@ -10,6 +10,8 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap';
 import Rental from "../../../models/Rental";
 
+import getBoatById from '../../../store/orm/boats/getBoatById'
+
 const localizer = momentLocalizer(moment)
 
 const StyledCalendar = styled.div`
@@ -31,18 +33,6 @@ class AddRentalModal extends React.Component {
       date: new Date(),
       newRentalPeriod: {}
     }
-  }
-
-  getBoatNameById(id) {
-    const { boats } = this.props;
-
-    for (let i = 0; i < boats.length; i++) {
-      if (boats[i].id === id) {
-        return boats[i].name;
-      }
-    }
-
-    return '';
   }
 
   handleSelectSlot(e) {
@@ -172,7 +162,7 @@ class AddRentalModal extends React.Component {
   titleAccessor(event) {
     const { selectedBoatId } = this.state;
 
-    const boatName = this.getBoatNameById(selectedBoatId);
+    const { name: boatName } = getBoatById(selectedBoatId);
 
     if (!this.selectedThreeHourSlot(event)) {
       return <div
@@ -217,7 +207,7 @@ class AddRentalModal extends React.Component {
                 <Form.Label><b>Boat</b></Form.Label>
                 <Dropdown>
                   <Dropdown.Toggle variant='dark' id='dropdown-basic'>
-                    {this.getBoatNameById(selectedBoatId) || 'Select a boat'}
+                    {selectedBoatId ? getBoatById(selectedBoatId).name : 'Select a boat'}
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
