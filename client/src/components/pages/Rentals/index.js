@@ -40,6 +40,7 @@ class Rentals extends React.Component {
 
       addNewRental({
         newRental: new Rental({
+          id: newRental.id,
           start: newRental.start,
           end: newRental.end,
           rentedBy: newRental.rented_by,

@@ -13,7 +13,8 @@ const pathFilter = function(req) {
     '/api/users/login',
     '/api/carousel_slides', // TODO: need to lock down all but GET endpoint
     '/api/posts', // TODO: need to lock down all but GET endpoint
-    '/api/boats' // TODO: need to lock down all but GET endpoint
+    '/api/boats', // TODO: need to lock down all but GET endpoint
+    '/api/rentals' // TODO: need to lock down all but GET endpoint
   ]
 
   return (

@@ -1,28 +1,33 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import moment from 'moment';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import moment from 'moment'
 import styled from 'styled-components'
-
-import { FaExclamationTriangle } from 'react-icons/fa';
-
 import { Calendar, momentLocalizer } from 'react-big-calendar'
-import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap';
-import Rental from "../../../models/Rental";
 
+import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap'
+import { FaExclamationTriangle } from 'react-icons/fa'
+import { RiSailboatFill } from 'react-icons/ri'
+
+import EventLabel from './EventLabel'
+
+import Rental from '../../../models/Rental'
 import getBoatById from '../../../store/orm/boats/getBoatById'
+import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
 
 const localizer = momentLocalizer(moment)
 
 const StyledCalendar = styled.div`
+  .rbc-calendar { padding: 0 1em 1em 1em; }
+
   .rbc-time-slot { min-height: 3em; }
-`;
+`
 
 class AddRentalModal extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.state = this.initialState;
+    this.state = this.initialState
   }
 
   get initialState() {
@@ -36,9 +41,10 @@ class AddRentalModal extends React.Component {
   }
 
   handleSelectSlot(e) {
-    const { start, end, slots } = e;
+    const { selectedBoatId } = this.state
+    const { start, end, slots } = e
 
-    const clickMoment = moment(slots[0]);
+    const clickMoment = moment(slots[0])
 
     const isSingleDateClick = slots.length === 1 && clickMoment.hour() === 0
     const isDayRangeSelect = moment(start).hour() !== 0
@@ -52,16 +58,29 @@ class AddRentalModal extends React.Component {
     } else if (isDayRangeSelect) {
       const newRentalPeriod = {
         start,
-        end
+        end,
+        boatId: selectedBoatId
       }
 
       this.setState({ newRentalPeriod })
     }
   }
 
+  handleBoatSelect(id) {
+    const { selectedBoatId } = this.state
+
+    // only change state if selected boat changes
+    if (id !== selectedBoatId) {
+      this.setState({
+        selectedBoatId: id,
+        newRentalPeriod: {}
+      })
+    }
+  }
+
   handleProceedClick() {
-    const { currentUser, onRentalAdd } = this.props;
-    const { newRentalPeriod, crewCount, selectedBoatId } = this.state;
+    const { currentUser, onRentalAdd } = this.props
+    const { newRentalPeriod, crewCount, selectedBoatId } = this.state
 
     const newRental = new Rental({
       start: newRentalPeriod.start,
@@ -69,33 +88,33 @@ class AddRentalModal extends React.Component {
       rentedBy: currentUser.id,
       boatId: selectedBoatId,
       crewCount
-    });
+    })
 
-    onRentalAdd(newRental);
+    onRentalAdd(newRental)
 
-    this.resetAndHide();
+    this.resetAndHide()
   }
 
   get minTime() {
-    const minTime = new Date();
-    minTime.setHours(7,0,0);
+    const minTime = new Date()
+    minTime.setHours(7,0,0)
 
-    return minTime;
+    return minTime
   }
 
   get maxTime() {
-    const maxTime = new Date();
-    maxTime.setHours(20,0,0);
+    const maxTime = new Date()
+    maxTime.setHours(20,0,0)
 
-    return maxTime;
+    return maxTime
   }
 
   /**
    * Only way to determine if a time slot is 3 hours. Don't use the slots
    * property, it is inaccurate
    */
-  selectedThreeHourSlot(event) {
-    const { start, end } = event
+  selectedThreeHourSlot(rental) {
+    const { start, end } = rental
 
     const duration = moment.duration(moment(end).diff(moment(start)))
 
@@ -106,31 +125,40 @@ class AddRentalModal extends React.Component {
      */
     const hours = Math.round((duration.asHours() + Number.EPSILON) * 100) / 100
 
-    return hours === 3;
+    return hours === 3
   }
 
   resetAndHide() {
-    const { onHide } = this.props;
+    const { onHide } = this.props
 
-    this.setState(this.initialState);
-    onHide();
+    this.setState(this.initialState)
+    onHide()
   }
 
-
-  get events() {
+  get rentals() {
     const { allRentals } = this.props
-    const { newRentalPeriod } = this.state
+    const { newRentalPeriod, selectedBoatId } = this.state
 
-    // event start/end times must be Date objects for React Big Calendar
+    if (!selectedBoatId) return []
+
+    // rental start/end times must be Date objects for React Big Calendar
     allRentals.forEach(rental => {
       rental.start = new Date(rental.start)
       rental.end = new Date(rental.end)
     })
 
-    return [
+    const { upcomingRentals } = splitUpcomingAndPastRentals(allRentals)
+
+    const allEvents = [
       newRentalPeriod,
-      ...allRentals
+      ...upcomingRentals
     ]
+
+    if (selectedBoatId) {
+      return allEvents.filter(rental => rental.boatId === selectedBoatId)
+    } else {
+      return allEvents
+    }
   }
 
   get validRental() {
@@ -140,58 +168,120 @@ class AddRentalModal extends React.Component {
       selectedBoatId,
       newRentalPeriod,
       crewCount
-    } = this.state;
+    } = this.state
 
     return (
+      !this.selectionOverlapsOtherRental(newRentalPeriod) &&
+      !this.alreadyRentedThisDay(newRentalPeriod) &&
       this.selectedThreeHourSlot(newRentalPeriod) &&
+      !this.rentalStartsInPast(newRentalPeriod) &&
       !!selectedBoatId &&
       crewCount >= MINIMUM_CREW_COUNT
     )
   }
 
-  eventStyleGetter(event) {
-    const backgroundColor = this.selectedThreeHourSlot(event) ? 'green' : 'red';
+  rentalStartsInPast(rentalSelection) {
+    if (!rentalSelection.start) return true
 
-    const style = {
-      backgroundColor: backgroundColor
-    };
-
-    return { style };
+    return moment(rentalSelection.start).isBefore()
   }
 
-  titleAccessor(event) {
-    const { selectedBoatId } = this.state;
+  alreadyRentedThisDay(rentalSelection) {
+    const { myRentals } = this.props
 
-    const { name: boatName } = getBoatById(selectedBoatId);
+    const selectionDate = {
+      day: moment(rentalSelection.end).date(),
+      month: moment(rentalSelection.end).month(),
+      year: moment(rentalSelection.end).year()
+    }
 
-    if (!this.selectedThreeHourSlot(event)) {
-      return <div
-        style={{
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      >
-        <FaExclamationTriangle/>
-        <b style={{ marginLeft: '0.5em' }}>Please select a 3 hour time slot</b>
-      </div>
-    } else if (!boatName) {
-      return <div
-        style={{
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      >
-        <FaExclamationTriangle/>
-        <b style={{ marginLeft: '0.5em' }}>Select a boat</b>
-      </div>
+    const selectionDateString = JSON.stringify(selectionDate)
+
+    return myRentals.some(rental => {
+      return selectionDateString === JSON.stringify({
+        day: moment(rental.end).date(),
+        month: moment(rental.end).month(),
+        year: moment(rental.end).year()
+      })
+    })
+  }
+
+  /**
+   * Determines if the selected time slot
+   * overlaps an existing rental on the same boat
+   */
+  selectionOverlapsOtherRental(rentalSelection) {
+    const { allRentals } = this.props
+
+    const selectionStart = moment(rentalSelection.start)
+    const selectionEnd = moment(rentalSelection.end)
+
+    return allRentals.some((rental) => {
+      const rentalStart = moment(rental.start)
+      const rentalEnd = moment(rental.end)
+
+      const selectionIsBefore = selectionStart.isSameOrBefore(rentalStart) && selectionEnd.isSameOrBefore(rentalStart)
+      const selectionIsAfter = selectionStart.isSameOrAfter(rentalEnd) && selectionEnd.isSameOrAfter(rentalEnd)
+
+      return !(selectionIsBefore || selectionIsAfter)
+    })
+  }
+
+  eventStyleGetter(rental) {
+    const {currentUser} = this.props
+
+    let backgroundColor
+
+    if (rental.rentedBy === currentUser.id) {
+      backgroundColor = 'purple' // one of the user's other rental slots
+    } else if (rental.id) {
+      backgroundColor = 'grey' // someone else's rental slot
+    } else if (
+      this.alreadyRentedThisDay(rental) ||
+      this.selectionOverlapsOtherRental(rental) ||
+      this.rentalStartsInPast(rental) ||
+      !this.selectedThreeHourSlot(rental)
+    ) {
+      backgroundColor = 'red' // invalid time slot selection
     } else {
-      return <b>Sailing on the {boatName}</b>
+      backgroundColor = 'green' // valid time slot selection
+    }
+
+    const style = {
+      backgroundColor
+    }
+
+    return { style }
+  }
+
+  titleAccessor(rental) {
+    const { currentUser } = this.props
+    const { view } = this.state
+
+    const { name: boatName } = getBoatById(rental.boatId)
+
+    if (rental.rentedBy === currentUser.id) {
+      return <EventLabel label={'My rental'} svgComponent={<RiSailboatFill/>} view={view} />
+    } else if (rental.id) {
+      return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>} view={view} />
+    } else if (this.alreadyRentedThisDay(rental)) {
+      return <EventLabel label={'Cannot rent more than once per day'} svgComponent={<FaExclamationTriangle/>} view={view} />
+    } else if (this.selectionOverlapsOtherRental(rental)) {
+      return <EventLabel label={'Boat already rented at this time'} svgComponent={<FaExclamationTriangle/>} view={view} />
+    } else if (this.rentalStartsInPast(rental)) {
+      return <EventLabel label={'Please select a time slot in the future'} svgComponent={<FaExclamationTriangle/>} view={view} />
+    } else if (!this.selectedThreeHourSlot(rental)) {
+      return <EventLabel label={'Please select a 3 hour time slot'} svgComponent={<FaExclamationTriangle/>} view={view} />
+    } else if (!boatName) {
+      return <EventLabel label={'Select a boat'} svgComponent={<FaExclamationTriangle/>} view={view} />
+    } else {
+      return <EventLabel label={`Sailing on the ${boatName}`} svgComponent={<RiSailboatFill/>} view={view} />
     }
   }
 
   render() {
-    const { show, boats } = this.props;
-    const { selectedBoatId, crewCount, view, date } = this.state;
+    const { show, boats } = this.props
+    const { selectedBoatId, crewCount, view, date } = this.state
 
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
@@ -214,7 +304,7 @@ class AddRentalModal extends React.Component {
                     {boats.map((boat, index) =>
                       <Dropdown.Item
                         key={`boat-select-${boat.id}-${index}`}
-                        onSelect={() => this.setState({ selectedBoatId: boat.id })}
+                        onSelect={() => this.handleBoatSelect(boat.id)}
                       >
                         {boat.name}
                       </Dropdown.Item>
@@ -234,6 +324,24 @@ class AddRentalModal extends React.Component {
               </Form.Group>
             </Form.Row>
           </Form>
+        </Modal.Body>
+
+        <div style={{ position: 'relative' }}>
+          {/* Blocking overlay */}
+          <div style={{
+            display: selectedBoatId ? 'none' : 'flex',
+            pointerEvents: selectedBoatId ? 'none' : null,
+            position: 'absolute',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%',
+            color: 'white',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            zIndex: '5' // need 5 to fully overlay Calendar
+          }}>
+            <h2>Select a boat first!</h2>
+          </div>
 
           <StyledCalendar>
             <Calendar
@@ -244,7 +352,7 @@ class AddRentalModal extends React.Component {
               selectable
               view={view}
               date={date}
-              events={this.events}
+              events={this.rentals}
               min={this.minTime} // set earliest time visible on calendar
               max={this.maxTime} // set latest time visible on calendar
               eventPropGetter={(e) => this.eventStyleGetter(e)}
@@ -254,7 +362,7 @@ class AddRentalModal extends React.Component {
               onSelectSlot={this.handleSelectSlot.bind(this)}
             />
           </StyledCalendar>
-        </Modal.Body>
+        </div>
 
         <Modal.Footer>
           <Button variant='secondary' onClick={this.resetAndHide.bind(this)}>
@@ -277,15 +385,15 @@ class AddRentalModal extends React.Component {
 const mapStateToProps = (state) => {
   const { currentUser } = state.session
   const { boats } = state.boats
-  const { allRentals } = state.rentals
+  const { myRentals, allRentals } = state.rentals
 
-  return { currentUser, boats, allRentals }
-};
+  return { currentUser, boats, myRentals, allRentals }
+}
 
 export default connect(
   mapStateToProps,
   null
-)(AddRentalModal);
+)(AddRentalModal)
 
 AddRentalModal.propTypes = {
   show: PropTypes.bool,
