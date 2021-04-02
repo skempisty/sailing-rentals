@@ -5,12 +5,13 @@ import { Card, Table, Button } from 'react-bootstrap';
 
 import ContentWrapper from '../../ContentWrapper';
 import AddRentalModal from './AddRentalModal';
-import RentalRow from "./RentalRow"
+import RentalRow from './RentalRow'
 
 import createRental from '../../../api/createRental'
+import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals';
+import Rental from '../../../models/Rental';
 
-import { addNewRental } from "../../../store/rentals"
-import Rental from "../../../models/Rental";
+import { addNewRental } from '../../../store/rentals'
 
 class Rentals extends React.Component {
   constructor(props) {
@@ -58,6 +59,8 @@ class Rentals extends React.Component {
     const { myRentals } = this.props;
     const { showAddRentalModal } = this.state;
 
+    const { upcomingRentals, pastRentals } = splitUpcomingAndPastRentals(myRentals)
+
     return (
       <ContentWrapper>
         <AddRentalModal
@@ -75,33 +78,71 @@ class Rentals extends React.Component {
           Rent
         </Button>
 
-        <Card>
-          {myRentals.length > 0 ?
-            <Table>
-              <thead>
-              <tr>
-                <th>Start</th>
-                <th>End</th>
-                <th>Boat</th>
-                <th>Crew Count</th>
-                <th>Rented At</th>
-                <th/>
-              </tr>
-              </thead>
+        {myRentals.length > 0 ?
+          <React.Fragment>
+            {upcomingRentals.length > 0 &&
+              <React.Fragment>
+                <h3 style={{ color: 'white' }}>Upcoming</h3>
 
-              <tbody>
-                {myRentals.map((rental, index) =>
-                 <RentalRow
-                   key={`rental-row-${rental.id}-${index}`}
-                   rental={rental}
-                 />
-                )}
-              </tbody>
-            </Table>
-            :
-            <div>No Rentals Found. Purchase a rental and you'll find it here!</div>
-          }
-        </Card>
+                <Card>
+                  <Table style={{ margin: '0' }}>
+                    <thead>
+                    <tr>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Boat</th>
+                      <th>Crew Count</th>
+                      <th>Rented At</th>
+                      <th/>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                      {upcomingRentals.map((rental, index) =>
+                        <RentalRow
+                          options
+                          key={`rental-row-${rental.id}-${index}`}
+                          rental={rental}
+                        />
+                      )}
+                    </tbody>
+                  </Table>
+                </Card>
+              </React.Fragment>
+            }
+
+            {pastRentals.length > 0 &&
+              <React.Fragment>
+                <h3 style={{ color: 'white', marginTop: '0.5em' }}>Past</h3>
+
+                <Card>
+                  <Table style={{ margin: '0' }}>
+                    <thead>
+                    <tr>
+                      <th>Start</th>
+                      <th>End</th>
+                      <th>Boat</th>
+                      <th>Crew Count</th>
+                      <th>Rented At</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                      {pastRentals.map((rental, index) =>
+                        <RentalRow
+                          key={`rental-row-${rental.id}-${index}`}
+                          rental={rental}
+                        />
+                      )}
+                    </tbody>
+                  </Table>
+                </Card>
+              </React.Fragment>
+            }
+          </React.Fragment>
+          :
+          <div>No Rentals Found. Purchase a rental and you'll find it here!</div>
+        }
       </ContentWrapper>
     )
   }

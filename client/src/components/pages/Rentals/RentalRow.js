@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import moment from 'moment'
 import styled from 'styled-components'
@@ -43,7 +44,7 @@ class RentalRow extends React.Component {
   }
 
   render() {
-    const { rental } = this.props;
+    const { rental, options } = this.props;
     const { showEditRentalModal } = this.state;
 
     return (
@@ -65,35 +66,42 @@ class RentalRow extends React.Component {
 
           <td>{moment(rental.createdAt).format('MM/DD/YY LT')}</td>
 
-          <td>
-            <Dropdown alignRight>
-              <StyledDropDownToggle>
-                <Dropdown.Toggle variant='outline-dark'>
-                  <FaEllipsisH/>
-                </Dropdown.Toggle>
-              </StyledDropDownToggle>
+          {options &&
+            <td>
+              <Dropdown alignRight>
+                <StyledDropDownToggle>
+                  <Dropdown.Toggle variant='outline-dark'>
+                    <FaEllipsisH/>
+                  </Dropdown.Toggle>
+                </StyledDropDownToggle>
 
-              <Dropdown.Menu>
-                <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showEditRentalModal: true })}>
-                    <FaInfoCircle/>
-                    <span>Edit Rental</span>
-                  </Dropdown.Item>
-                </StyledDropDownItem>
+                <Dropdown.Menu>
+                  <StyledDropDownItem>
+                    <Dropdown.Item onClick={() => this.setState({ showEditRentalModal: true })}>
+                      <FaInfoCircle/>
+                      <span>Edit Rental</span>
+                    </Dropdown.Item>
+                  </StyledDropDownItem>
 
-                <StyledDropDownItem>
-                  <Dropdown.Item disabled onClick={() => console.log('Cancel Rental')}>
-                    <FaSlash/>
-                    <span>Cancel Rental</span>
-                  </Dropdown.Item>
-                </StyledDropDownItem>
-              </Dropdown.Menu>
-            </Dropdown>
-          </td>
+                  <StyledDropDownItem>
+                    <Dropdown.Item disabled onClick={() => console.log('Cancel Rental')}>
+                      <FaSlash/>
+                      <span>Cancel Rental</span>
+                    </Dropdown.Item>
+                  </StyledDropDownItem>
+                </Dropdown.Menu>
+              </Dropdown>
+            </td>
+          }
         </tr>
       </React.Fragment>
     )
   }
+}
+
+RentalRow.propTypes = {
+  options: PropTypes.bool,
+  rental: PropTypes.arrayOf(PropTypes.object).isRequired
 }
 
 export default connect(
