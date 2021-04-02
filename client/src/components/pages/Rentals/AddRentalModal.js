@@ -171,6 +171,7 @@ class AddRentalModal extends React.Component {
     } = this.state
 
     return (
+      !this.selectionOverlapsOtherRental(newRentalPeriod) &&
       !this.alreadyRentedThisDay(newRentalPeriod) &&
       this.selectedThreeHourSlot(newRentalPeriod) &&
       !this.rentalStartsInPast(newRentalPeriod) &&
@@ -179,10 +180,10 @@ class AddRentalModal extends React.Component {
     )
   }
 
-  rentalStartsInPast(rental) {
-    if (!rental.start) return true
+  rentalStartsInPast(rentalSelection) {
+    if (!rentalSelection.start) return true
 
-    return moment(rental.start).isBefore()
+    return moment(rentalSelection.start).isBefore()
   }
 
   alreadyRentedThisDay(rentalSelection) {
@@ -205,6 +206,27 @@ class AddRentalModal extends React.Component {
     })
   }
 
+  /**
+   * Determines if the selected time slot
+   * overlaps an existing rental on the same boat
+   */
+  selectionOverlapsOtherRental(rentalSelection) {
+    const { allRentals } = this.props
+
+    const selectionStart = moment(rentalSelection.start)
+    const selectionEnd = moment(rentalSelection.end)
+
+    return allRentals.some((rental) => {
+      const rentalStart = moment(rental.start)
+      const rentalEnd = moment(rental.end)
+
+      const selectionIsBefore = selectionStart.isSameOrBefore(rentalStart) && selectionEnd.isSameOrBefore(rentalStart)
+      const selectionIsAfter = selectionStart.isSameOrAfter(rentalEnd) && selectionEnd.isSameOrAfter(rentalEnd)
+
+      return !(selectionIsBefore || selectionIsAfter)
+    })
+  }
+
   eventStyleGetter(rental) {
     const {currentUser} = this.props
 
@@ -216,6 +238,7 @@ class AddRentalModal extends React.Component {
       backgroundColor = 'grey' // someone else's rental slot
     } else if (
       this.alreadyRentedThisDay(rental) ||
+      this.selectionOverlapsOtherRental(rental) ||
       this.rentalStartsInPast(rental) ||
       !this.selectedThreeHourSlot(rental)
     ) {
@@ -243,6 +266,8 @@ class AddRentalModal extends React.Component {
       return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>} view={view} />
     } else if (this.alreadyRentedThisDay(rental)) {
       return <EventLabel label={'Cannot rent more than once per day'} svgComponent={<FaExclamationTriangle/>} view={view} />
+    } else if (this.selectionOverlapsOtherRental(rental)) {
+      return <EventLabel label={'Boat already rented at this time'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (this.rentalStartsInPast(rental)) {
       return <EventLabel label={'Please select a time slot in the future'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (!this.selectedThreeHourSlot(rental)) {
