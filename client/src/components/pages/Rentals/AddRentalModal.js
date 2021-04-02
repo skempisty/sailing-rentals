@@ -135,7 +135,6 @@ class AddRentalModal extends React.Component {
     onHide()
   }
 
-
   get rentals() {
     const { allRentals } = this.props
     const { newRentalPeriod, selectedBoatId } = this.state
@@ -173,20 +172,31 @@ class AddRentalModal extends React.Component {
 
     return (
       this.selectedThreeHourSlot(newRentalPeriod) &&
+      !this.rentalStartsInPast(newRentalPeriod) &&
       !!selectedBoatId &&
       crewCount >= MINIMUM_CREW_COUNT
     )
   }
 
+  rentalStartsInPast(rental) {
+    if (!rental.start) return true
+
+    return moment(rental.start).isBefore()
+  }
+
   eventStyleGetter(rental) {
+    const {currentUser} = this.props
+
     let backgroundColor
 
-    if (rental.id) {
-      backgroundColor = 'grey'
+    if (rental.rentedBy === currentUser.id) {
+      backgroundColor = 'purple' // one of the user's other rental slots
+    } else if (rental.id) {
+      backgroundColor = 'grey' // someone else's rental slot
     } else if (this.rentalStartsInPast(rental) || !this.selectedThreeHourSlot(rental)) {
-      backgroundColor = 'red'
+      backgroundColor = 'red' // invalid time slot selection
     } else {
-      backgroundColor = 'green'
+      backgroundColor = 'green' // valid time slot selection
     }
 
     const style = {
@@ -196,16 +206,14 @@ class AddRentalModal extends React.Component {
     return { style }
   }
 
-  rentalStartsInPast(rental) {
-    if (!rental.start) return true
-
-    return moment(rental.start).isBefore()
-  }
-
   titleAccessor(rental) {
+    const { currentUser } = this.props
+
     const { name: boatName } = getBoatById(rental.boatId)
 
-    if (rental.id) {
+    if (rental.rentedBy === currentUser.id) {
+      return <EventLabel label={'My rental'} svgComponent={<RiSailboatFill/>}/>
+    } else if (rental.id) {
       return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>}/>
     } else if (this.rentalStartsInPast(rental)) {
       return <EventLabel label={'Please select a time slot in the future'} svgComponent={<FaExclamationTriangle/>}/>
@@ -220,7 +228,7 @@ class AddRentalModal extends React.Component {
 
   render() {
     const { show, boats } = this.props
-    const { selectedBoatId, crewCount, view, date, newRentalPeriod } = this.state
+    const { selectedBoatId, crewCount, view, date } = this.state
 
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
@@ -310,7 +318,7 @@ class AddRentalModal extends React.Component {
 
           <Button
             variant='primary'
-            disabled={!this.validRental || this.rentalStartsInPast(newRentalPeriod)}
+            disabled={!this.validRental}
             onClick={this.handleProceedClick.bind(this)}
           >
             Create Rental

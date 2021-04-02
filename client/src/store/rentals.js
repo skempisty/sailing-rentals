@@ -12,8 +12,8 @@ const rentalSlice = createSlice({
     initRentals: (state, action) => {
       const { myRentals, allRentals } = action.payload
 
-      state.myRentals = myRentals
-      state.allRentals = allRentals
+      if (myRentals) state.myRentals = myRentals
+      if (allRentals) state.allRentals = allRentals
     },
     addNewRental: (state, action) => {
       const { newRental } = action.payload
