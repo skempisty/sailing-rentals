@@ -362,22 +362,30 @@ class AddRentalModal extends React.Component {
               <Form.Group as={Col}>
                 {/* Boat Select */}
                 <Form.Label><b>Boat</b></Form.Label>
-                <Dropdown>
-                  <Dropdown.Toggle variant='dark' id='dropdown-basic'>
-                    {selectedBoatId ? getBoatById(selectedBoatId).name : 'Select a boat'}
-                  </Dropdown.Toggle>
 
-                  <Dropdown.Menu>
-                    {boats.map((boat, index) =>
-                      <Dropdown.Item
-                        key={`boat-select-${boat.id}-${index}`}
-                        onSelect={() => this.handleBoatSelect(boat.id)}
-                      >
-                        {boat.name}
-                      </Dropdown.Item>
-                    )}
-                  </Dropdown.Menu>
-                </Dropdown>
+                {editRental ?
+                  <Form.Control
+                    value={getBoatById(editRental.boatId).name}
+                    disabled
+                  />
+                  :
+                  <Dropdown>
+                    <Dropdown.Toggle variant='dark' id='dropdown-basic'>
+                      {selectedBoatId ? getBoatById(selectedBoatId).name : 'Select a boat'}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      {boats.map((boat, index) =>
+                        <Dropdown.Item
+                          key={`boat-select-${boat.id}-${index}`}
+                          onSelect={() => this.handleBoatSelect(boat.id)}
+                        >
+                          {boat.name}
+                        </Dropdown.Item>
+                      )}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                }
               </Form.Group>
 
               <Form.Group as={Col}>
