@@ -84,11 +84,13 @@ class AddRentalModal extends React.Component {
     const { currentUser, onRentalAdd, onRentalEdit, editRental } = this.props
     const { newRentalPeriod, crewCount } = this.state
 
+    const newRentalPeriodNotChosen = Object.keys(newRentalPeriod).length < 1
+
     const newRental = new Rental({
       id: editRental ? editRental.id : null,
-      start: newRentalPeriod.start,
-      end: newRentalPeriod.end,
-      boatId: newRentalPeriod.boatId,
+      start: newRentalPeriodNotChosen && editRental ? editRental.start : newRentalPeriod.start,
+      end: newRentalPeriodNotChosen && editRental ? editRental.end : newRentalPeriod.end,
+      boatId: newRentalPeriodNotChosen && editRental ? editRental.boatId : newRentalPeriod.boatId,
       rentedBy: currentUser.id,
       crewCount,
       createdAt: editRental ? editRental.createdAt : null
@@ -204,6 +206,7 @@ class AddRentalModal extends React.Component {
   get validRental() {
     const MINIMUM_CREW_COUNT = 1
 
+    const { editRental } = this.props
     const {
       selectedBoatId,
       newRentalPeriod,
@@ -211,10 +214,18 @@ class AddRentalModal extends React.Component {
     } = this.state
 
     return (
-      !this.selectionOverlapsOtherRental(newRentalPeriod) &&
-      !this.alreadyRentedThisDay(newRentalPeriod) &&
-      this.selectedThreeHourSlot(newRentalPeriod) &&
-      !this.rentalStartsInPast(newRentalPeriod) &&
+      (
+        (
+          editRental && JSON.stringify(newRentalPeriod) === '{}'
+        )
+          ||
+        (
+          !this.selectionOverlapsOtherRental(newRentalPeriod) &&
+          !this.alreadyRentedThisDay(newRentalPeriod) &&
+          this.selectedThreeHourSlot(newRentalPeriod) &&
+          !this.rentalStartsInPast(newRentalPeriod)
+        )
+      ) &&
       !!selectedBoatId &&
       crewCount >= MINIMUM_CREW_COUNT
     )
