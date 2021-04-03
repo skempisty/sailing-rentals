@@ -184,4 +184,21 @@ router.post('/rentals', async (req, res) => {
   res.send(boats)
 })
 
+router.put('/rentals/:id', async (req, res) => {
+  const { id } = req.params
+  const { authorization: jwtToken } = req.headers
+  const updateFields = req.body
+
+  const { userId, isAdmin } = await decodeJwt(jwtToken)
+
+  // only allow this action if the logged in user matches the id, or token belongs to an admin
+  if (isAdmin || String(updateFields.rentedBy) === String(userId)) {
+    const updatedRental = await api.rentals.updateRental(id, updateFields, isAdmin)
+
+    res.send(updatedRental)
+  } else {
+    res.status(401).send('You don\'t have permission to update this rental')
+  }
+})
+
 module.exports = router;

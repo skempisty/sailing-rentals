@@ -31,9 +31,11 @@ class AddRentalModal extends React.Component {
   }
 
   get initialState() {
+    const { editRental } = this.props
+
     return {
-      selectedBoatId: '',
-      crewCount: 0,
+      selectedBoatId: editRental ? editRental.boatId : '',
+      crewCount: editRental ? editRental.crewCount : 0,
       view: 'month',
       date: new Date(),
       newRentalPeriod: {}
@@ -79,18 +81,26 @@ class AddRentalModal extends React.Component {
   }
 
   handleProceedClick() {
-    const { currentUser, onRentalAdd } = this.props
-    const { newRentalPeriod, crewCount, selectedBoatId } = this.state
+    const { currentUser, onRentalAdd, onRentalEdit, editRental } = this.props
+    const { newRentalPeriod, crewCount } = this.state
 
     const newRental = new Rental({
+      id: editRental ? editRental.id : null,
       start: newRentalPeriod.start,
       end: newRentalPeriod.end,
+      boatId: newRentalPeriod.boatId,
       rentedBy: currentUser.id,
-      boatId: selectedBoatId,
-      crewCount
+      crewCount,
+      createdAt: editRental ? editRental.createdAt : null
     })
 
-    onRentalAdd(newRental)
+    if (editRental) {
+      // edit rental
+      onRentalEdit(editRental.id, newRental)
+    } else {
+      // create rental
+      onRentalAdd(newRental)
+    }
 
     this.resetAndHide()
   }
@@ -126,6 +136,36 @@ class AddRentalModal extends React.Component {
     const hours = Math.round((duration.asHours() + Number.EPSILON) * 100) / 100
 
     return hours === 3
+  }
+
+  convertRentalTimeToDates(rental) {
+    return {
+      start: new Date(rental.start),
+      end: new Date(rental.end),
+      boatId: rental.boatId
+    }
+  }
+
+  getBlockingBoatName(rental) {
+    let { myRentals } = this.props
+
+    const selectionDate = {
+      day: moment(rental.end).date(),
+      month: moment(rental.end).month(),
+      year: moment(rental.end).year()
+    }
+
+    const selectionDateString = JSON.stringify(selectionDate)
+
+    const blockingRental =  myRentals.find(rental => {
+      return selectionDateString === JSON.stringify({
+        day: moment(rental.end).date(),
+        month: moment(rental.end).month(),
+        year: moment(rental.end).year()
+      })
+    })
+
+    return getBoatById(blockingRental.boatId).name
   }
 
   resetAndHide() {
@@ -187,7 +227,7 @@ class AddRentalModal extends React.Component {
   }
 
   alreadyRentedThisDay(rentalSelection) {
-    const { myRentals } = this.props
+    let { myRentals, editRental } = this.props
 
     const selectionDate = {
       day: moment(rentalSelection.end).date(),
@@ -196,6 +236,11 @@ class AddRentalModal extends React.Component {
     }
 
     const selectionDateString = JSON.stringify(selectionDate)
+
+    if (editRental) {
+      // the saved time slot of the editing rental doesn't count for this validation
+      myRentals = myRentals.filter(rental => rental.id !== editRental.id)
+    }
 
     return myRentals.some(rental => {
       return selectionDateString === JSON.stringify({
@@ -211,10 +256,15 @@ class AddRentalModal extends React.Component {
    * overlaps an existing rental on the same boat
    */
   selectionOverlapsOtherRental(rentalSelection) {
-    const { allRentals } = this.props
+    let { allRentals, editRental } = this.props
 
     const selectionStart = moment(rentalSelection.start)
     const selectionEnd = moment(rentalSelection.end)
+
+    if (editRental) {
+      // the saved time slot of the editing rental doesn't count for this validation
+      allRentals = allRentals.filter(rental => rental.id !== editRental.id)
+    }
 
     return allRentals.some((rental) => {
       const rentalStart = moment(rental.start)
@@ -228,11 +278,13 @@ class AddRentalModal extends React.Component {
   }
 
   eventStyleGetter(rental) {
-    const {currentUser} = this.props
+    const { currentUser, editRental } = this.props
 
     let backgroundColor
 
-    if (rental.rentedBy === currentUser.id) {
+    if (editRental && editRental.id === rental.id) {
+      backgroundColor = 'dodgerblue' // one of the user's other rental slots
+    } else if (rental.rentedBy === currentUser.id) {
       backgroundColor = 'purple' // one of the user's other rental slots
     } else if (rental.id) {
       backgroundColor = 'grey' // someone else's rental slot
@@ -255,17 +307,19 @@ class AddRentalModal extends React.Component {
   }
 
   titleAccessor(rental) {
-    const { currentUser } = this.props
+    const { currentUser, editRental } = this.props
     const { view } = this.state
 
     const { name: boatName } = getBoatById(rental.boatId)
 
-    if (rental.rentedBy === currentUser.id) {
+    if (editRental && editRental.id === rental.id) {
+      return <EventLabel label={'Saved time slot'} svgComponent={<RiSailboatFill/>} view={view} />
+    } else if (rental.rentedBy === currentUser.id) {
       return <EventLabel label={'My rental'} svgComponent={<RiSailboatFill/>} view={view} />
     } else if (rental.id) {
       return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>} view={view} />
     } else if (this.alreadyRentedThisDay(rental)) {
-      return <EventLabel label={'Cannot rent more than once per day'} svgComponent={<FaExclamationTriangle/>} view={view} />
+      return <EventLabel label={`You've rented the ${this.getBlockingBoatName(rental)} for today already`} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (this.selectionOverlapsOtherRental(rental)) {
       return <EventLabel label={'Boat already rented at this time'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (this.rentalStartsInPast(rental)) {
@@ -274,19 +328,21 @@ class AddRentalModal extends React.Component {
       return <EventLabel label={'Please select a 3 hour time slot'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (!boatName) {
       return <EventLabel label={'Select a boat'} svgComponent={<FaExclamationTriangle/>} view={view} />
+    } else if (editRental && !rental.id) {
+      return <EventLabel label='Updated time slot' svgComponent={<RiSailboatFill/>} view={view} />
     } else {
       return <EventLabel label={`Sailing on the ${boatName}`} svgComponent={<RiSailboatFill/>} view={view} />
     }
   }
 
   render() {
-    const { show, boats } = this.props
+    const { show, boats, editRental } = this.props
     const { selectedBoatId, crewCount, view, date } = this.state
 
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
         <Modal.Header closeButton>
-          <Modal.Title>Add Rental</Modal.Title>
+          <Modal.Title>{editRental ? 'Edit Rental' : 'Create Rental'}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -374,7 +430,7 @@ class AddRentalModal extends React.Component {
             disabled={!this.validRental}
             onClick={this.handleProceedClick.bind(this)}
           >
-            Create Rental
+            {editRental ? 'Save Changes' : 'Save Rental'}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -396,6 +452,7 @@ export default connect(
 )(AddRentalModal)
 
 AddRentalModal.propTypes = {
+  editRental: PropTypes.object,
   show: PropTypes.bool,
   onHide: PropTypes.func,
   onRentalAdd: PropTypes.func
