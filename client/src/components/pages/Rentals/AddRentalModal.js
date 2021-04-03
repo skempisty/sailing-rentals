@@ -38,14 +38,8 @@ class AddRentalModal extends React.Component {
       crewCount: editRental ? editRental.crewCount : 0,
       view: 'month',
       date: new Date(),
-      newRentalPeriod: editRental ? this.convertRentalTimeToDates(editRental) : {}
+      newRentalPeriod: {}
     }
-  }
-
-  filterRentalBeingEdited(rentals) {
-    const { editRental } = this.props
-
-    return rentals.filter(rental => rental.id !== editRental.id)
   }
 
   handleSelectSlot(e) {
@@ -163,11 +157,7 @@ class AddRentalModal extends React.Component {
       rental.end = new Date(rental.end)
     })
 
-    let { upcomingRentals } = splitUpcomingAndPastRentals(allRentals)
-
-    if (editRental) {
-      upcomingRentals = this.filterRentalBeingEdited(upcomingRentals)
-    }
+    const { upcomingRentals } = splitUpcomingAndPastRentals(allRentals)
 
     const allEvents = [
       newRentalPeriod,
@@ -207,7 +197,7 @@ class AddRentalModal extends React.Component {
   }
 
   alreadyRentedThisDay(rentalSelection) {
-    const { myRentals } = this.props
+    let { myRentals, editRental } = this.props
 
     const selectionDate = {
       day: moment(rentalSelection.end).date(),
@@ -216,6 +206,11 @@ class AddRentalModal extends React.Component {
     }
 
     const selectionDateString = JSON.stringify(selectionDate)
+
+    if (editRental) {
+      // the saved time slot of the editing rental doesn't count for this validation
+      myRentals = myRentals.filter(rental => rental.id !== editRental.id)
+    }
 
     return myRentals.some(rental => {
       return selectionDateString === JSON.stringify({
@@ -231,10 +226,15 @@ class AddRentalModal extends React.Component {
    * overlaps an existing rental on the same boat
    */
   selectionOverlapsOtherRental(rentalSelection) {
-    const { allRentals } = this.props
+    let { allRentals, editRental } = this.props
 
     const selectionStart = moment(rentalSelection.start)
     const selectionEnd = moment(rentalSelection.end)
+
+    if (editRental) {
+      // the saved time slot of the editing rental doesn't count for this validation
+      allRentals = allRentals.filter(rental => rental.id !== editRental.id)
+    }
 
     return allRentals.some((rental) => {
       const rentalStart = moment(rental.start)
@@ -248,11 +248,13 @@ class AddRentalModal extends React.Component {
   }
 
   eventStyleGetter(rental) {
-    const {currentUser} = this.props
+    const { currentUser, editRental } = this.props
 
     let backgroundColor
 
-    if (rental.rentedBy === currentUser.id) {
+    if (editRental && editRental.id === rental.id) {
+      backgroundColor = 'dodgerblue' // one of the user's other rental slots
+    } else if (rental.rentedBy === currentUser.id) {
       backgroundColor = 'purple' // one of the user's other rental slots
     } else if (rental.id) {
       backgroundColor = 'grey' // someone else's rental slot
@@ -275,12 +277,14 @@ class AddRentalModal extends React.Component {
   }
 
   titleAccessor(rental) {
-    const { currentUser } = this.props
+    const { currentUser, editRental } = this.props
     const { view } = this.state
 
     const { name: boatName } = getBoatById(rental.boatId)
 
-    if (rental.rentedBy === currentUser.id) {
+    if (editRental && editRental.id === rental.id) {
+      return <EventLabel label={'Saved time slot'} svgComponent={<RiSailboatFill/>} view={view} />
+    } else if (rental.rentedBy === currentUser.id) {
       return <EventLabel label={'My rental'} svgComponent={<RiSailboatFill/>} view={view} />
     } else if (rental.id) {
       return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>} view={view} />
@@ -294,6 +298,8 @@ class AddRentalModal extends React.Component {
       return <EventLabel label={'Please select a 3 hour time slot'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (!boatName) {
       return <EventLabel label={'Select a boat'} svgComponent={<FaExclamationTriangle/>} view={view} />
+    } else if (editRental && !rental.id) {
+      return <EventLabel label='Updated time slot' svgComponent={<RiSailboatFill/>} view={view} />
     } else {
       return <EventLabel label={`Sailing on the ${boatName}`} svgComponent={<RiSailboatFill/>} view={view} />
     }
@@ -394,7 +400,7 @@ class AddRentalModal extends React.Component {
             disabled={!this.validRental}
             onClick={this.handleProceedClick.bind(this)}
           >
-            {editRental ? 'Edit Rental' : 'Create Rental'}
+            {editRental ? 'Save Changes' : 'Save Rental'}
           </Button>
         </Modal.Footer>
       </Modal>
