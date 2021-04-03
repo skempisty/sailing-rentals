@@ -189,8 +189,6 @@ router.put('/rentals/:id', async (req, res) => {
   const { authorization: jwtToken } = req.headers
   const updateFields = req.body
 
-  console.log('updateFields', updateFields)
-
   const { userId, isAdmin } = await decodeJwt(jwtToken)
 
   // only allow this action if the logged in user matches the id, or token belongs to an admin
