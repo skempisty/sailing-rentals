@@ -89,7 +89,8 @@ class AddRentalModal extends React.Component {
       end: newRentalPeriod.end,
       boatId: newRentalPeriod.boatId,
       rentedBy: currentUser.id,
-      crewCount
+      crewCount,
+      createdAt: editRental ? editRental.createdAt : null
     })
 
     if (editRental) {
