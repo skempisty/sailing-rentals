@@ -20,13 +20,23 @@ const rentalSlice = createSlice({
 
       state.myRentals.push(new Rental(newRental))
       state.allRentals.push(new Rental(newRental))
+    },
+    editRental: (state, action) => {
+      const { id, updatedRental } = action.payload
+
+      const myRentalsIndex = state.myRentals.findIndex(rental => rental.id === id)
+      const allRentalsIndex = state.allRentals.findIndex(rental => rental.id === id)
+
+      state.myRentals[myRentalsIndex] = updatedRental
+      state.allRentals[allRentalsIndex] = updatedRental
     }
   }
 });
 
 export const {
   initRentals,
-  addNewRental
+  addNewRental,
+  editRental
 } = rentalSlice.actions;
 
 export default rentalSlice.reducer;

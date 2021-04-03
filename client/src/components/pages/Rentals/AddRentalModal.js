@@ -81,8 +81,8 @@ class AddRentalModal extends React.Component {
   }
 
   handleProceedClick() {
-    const { currentUser, onRentalAdd } = this.props
-    const { newRentalPeriod, crewCount, selectedBoatId } = this.state
+    const { currentUser, onRentalAdd, onRentalEdit, editRental } = this.props
+    const { newRentalPeriod, crewCount } = this.state
 
     const newRental = new Rental({
       start: newRentalPeriod.start,
@@ -92,7 +92,13 @@ class AddRentalModal extends React.Component {
       crewCount
     })
 
-    onRentalAdd(newRental)
+    if (editRental) {
+      // edit rental
+      onRentalEdit(editRental.id, newRental)
+    } else {
+      // create rental
+      onRentalAdd(newRental)
+    }
 
     this.resetAndHide()
   }

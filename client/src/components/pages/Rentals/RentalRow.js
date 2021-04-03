@@ -1,15 +1,17 @@
-import React from 'react';
+import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 import moment from 'moment'
 import styled from 'styled-components'
 
-import { Dropdown } from 'react-bootstrap';
-import { FaEllipsisH, FaInfoCircle, FaSlash } from 'react-icons/fa';
+import { Dropdown } from 'react-bootstrap'
+import { FaEllipsisH, FaInfoCircle, FaSlash } from 'react-icons/fa'
 
-import AddRentalModal from "./AddRentalModal";
+import AddRentalModal from './AddRentalModal'
 
+import updateRental from '../../../api/updateRental'
 import getBoatById from '../../../store/orm/boats/getBoatById'
+import { editRental } from '../../../store/rentals'
 
 const StyledDropDownToggle = styled.div`
   button {
@@ -36,22 +38,35 @@ const StyledDropDownItem = styled.div`
 
 class RentalRow extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       showEditRentalModal: false
     }
   }
 
+  async handleRentalEdit(id, updatedRental) {
+    const { rental, editRental } = this.props
+
+    try {
+      await updateRental(rental.id, updatedRental)
+
+      editRental({ id: rental.id, updatedRental })
+    } catch (error) {
+      alert('Error updating rental')
+    }
+  }
+
   render() {
-    const { rental, options } = this.props;
-    const { showEditRentalModal } = this.state;
+    const { rental, options } = this.props
+    const { showEditRentalModal } = this.state
 
     return (
       <React.Fragment>
         <AddRentalModal
           editRental={rental}
           show={showEditRentalModal}
+          onRentalEdit={this.handleRentalEdit.bind(this)}
           onHide={() => this.setState({ showEditRentalModal: false })}
         />
 
@@ -105,7 +120,11 @@ RentalRow.propTypes = {
   rental: PropTypes.object.isRequired
 }
 
+const mapDispatchToProps = {
+  editRental
+}
+
 export default connect(
   null,
-  null
-)(RentalRow);
+  mapDispatchToProps
+)(RentalRow)
