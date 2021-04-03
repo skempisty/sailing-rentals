@@ -138,6 +138,28 @@ class AddRentalModal extends React.Component {
     }
   }
 
+  getBlockingBoatName(rental) {
+    let { myRentals } = this.props
+
+    const selectionDate = {
+      day: moment(rental.end).date(),
+      month: moment(rental.end).month(),
+      year: moment(rental.end).year()
+    }
+
+    const selectionDateString = JSON.stringify(selectionDate)
+
+    const blockingRental =  myRentals.find(rental => {
+      return selectionDateString === JSON.stringify({
+        day: moment(rental.end).date(),
+        month: moment(rental.end).month(),
+        year: moment(rental.end).year()
+      })
+    })
+
+    return getBoatById(blockingRental.boatId).name
+  }
+
   resetAndHide() {
     const { onHide } = this.props
 
@@ -146,7 +168,7 @@ class AddRentalModal extends React.Component {
   }
 
   get rentals() {
-    const { allRentals, editRental } = this.props
+    const { allRentals } = this.props
     const { newRentalPeriod, selectedBoatId } = this.state
 
     if (!selectedBoatId) return []
@@ -289,7 +311,7 @@ class AddRentalModal extends React.Component {
     } else if (rental.id) {
       return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>} view={view} />
     } else if (this.alreadyRentedThisDay(rental)) {
-      return <EventLabel label={'Cannot rent more than once per day'} svgComponent={<FaExclamationTriangle/>} view={view} />
+      return <EventLabel label={`You've rented the ${this.getBlockingBoatName(rental)} for today already`} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (this.selectionOverlapsOtherRental(rental)) {
       return <EventLabel label={'Boat already rented at this time'} svgComponent={<FaExclamationTriangle/>} view={view} />
     } else if (this.rentalStartsInPast(rental)) {
