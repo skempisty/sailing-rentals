@@ -85,6 +85,7 @@ class AddRentalModal extends React.Component {
     const { newRentalPeriod, crewCount } = this.state
 
     const newRental = new Rental({
+      id: editRental ? editRental.id : null,
       start: newRentalPeriod.start,
       end: newRentalPeriod.end,
       boatId: newRentalPeriod.boatId,
