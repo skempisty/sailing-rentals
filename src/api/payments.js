@@ -14,8 +14,6 @@ exports.createPayment = async (creatorId, rentalId, paymentObj) => {
     amount,
     currency,
     payerId,
-    payerAddressLine1,
-    payerAdminArea2,
     payerCountryCode,
     payerPostalCode,
     payerEmailAddress,
@@ -32,8 +30,6 @@ exports.createPayment = async (creatorId, rentalId, paymentObj) => {
     amount,
     currency,
     payerId,
-    payerAddressLine1,
-    payerAdminArea2,
     payerCountryCode,
     payerPostalCode,
     payerEmailAddress,
@@ -52,8 +48,6 @@ exports.createPayment = async (creatorId, rentalId, paymentObj) => {
     amount,
     currency,
     payer_id,
-    payer_address_line_1,
-    payer_admin_area_2,
     payer_country_code,
     payer_postal_code,
     payer_email_address,
@@ -65,7 +59,7 @@ exports.createPayment = async (creatorId, rentalId, paymentObj) => {
     paypal_capture_id,
     paid_by,
     rental_id
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, newPayment)
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, newPayment)
 
   const [ payment ] = await db.query(`SELECT * FROM ${db.name}.payments WHERE id = LAST_INSERT_ID()`)
 

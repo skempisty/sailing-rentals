@@ -102,8 +102,6 @@
     'currency VARCHAR(255) NOT NULL,' +
 
     'payer_id VARCHAR(255) NOT NULL,' +
-    'payer_address_line_1 VARCHAR(255) NOT NULL,' +
-    'payer_admin_area_2 VARCHAR(255) NOT NULL,' +
     'payer_country_code VARCHAR(255) NOT NULL,' +
     'payer_postal_code VARCHAR(255) NOT NULL,' +
     'payer_email_address VARCHAR(255) NOT NULL,' +

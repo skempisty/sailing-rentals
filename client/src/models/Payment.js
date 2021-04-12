@@ -4,8 +4,6 @@ export default class Payment {
     amount,
     currency,
     payerId,
-    payerAddressLine1,
-    payerAdminArea2,
     payerCountryCode,
     payerPostalCode,
     payerEmailAddress,
@@ -20,8 +18,6 @@ export default class Payment {
     this.amount = amount
     this.currency = currency
     this.payerId = payerId
-    this.payerAddressLine1 = payerAddressLine1
-    this.payerAdminArea2 = payerAdminArea2
     this.payerCountryCode = payerCountryCode
     this.payerPostalCode = payerPostalCode
     this.payerEmailAddress = payerEmailAddress

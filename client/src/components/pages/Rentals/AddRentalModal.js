@@ -453,19 +453,6 @@ class AddRentalModal extends React.Component {
           <PayPalButton
             amount='0.01'
             shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
-            createOrder={(data, actions) => {
-              return actions.order.create({
-                purchase_units: [{
-                  amount: {
-                    currency_code: 'USD',
-                    value: '0.01'
-                  }
-                }],
-                application_context: {
-                  shipping_preference: 'NO_SHIPPING'
-                }
-              });
-            }}
             onSuccess={(details) => {
               const { id: orderId, payer, purchase_units } = details
               const payee = purchase_units[0].payee
@@ -485,8 +472,6 @@ class AddRentalModal extends React.Component {
                 amount: capture.amount.value,
                 currency: capture.amount.currency_code,
                 payerId: payer.payer_id,
-                payerAddressLine1: payer.address.address_line_1,
-                payerAdminArea2: payer.address.admin_area_2,
                 payerCountryCode: payer.address.country_code,
                 payerPostalCode: payer.address.postal_code,
                 payerEmailAddress: payer.email_address,
