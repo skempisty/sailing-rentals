@@ -508,6 +508,7 @@ class AddRentalModal extends React.Component {
             options={{
               clientId: 'sb' // 'PRODUCTION_CLIENT_ID'
             }}
+            onShippingChange={() => { return '' }} // Just having this prop forces all payment forms to render in popups instead of inline
           />
         </Modal.Footer>
       </Modal>
