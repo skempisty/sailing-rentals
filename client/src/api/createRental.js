@@ -1,7 +1,7 @@
-import Constants from '../utils/constants';
+import Constants from '../utils/constants'
 
-export default async function createRental(event) {
-  const url = `${Constants.baseUrl}/api/rentals`;
+export default async function createRental(rental, payment) {
+  const url = `${Constants.baseUrl}/api/rentals`
 
   const postOptions = {
     method: 'POST',
@@ -9,10 +9,10 @@ export default async function createRental(event) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
     },
-    body: JSON.stringify({ event })
-  };
+    body: JSON.stringify({ rental, payment })
+  }
 
-  const rentalRes = await fetch(url, postOptions);
+  const rentalRes = await fetch(url, postOptions)
 
-  return await rentalRes.json();
+  return await rentalRes.json()
 }

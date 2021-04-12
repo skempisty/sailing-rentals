@@ -8,10 +8,10 @@ exports.getAllRentals = async () => {
   return await db.query(`SELECT * FROM ${db.name}.rentals ORDER BY start`)
 }
 
-exports.createRental = async (created_by, event) => {
-  const { rentedBy, boatId, start, end, crewCount } = event;
+exports.createRental = async (created_by, rentalObj) => {
+  const { boatId, start, end, crewCount } = rentalObj;
 
-  const newRental = [ rentedBy, boatId, start, end, crewCount ]
+  const newRental = [ created_by, boatId, start, end, crewCount ]
 
   await db.query(`INSERT INTO ${db.name}.rentals (rented_by, boat_id, start, end, crew_count) VALUES (?, ?, ?, ?, ?)`, newRental)
 

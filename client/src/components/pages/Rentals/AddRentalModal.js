@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import styled from 'styled-components'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
+import { PayPalButton } from 'react-paypal-button-v2'
 
 import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap'
 import { FaExclamationTriangle } from 'react-icons/fa'
@@ -12,6 +13,7 @@ import { RiSailboatFill } from 'react-icons/ri'
 import EventLabel from './EventLabel'
 
 import Rental from '../../../models/Rental'
+import Payment from '../../../models/Payment';
 import getBoatById from '../../../store/orm/boats/getBoatById'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
 
@@ -80,29 +82,23 @@ class AddRentalModal extends React.Component {
     }
   }
 
-  handleProceedClick() {
-    const { currentUser, onRentalAdd, onRentalEdit, editRental } = this.props
+  handleSaveChanges() {
+    const { currentUser, onRentalEdit, editRental } = this.props
     const { newRentalPeriod, crewCount } = this.state
 
     const newRentalPeriodNotChosen = Object.keys(newRentalPeriod).length < 1
 
-    const newRental = new Rental({
-      id: editRental ? editRental.id : null,
-      start: newRentalPeriodNotChosen && editRental ? editRental.start : newRentalPeriod.start,
-      end: newRentalPeriodNotChosen && editRental ? editRental.end : newRentalPeriod.end,
-      boatId: newRentalPeriodNotChosen && editRental ? editRental.boatId : newRentalPeriod.boatId,
+    const updatedRental = new Rental({
+      id: editRental.id,
+      start: newRentalPeriodNotChosen ? editRental.start : newRentalPeriod.start,
+      end: newRentalPeriodNotChosen ? editRental.end : newRentalPeriod.end,
+      boatId: newRentalPeriodNotChosen ? editRental.boatId : newRentalPeriod.boatId,
       rentedBy: currentUser.id,
       crewCount,
-      createdAt: editRental ? editRental.createdAt : null
+      createdAt: editRental.createdAt
     })
 
-    if (editRental) {
-      // edit rental
-      onRentalEdit(editRental.id, newRental)
-    } else {
-      // create rental
-      onRentalAdd(newRental)
-    }
+    onRentalEdit(editRental.id, updatedRental)
 
     this.resetAndHide()
   }
@@ -347,8 +343,8 @@ class AddRentalModal extends React.Component {
   }
 
   render() {
-    const { show, boats, editRental } = this.props
-    const { selectedBoatId, crewCount, view, date } = this.state
+    const { show, boats, editRental, onRentalAdd } = this.props
+    const { selectedBoatId, newRentalPeriod, crewCount, view, date } = this.state
 
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
@@ -444,13 +440,70 @@ class AddRentalModal extends React.Component {
             Cancel
           </Button>
 
-          <Button
-            variant='primary'
-            disabled={!this.validRental}
-            onClick={this.handleProceedClick.bind(this)}
-          >
-            {editRental ? 'Save Changes' : 'Save Rental'}
-          </Button>
+          {editRental &&
+            <Button
+              variant='primary'
+              disabled={!this.validRental}
+              onClick={this.handleSaveChanges.bind(this)}
+            >
+              Save Changes
+            </Button>
+          }
+
+          <PayPalButton
+            amount='0.01'
+            shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
+            createOrder={(data, actions) => {
+              return actions.order.create({
+                purchase_units: [{
+                  amount: {
+                    currency_code: 'USD',
+                    value: '0.01'
+                  }
+                }],
+                application_context: {
+                  shipping_preference: 'NO_SHIPPING'
+                }
+              });
+            }}
+            onSuccess={(details) => {
+              const { id: orderId, payer, purchase_units } = details
+              const payee = purchase_units[0].payee
+              const capture = purchase_units[0].payments.captures[0]
+
+              const newRental = new Rental({
+                id: null,
+                start: newRentalPeriod.start,
+                end: newRentalPeriod.end,
+                boatId: newRentalPeriod.boatId,
+                crewCount,
+                createdAt: null
+              })
+
+              const paymentObj = new Payment({
+                orderId,
+                amount: capture.amount.value,
+                currency: capture.amount.currency_code,
+                payerId: payer.payer_id,
+                payerAddressLine1: payer.address.address_line_1,
+                payerAdminArea2: payer.address.admin_area_2,
+                payerCountryCode: payer.address.country_code,
+                payerPostalCode: payer.address.postal_code,
+                payerEmailAddress: payer.email_address,
+                payerPhone: payer.phone.phone_number.national_number,
+                payerGivenName: payer.name.given_name,
+                payerSurname: payer.name.surname,
+                payeeEmail: payee.email_address,
+                payeeMerchantId: payee.merchant_id,
+                paypalCaptureId: capture.id,
+              })
+
+              onRentalAdd(newRental, paymentObj)
+            }}
+            options={{
+              clientId: 'sb' // 'PRODUCTION_CLIENT_ID'
+            }}
+          />
         </Modal.Footer>
       </Modal>
     )

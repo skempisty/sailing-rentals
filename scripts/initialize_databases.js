@@ -16,6 +16,7 @@
   await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.posts;`)
   await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.rentals;`)
   await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.payments;`)
+  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.site_settings;`)
   await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.boats;`)
   await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.users;`)
 
@@ -71,6 +72,7 @@
     'name VARCHAR(255),' +
     'model VARCHAR(255),' +
     'description TEXT,' +
+    'per_hour_rental_cost DOUBLE(10,2),' +
     'image_url VARCHAR(255),' +
     'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deleted_at TIMESTAMP' +
@@ -94,12 +96,40 @@
 
   await db.query(`CREATE TABLE ${SAILING_DB_NAME}.payments (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
-    'rental_id INT,' +
-    'paid_by INT,' +
-    'FOREIGN KEY (rental_id) REFERENCES boats(id),' +
+
+    'order_id VARCHAR(255) NOT NULL,' +
+    'amount DOUBLE(10,2) NOT NULL,' +
+    'currency VARCHAR(255) NOT NULL,' +
+
+    'payer_id VARCHAR(255) NOT NULL,' +
+    'payer_address_line_1 VARCHAR(255) NOT NULL,' +
+    'payer_admin_area_2 VARCHAR(255) NOT NULL,' +
+    'payer_country_code VARCHAR(255) NOT NULL,' +
+    'payer_postal_code VARCHAR(255) NOT NULL,' +
+    'payer_email_address VARCHAR(255) NOT NULL,' +
+    'payer_phone VARCHAR(255) NOT NULL,' +
+    'payer_given_name VARCHAR(255) NOT NULL,' +
+    'payer_surname VARCHAR(255) NOT NULL,' +
+
+    'payee_email VARCHAR(255) NOT NULL,' +
+    'payee_merchant_id VARCHAR(255) NOT NULL,' +
+    'paypal_capture_id VARCHAR(255) NOT NULL,' +
+
+    'rental_id INT NOT NULL,' +
+    'paid_by INT NOT NULL,' +
+    'FOREIGN KEY (rental_id) REFERENCES rentals(id),' +
     'FOREIGN KEY (paid_by) REFERENCES users(id),' +
     'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'deleted_at TIMESTAMP' +
+    'updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP' +
+    ');'
+  )
+
+  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.site_settings (` +
+    'id INT PRIMARY KEY AUTO_INCREMENT,' +
+    'name VARCHAR(255) NOT NULL,' +
+    'value VARCHAR(255) NOT NULL,' +
+    'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+    'updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP' +
     ');'
   )
 
@@ -111,8 +141,14 @@
     (null, '1', 'Samwise', 'Gamgee', 'mrfrodo@gmail.com', 2406456690, 'Ring Bearer Bearer', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/samwise', '0')
   `);
 
-  await db.query(`INSERT INTO ${db.name}.boats (created_by, name, model, image_url, description) VALUES
-    (LAST_INSERT_ID(), 'Cloud 9', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh what a faithful old barnacle!'),
-    (LAST_INSERT_ID(), 'Iris 12', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh how it doth soar!')
+  await db.query(`INSERT INTO ${db.name}.boats (created_by, name, model, image_url, description, per_hour_rental_cost) VALUES
+    (LAST_INSERT_ID(), 'Cloud 9', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh what a faithful old barnacle!', 10),
+    (LAST_INSERT_ID(), 'Iris', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh how it doth soar!', 10)
+  `);
+
+  await db.query(`INSERT INTO ${db.name}.site_settings (name, value) VALUES
+    ('earliest_rental_time', '0700'),
+    ('latest_rental_time', '2000'),
+    ('paypal_payee_client_id', '')
   `);
 })()

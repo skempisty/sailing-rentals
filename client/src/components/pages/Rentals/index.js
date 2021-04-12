@@ -30,13 +30,14 @@ class Rentals extends React.Component {
    * Takes a rental object from a submitted add rental modal and calls the
    * createRental api function, updates Redux
    * @param {Rental} rental object from addRentalModal
+   * @param {Payment} payment object from addRentalModal
    */
-  async handleAddRental(rental) {
+  async handleAddRental(rental, payment) {
     const { addNewRental } = this.props;
 
     try {
       // TODO: combine api and redux functions into a async thunk
-      const newRental = await createRental(rental);
+      const { rental: newRental, payment: newPayment } = await createRental(rental, payment)
 
       addNewRental({
         newRental: new Rental({
@@ -48,9 +49,10 @@ class Rentals extends React.Component {
           crewCount: newRental.crew_count,
           createdAt: newRental.created_at
         })
+        // TODO add new payment to redux here as well
       })
 
-      this.hideAddRentalModal();
+      this.hideAddRentalModal()
     } catch (error) {
       alert('Error adding your rental')
     }
