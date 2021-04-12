@@ -103,6 +103,7 @@ class AddRentalModal extends React.Component {
     this.resetAndHide()
   }
 
+  // TODO: this should come from site settings
   get minTime() {
     const minTime = new Date()
     minTime.setHours(7,0,0)
@@ -110,6 +111,7 @@ class AddRentalModal extends React.Component {
     return minTime
   }
 
+  // TODO: this should come from site settings
   get maxTime() {
     const maxTime = new Date()
     maxTime.setHours(20,0,0)
@@ -117,11 +119,15 @@ class AddRentalModal extends React.Component {
     return maxTime
   }
 
+  selectedThreeHourSlot(rental) {
+    return 3 === this.getRentalDurationHours(rental)
+  }
+
   /**
-   * Only way to determine if a time slot is 3 hours. Don't use the slots
+   * Only way to get rental duration. Don't use the slots
    * property, it is inaccurate
    */
-  selectedThreeHourSlot(rental) {
+  getRentalDurationHours(rental) {
     const { start, end } = rental
 
     const duration = moment.duration(moment(end).diff(moment(start)))
@@ -131,9 +137,7 @@ class AddRentalModal extends React.Component {
      * result of a bug with react-big-calendar. This rounds to the nearest 100th
      * to adjust for this issue
      */
-    const hours = Math.round((duration.asHours() + Number.EPSILON) * 100) / 100
-
-    return hours === 3
+    return Math.round((duration.asHours() + Number.EPSILON) * 100) / 100
   }
 
   convertRentalTimeToDates(rental) {
@@ -180,12 +184,15 @@ class AddRentalModal extends React.Component {
     if (!selectedBoatId) return []
 
     // rental start/end times must be Date objects for React Big Calendar
-    allRentals.forEach(rental => {
-      rental.start = new Date(rental.start)
-      rental.end = new Date(rental.end)
+    const rentalsWithDateFormatting = allRentals.map(rental => {
+      return new Rental({
+        ...rental,
+        start: new Date(rental.start),
+        end: new Date(rental.end)
+      })
     })
 
-    const { upcomingRentals } = splitUpcomingAndPastRentals(allRentals)
+    const { upcomingRentals } = splitUpcomingAndPastRentals(rentalsWithDateFormatting)
 
     const allEvents = [
       newRentalPeriod,
@@ -197,6 +204,15 @@ class AddRentalModal extends React.Component {
     } else {
       return allEvents
     }
+  }
+
+  get selectedBoatRentalPrice() {
+    const { newRentalPeriod, selectedBoatId } = this.state
+
+    const boat = getBoatById(selectedBoatId)
+    const hoursRented = this.getRentalDurationHours(newRentalPeriod)
+
+    return boat.perHourRentalCost * hoursRented
   }
 
   get validRental() {
@@ -346,6 +362,8 @@ class AddRentalModal extends React.Component {
     const { show, boats, editRental, onRentalAdd } = this.props
     const { selectedBoatId, newRentalPeriod, crewCount, view, date } = this.state
 
+    const that = this
+
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
         <Modal.Header closeButton>
@@ -451,7 +469,7 @@ class AddRentalModal extends React.Component {
           }
 
           <PayPalButton
-            amount='0.01'
+            amount={this.selectedBoatRentalPrice}
             shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
             onSuccess={(details) => {
               const { id: orderId, payer, purchase_units } = details
@@ -484,6 +502,8 @@ class AddRentalModal extends React.Component {
               })
 
               onRentalAdd(newRental, paymentObj)
+
+              that.resetAndHide()
             }}
             options={{
               clientId: 'sb' // 'PRODUCTION_CLIENT_ID'

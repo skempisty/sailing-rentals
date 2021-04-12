@@ -1,7 +1,7 @@
 const db = require('../connectDb')
 
 exports.getUserByGoogleId = async (id) => {
-  const [ user ] = await db.query(`SELECT * FROM ${db.name}.users WHERE google_id = ?`, [id])
+  const [ user ] = await db.query(`SELECT * FROM ${db.name}.users WHERE googleId = ?`, [id])
 
   return user
 }
@@ -17,7 +17,7 @@ exports.createUser = async (googleUser) => {
 
   const newUser = [ googleId, firstName, lastName, email, imageUrl ]
 
-  await db.query(`INSERT INTO ${db.name}.users (google_id, first_name, last_name, email, image_url) VALUES (?, ?, ?, ?, ?)`, newUser)
+  await db.query(`INSERT INTO ${db.name}.users (googleId, firstName, lastName, email, imageUrl) VALUES (?, ?, ?, ?, ?)`, newUser)
 
   const [ user ] = await db.query(`SELECT * FROM ${db.name}.users WHERE id = LAST_INSERT_ID()`)
 
@@ -36,7 +36,7 @@ exports.updateUser = async (id, updateFields, isAdmin = false) => {
   }
 
   if (jobTitle !== null) {
-    updateSql.push('job_title = ?')
+    updateSql.push('jobTitle = ?')
     sqlArgs.push(jobTitle)
   }
 
@@ -46,7 +46,7 @@ exports.updateUser = async (id, updateFields, isAdmin = false) => {
   }
 
   if (isAdmin && isApproved !== null) {
-    updateSql.push('is_approved = ?')
+    updateSql.push('isApproved = ?')
     sqlArgs.push(isApproved)
   }
 
@@ -58,13 +58,13 @@ exports.updateUser = async (id, updateFields, isAdmin = false) => {
 }
 
 exports.getUserList = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.users ORDER BY users.is_admin DESC`)
+  return await db.query(`SELECT * FROM ${db.name}.users ORDER BY users.isAdmin DESC`)
 }
 
 exports.approveUser = async (id) => {
-  return await db.query(`UPDATE ${db.name}.users SET is_approved = true WHERE id = ?`, [id])
+  return await db.query(`UPDATE ${db.name}.users SET isApproved = true WHERE id = ?`, [id])
 }
 
 exports.deleteUser = async (id) => {
-  return await db.query(`UPDATE ${db.name}.users SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+  return await db.query(`UPDATE ${db.name}.users SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
 }

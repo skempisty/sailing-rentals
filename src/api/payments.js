@@ -1,11 +1,11 @@
 const db = require('../connectDb')
 
 exports.getMyPayments = async (userId) => {
-  return await db.query(`SELECT * FROM ${db.name}.payments WHERE paid_by = '${userId}' ORDER BY created_at`)
+  return await db.query(`SELECT * FROM ${db.name}.payments WHERE paidBy = '${userId}' ORDER BY createdAt`)
 }
 
 exports.getAllPayments = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.payments ORDER BY created_at`)
+  return await db.query(`SELECT * FROM ${db.name}.payments ORDER BY createdAt`)
 }
 
 exports.createPayment = async (creatorId, rentalId, paymentObj) => {
@@ -44,21 +44,21 @@ exports.createPayment = async (creatorId, rentalId, paymentObj) => {
   ]
 
   await db.query(`INSERT INTO ${db.name}.payments (
-    order_id,
+    orderId,
     amount,
     currency,
-    payer_id,
-    payer_country_code,
-    payer_postal_code,
-    payer_email_address,
-    payer_phone,
-    payer_given_name,
-    payer_surname,
-    payee_email,
-    payee_merchant_id,
-    paypal_capture_id,
-    paid_by,
-    rental_id
+    payerId,
+    payerCountryCode,
+    payerPostalCode,
+    payerEmailAddress,
+    payerPhone,
+    payerGivenName,
+    payerSurname,
+    payeeEmail,
+    payeeMerchantId,
+    paypalCaptureId,
+    paidBy,
+    rentalId
   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, newPayment)
 
   const [ payment ] = await db.query(`SELECT * FROM ${db.name}.payments WHERE id = LAST_INSERT_ID()`)

@@ -9,7 +9,6 @@ import RentalRow from './RentalRow'
 
 import createRental from '../../../api/createRental'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals';
-import Rental from '../../../models/Rental';
 
 import { addNewRental } from '../../../store/rentals'
 
@@ -39,18 +38,8 @@ class Rentals extends React.Component {
       // TODO: combine api and redux functions into a async thunk
       const { rental: newRental, payment: newPayment } = await createRental(rental, payment)
 
-      addNewRental({
-        newRental: new Rental({
-          id: newRental.id,
-          start: newRental.start,
-          end: newRental.end,
-          rentedBy: newRental.rented_by,
-          boatId: newRental.boat_id,
-          crewCount: newRental.crew_count,
-          createdAt: newRental.created_at
-        })
-        // TODO add new payment to redux here as well
-      })
+      addNewRental({ newRental })
+      // TODO add new payment to redux here as well
 
       this.hideAddRentalModal()
     } catch (error) {

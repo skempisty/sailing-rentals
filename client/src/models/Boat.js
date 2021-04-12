@@ -1,9 +1,11 @@
 export default class Boat {
   constructor({
     id,
-    name
+    name,
+    perHourRentalCost
   }) {
     this.id = id
     this.name = name
+    this.perHourRentalCost = perHourRentalCost
   }
 }

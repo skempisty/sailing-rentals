@@ -20,7 +20,6 @@ import {
   clearCurrentUser,
   toggleLoading
 } from '../store/session'
-import Rental from "../models/Rental";
 
 /**
  * Main site top navbar
@@ -46,21 +45,9 @@ class TopNavBar extends React.Component {
 
       const myRentals = await getMyRentals()
 
-      const myRentalsRemap = myRentals.map(rental => {
-        return new Rental({
-          id: rental.id,
-          start: rental.start,
-          end: rental.end,
-          rentedBy: rental.rented_by,
-          boatId: rental.boat_id,
-          crewCount: rental.crew_count,
-          createdAt: rental.created_at
-        })
-      })
+      initRentals({ myRentals })
 
-      initRentals({ myRentals: myRentalsRemap })
-
-      if (user.is_admin) {
+      if (user.isAdmin) {
         const users = await getUsers();
 
         initUsers({ users })
