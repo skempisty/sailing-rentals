@@ -13,7 +13,6 @@
   "author": "Stephen Kempisty",
   "license": "ISC",
   "dependencies": {
-    "@paypal/react-paypal-js": "^5.1.1",
     "@reduxjs/toolkit": "^1.5.0",
     "aws-sdk": "^2.863.0",
     "bootstrap": "^4.6.0",
@@ -35,6 +34,7 @@
     "react-dom": "^16.9.0",
     "react-google-login": "^5.1.21",
     "react-icons": "^4.2.0",
+    "react-paypal-button-v2": "^2.6.3",
     "react-redux": "^7.2.2",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.1.1",

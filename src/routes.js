@@ -69,6 +69,7 @@ router.get('/users/logged_in', async (req, res) => {
   }
 })
 
+/*** ADMIN ONLY */
 router.get('/users', async (req, res) => {
   const { authorization: jwtToken } = req.headers
 
@@ -100,6 +101,7 @@ router.put('/users/:id', async (req, res) => {
   }
 })
 
+/*** ADMIN ONLY */
 router.delete('/users/:id', async (req, res) => {
   const { id } = req.params
 
@@ -118,6 +120,7 @@ router.get('/carousel_slides', async (req, res) => {
   res.send(slides)
 })
 
+/*** ADMIN ONLY */
 // router.post('/carousel_slides', async (req, res) => {
 //
 // })
@@ -142,6 +145,7 @@ router.get('/boats', async (req, res) => {
   res.send(boats)
 })
 
+/*** ADMIN ONLY */
 router.post('/boats', async (req, res) => {
   const { authorization: jwtToken } = req.headers
   const { name } = req.body
@@ -175,13 +179,15 @@ router.get('/rentals/my', async (req, res) => {
 
 router.post('/rentals', async (req, res) => {
   const { authorization: jwtToken } = req.headers
-  const { event } = req.body
+  const { rental: rentalPostBody, payment: paymentPostBody } = req.body
 
   const { userId: creatorId } = await decodeJwt(jwtToken);
 
-  const boats = await api.rentals.createRental(creatorId, event);
+  const rental = await api.rentals.createRental(creatorId, rentalPostBody)
+  // payments belong to a rental - so rental must be created first
+  const payment = await api.payments.createPayment(creatorId, rental.id, paymentPostBody)
 
-  res.send(boats)
+  res.send({ rental, payment })
 })
 
 router.put('/rentals/:id', async (req, res) => {
@@ -201,4 +207,33 @@ router.put('/rentals/:id', async (req, res) => {
   }
 })
 
-module.exports = router;
+/*******************************************************************************
+ * Payments
+ */
+
+/*** ADMIN ONLY */
+router.get('/payments', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const allPayments = await api.payments.getAllPayments();
+
+    res.send(allPayments)
+  } else {
+    res.status(401).send('You don\'t have permission to read all payments')
+  }
+})
+
+router.get('/payments/my', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+
+  const { userId } = await decodeJwt(jwtToken)
+
+  const myPayments = await api.payments.getMyPayments(userId);
+
+  res.send(myPayments)
+})
+
+module.exports = router

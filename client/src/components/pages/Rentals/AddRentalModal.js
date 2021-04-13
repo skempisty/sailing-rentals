@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import styled from 'styled-components'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
+import { PayPalButton } from 'react-paypal-button-v2'
 
 import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap'
 import { FaExclamationTriangle } from 'react-icons/fa'
@@ -12,6 +13,7 @@ import { RiSailboatFill } from 'react-icons/ri'
 import EventLabel from './EventLabel'
 
 import Rental from '../../../models/Rental'
+import Payment from '../../../models/Payment';
 import getBoatById from '../../../store/orm/boats/getBoatById'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
 
@@ -38,7 +40,8 @@ class AddRentalModal extends React.Component {
       crewCount: editRental ? editRental.crewCount : 0,
       view: 'month',
       date: new Date(),
-      newRentalPeriod: {}
+      newRentalPeriod: {},
+      paypalButtonReady: false
     }
   }
 
@@ -80,33 +83,28 @@ class AddRentalModal extends React.Component {
     }
   }
 
-  handleProceedClick() {
-    const { currentUser, onRentalAdd, onRentalEdit, editRental } = this.props
+  handleSaveChanges() {
+    const { currentUser, onRentalEdit, editRental } = this.props
     const { newRentalPeriod, crewCount } = this.state
 
     const newRentalPeriodNotChosen = Object.keys(newRentalPeriod).length < 1
 
-    const newRental = new Rental({
-      id: editRental ? editRental.id : null,
-      start: newRentalPeriodNotChosen && editRental ? editRental.start : newRentalPeriod.start,
-      end: newRentalPeriodNotChosen && editRental ? editRental.end : newRentalPeriod.end,
-      boatId: newRentalPeriodNotChosen && editRental ? editRental.boatId : newRentalPeriod.boatId,
+    const updatedRental = new Rental({
+      id: editRental.id,
+      start: newRentalPeriodNotChosen ? editRental.start : newRentalPeriod.start,
+      end: newRentalPeriodNotChosen ? editRental.end : newRentalPeriod.end,
+      boatId: newRentalPeriodNotChosen ? editRental.boatId : newRentalPeriod.boatId,
       rentedBy: currentUser.id,
       crewCount,
-      createdAt: editRental ? editRental.createdAt : null
+      createdAt: editRental.createdAt
     })
 
-    if (editRental) {
-      // edit rental
-      onRentalEdit(editRental.id, newRental)
-    } else {
-      // create rental
-      onRentalAdd(newRental)
-    }
+    onRentalEdit(editRental.id, updatedRental)
 
     this.resetAndHide()
   }
 
+  // TODO: this should come from site settings
   get minTime() {
     const minTime = new Date()
     minTime.setHours(7,0,0)
@@ -114,6 +112,7 @@ class AddRentalModal extends React.Component {
     return minTime
   }
 
+  // TODO: this should come from site settings
   get maxTime() {
     const maxTime = new Date()
     maxTime.setHours(20,0,0)
@@ -121,11 +120,15 @@ class AddRentalModal extends React.Component {
     return maxTime
   }
 
+  selectedThreeHourSlot(rental) {
+    return 3 === this.getRentalDurationHours(rental)
+  }
+
   /**
-   * Only way to determine if a time slot is 3 hours. Don't use the slots
+   * Only way to get rental duration. Don't use the slots
    * property, it is inaccurate
    */
-  selectedThreeHourSlot(rental) {
+  getRentalDurationHours(rental) {
     const { start, end } = rental
 
     const duration = moment.duration(moment(end).diff(moment(start)))
@@ -135,9 +138,7 @@ class AddRentalModal extends React.Component {
      * result of a bug with react-big-calendar. This rounds to the nearest 100th
      * to adjust for this issue
      */
-    const hours = Math.round((duration.asHours() + Number.EPSILON) * 100) / 100
-
-    return hours === 3
+    return Math.round((duration.asHours() + Number.EPSILON) * 100) / 100
   }
 
   convertRentalTimeToDates(rental) {
@@ -184,12 +185,15 @@ class AddRentalModal extends React.Component {
     if (!selectedBoatId) return []
 
     // rental start/end times must be Date objects for React Big Calendar
-    allRentals.forEach(rental => {
-      rental.start = new Date(rental.start)
-      rental.end = new Date(rental.end)
+    const rentalsWithDateFormatting = allRentals.map(rental => {
+      return new Rental({
+        ...rental,
+        start: new Date(rental.start),
+        end: new Date(rental.end)
+      })
     })
 
-    const { upcomingRentals } = splitUpcomingAndPastRentals(allRentals)
+    const { upcomingRentals } = splitUpcomingAndPastRentals(rentalsWithDateFormatting)
 
     const allEvents = [
       newRentalPeriod,
@@ -201,6 +205,15 @@ class AddRentalModal extends React.Component {
     } else {
       return allEvents
     }
+  }
+
+  get selectedBoatRentalPrice() {
+    const { newRentalPeriod, selectedBoatId } = this.state
+
+    const boat = getBoatById(selectedBoatId)
+    const hoursRented = this.getRentalDurationHours(newRentalPeriod)
+
+    return boat.perHourRentalCost * hoursRented
   }
 
   get validRental() {
@@ -347,8 +360,10 @@ class AddRentalModal extends React.Component {
   }
 
   render() {
-    const { show, boats, editRental } = this.props
-    const { selectedBoatId, crewCount, view, date } = this.state
+    const { show, boats, editRental, onRentalAdd } = this.props
+    const { selectedBoatId, newRentalPeriod, crewCount, view, date, paypalButtonReady } = this.state
+
+    const that = this
 
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
@@ -361,28 +376,36 @@ class AddRentalModal extends React.Component {
             <Form.Row>
               <Form.Group as={Col}>
                 {/* Boat Select */}
-                <Form.Label><b>Boat</b></Form.Label>
-                <Dropdown>
-                  <Dropdown.Toggle variant='dark' id='dropdown-basic'>
-                    {selectedBoatId ? getBoatById(selectedBoatId).name : 'Select a boat'}
-                  </Dropdown.Toggle>
+                <Form.Label><b>Boat</b> <span style={{ color: 'red' }}>*</span></Form.Label>
 
-                  <Dropdown.Menu>
-                    {boats.map((boat, index) =>
-                      <Dropdown.Item
-                        key={`boat-select-${boat.id}-${index}`}
-                        onSelect={() => this.handleBoatSelect(boat.id)}
-                      >
-                        {boat.name}
-                      </Dropdown.Item>
-                    )}
-                  </Dropdown.Menu>
-                </Dropdown>
+                {editRental ?
+                  <Form.Control
+                    value={getBoatById(editRental.boatId).name}
+                    disabled
+                  />
+                  :
+                  <Dropdown>
+                    <Dropdown.Toggle variant='dark' id='dropdown-basic'>
+                      {selectedBoatId ? getBoatById(selectedBoatId).name : 'Select a boat'}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      {boats.map((boat, index) =>
+                        <Dropdown.Item
+                          key={`boat-select-${boat.id}-${index}`}
+                          onSelect={() => this.handleBoatSelect(boat.id)}
+                        >
+                          {boat.name}
+                        </Dropdown.Item>
+                      )}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                }
               </Form.Group>
 
               <Form.Group as={Col}>
                 {/* Crew Members Select */}
-                <Form.Label><b>Crew Members</b></Form.Label>
+                <Form.Label><b>Crew Members</b> <span style={{ color: 'red' }}>*</span></Form.Label>
                 <Form.Control
                   type='number'
                   value={crewCount}
@@ -393,22 +416,28 @@ class AddRentalModal extends React.Component {
           </Form>
         </Modal.Body>
 
+        <div style={{ padding: '0 1em' }}>
+          <Form.Label><b>Select 3 hour time slot</b> <span style={{ color: 'red' }}>*</span></Form.Label>
+        </div>
+
         <div style={{ position: 'relative' }}>
           {/* Blocking overlay */}
-          <div style={{
-            display: selectedBoatId ? 'none' : 'flex',
-            pointerEvents: selectedBoatId ? 'none' : null,
-            position: 'absolute',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            height: '100%',
-            color: 'white',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            zIndex: '5' // need 5 to fully overlay Calendar
-          }}>
-            <h2>Select a boat first!</h2>
-          </div>
+          {!selectedBoatId &&
+            <div style={{
+              display: 'flex',
+              pointerEvents: null,
+              position: 'absolute',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '100%',
+              color: 'white',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              zIndex: '5' // need 5 to fully overlay Calendar
+            }}>
+              <h2>Select a boat first!</h2>
+            </div>
+          }
 
           <StyledCalendar>
             <Calendar
@@ -431,18 +460,87 @@ class AddRentalModal extends React.Component {
           </StyledCalendar>
         </div>
 
-        <Modal.Footer>
-          <Button variant='secondary' onClick={this.resetAndHide.bind(this)}>
-            Cancel
-          </Button>
+        <Modal.Footer
+          style={{
+            position: 'relative',
+            justifyContent: editRental ? 'flex-end' : 'center',
+            borderTop: 'none'
+          }}
+        >
+          {/* Blocking overlay */}
+          {(!this.validRental || !paypalButtonReady) && !editRental &&
+            <div
+              style={{
+                pointerEvents: null,
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                zIndex: '225' // need 225 to fully overlay Paypal buttons
+              }}
+            />
+          }
 
-          <Button
-            variant='primary'
-            disabled={!this.validRental}
-            onClick={this.handleProceedClick.bind(this)}
-          >
-            {editRental ? 'Save Changes' : 'Save Rental'}
-          </Button>
+          {!editRental ?
+            <PayPalButton
+              amount={this.selectedBoatRentalPrice}
+              shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
+              onSuccess={(details) => {
+                const { id: orderId, payer, purchase_units } = details
+                const payee = purchase_units[0].payee
+                const capture = purchase_units[0].payments.captures[0]
+
+                const newRental = new Rental({
+                  id: null,
+                  start: newRentalPeriod.start,
+                  end: newRentalPeriod.end,
+                  boatId: newRentalPeriod.boatId,
+                  crewCount,
+                  createdAt: null
+                })
+
+                const paymentObj = new Payment({
+                  orderId,
+                  amount: capture.amount.value,
+                  currency: capture.amount.currency_code,
+                  payerId: payer.payer_id,
+                  payerCountryCode: payer.address.country_code,
+                  payerPostalCode: payer.address.postal_code,
+                  payerEmailAddress: payer.email_address,
+                  payerPhone: payer.phone.phone_number.national_number,
+                  payerGivenName: payer.name.given_name,
+                  payerSurname: payer.name.surname,
+                  payeeEmail: payee.email_address,
+                  payeeMerchantId: payee.merchant_id,
+                  paypalCaptureId: capture.id,
+                })
+
+                onRentalAdd(newRental, paymentObj)
+
+                that.resetAndHide()
+              }}
+              options={{
+                clientId: 'sb', // 'PRODUCTION_CLIENT_ID'
+                disableFunding: 'paylater'
+              }}
+              onButtonReady={() => that.setState({ paypalButtonReady: true })}
+              onShippingChange={() => { return '' }} // Just having this prop forces all payment forms to render in popups instead of inline
+            />
+            :
+            <React.Fragment>
+              <Button variant='secondary' onClick={this.resetAndHide.bind(this)}>
+                Cancel
+              </Button>
+
+              <Button
+                variant='primary'
+                disabled={!this.validRental}
+                onClick={this.handleSaveChanges.bind(this)}
+              >
+                Save Changes
+              </Button>
+            </React.Fragment>
+          }
         </Modal.Footer>
       </Modal>
     )

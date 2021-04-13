@@ -11,20 +11,7 @@ const sessionSlice = createSlice({
       const { currentUser } = action.payload
 
       if (currentUser) {
-        const {
-          id,
-          first_name: firstName,
-          last_name: lastName,
-          email,
-          image_url: imageUrl,
-          is_approved: isApproved,
-          is_admin: isAdmin,
-          phone,
-          job_title: jobTitle,
-          affiliation
-        } = currentUser;
-
-        state.currentUser = { id, firstName, lastName, email, imageUrl, isApproved, isAdmin, phone, jobTitle, affiliation };
+        state.currentUser = currentUser;
       }
     },
     toggleLoading: (state, action) => {
@@ -35,20 +22,7 @@ const sessionSlice = createSlice({
     assignCurrentUser: (state, action) => {
       const { user } = action.payload
 
-      const {
-        id,
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        image_url: imageUrl,
-        is_approved: isApproved,
-        is_admin: isAdmin,
-        phone,
-        job_title: jobTitle,
-        affiliation
-      } = user;
-
-      state.currentUser = { id, firstName, lastName, email, imageUrl, isApproved, isAdmin, phone, jobTitle, affiliation };
+      state.currentUser = user;
     },
     updateCurrentUser: (state, action) => {
       const { toUpdate } = action.payload

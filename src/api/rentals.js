@@ -1,19 +1,19 @@
 const db = require('../connectDb')
 
 exports.getMyRentals = async (userId) => {
-  return await db.query(`SELECT * FROM ${db.name}.rentals WHERE rented_by = '${userId}' ORDER BY start`)
+  return await db.query(`SELECT * FROM ${db.name}.rentals WHERE rentedBy = '${userId}' ORDER BY start`)
 }
 
 exports.getAllRentals = async () => {
   return await db.query(`SELECT * FROM ${db.name}.rentals ORDER BY start`)
 }
 
-exports.createRental = async (created_by, event) => {
-  const { rentedBy, boatId, start, end, crewCount } = event;
+exports.createRental = async (createdBy, rentalObj) => {
+  const { boatId, start, end, crewCount } = rentalObj;
 
-  const newRental = [ rentedBy, boatId, start, end, crewCount ]
+  const newRental = [ createdBy, boatId, start, end, crewCount ]
 
-  await db.query(`INSERT INTO ${db.name}.rentals (rented_by, boat_id, start, end, crew_count) VALUES (?, ?, ?, ?, ?)`, newRental)
+  await db.query(`INSERT INTO ${db.name}.rentals (rentedBy, boatId, start, end, crewCount) VALUES (?, ?, ?, ?, ?)`, newRental)
 
   const [ rental ] = await db.query(`SELECT * FROM ${db.name}.rentals WHERE id = LAST_INSERT_ID()`)
 
@@ -23,16 +23,16 @@ exports.createRental = async (created_by, event) => {
 exports.updateRental = async (id, updateFields = false) => {
   const { boatId, crewCount, start, end  } = updateFields
 
-  const updateSql = ['updated_at = CURRENT_TIMESTAMP']
+  const updateSql = ['updatedAt = CURRENT_TIMESTAMP']
   const sqlArgs = []
 
   if (boatId !== null) {
-    updateSql.push('boat_id = ?')
+    updateSql.push('boatId = ?')
     sqlArgs.push(boatId)
   }
 
   if (crewCount !== null) {
-    updateSql.push('crew_count = ?')
+    updateSql.push('crewCount = ?')
     sqlArgs.push(crewCount)
   }
 

@@ -55,14 +55,14 @@ class UserRow extends React.Component {
         <tr>
           <td>
             <img
-              src={user.image_url}
+              src={user.imageUrl}
               alt=''
               style={{ maxWidth: '2em', height: '2em', marginRight: '1em' }}
             />
 
-            <b>{buildFullName(user.first_name, user.last_name)}</b>
+            <b>{buildFullName(user.firstName, user.lastName)}</b>
 
-            {user.is_admin === 1 &&
+            {user.isAdmin === 1 &&
               <Badge
                 variant='warning'
                 style={{ marginLeft: '0.5em' }}

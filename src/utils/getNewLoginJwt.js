@@ -1,10 +1,12 @@
 const jwt = require('jsonwebtoken')
 
 function getNewLoginJwt(userObj) {
+  const { id, isAdmin, isApproved } = userObj
+
   return jwt.sign({
-    userId: userObj.id,
-    isAdmin: userObj.is_admin,
-    isApproved: userObj.is_approved
+    userId: id,
+    isAdmin,
+    isApproved
   }, process.env.JWT_SECRET)
 }
 
