@@ -5,11 +5,13 @@ import moment from 'moment'
 import styled from 'styled-components'
 
 import { Dropdown } from 'react-bootstrap'
-import { FaEllipsisH, FaInfoCircle, FaSlash } from 'react-icons/fa'
+import { FaEllipsisH, FaInfoCircle, FaBan } from 'react-icons/fa'
 
 import AddRentalModal from './AddRentalModal'
+import DeleteRentalModal from './DeleteRentalModal'
 
 import updateRental from '../../../api/updateRental'
+import deleteRental from '../../../api/deleteRental'
 import getBoatById from '../../../store/orm/boats/getBoatById'
 import { editRental } from '../../../store/rentals'
 
@@ -41,7 +43,8 @@ class RentalRow extends React.Component {
     super(props)
 
     this.state = {
-      showEditRentalModal: false
+      showEditRentalModal: false,
+      showDeleteRentalModal: false
     }
   }
 
@@ -57,9 +60,21 @@ class RentalRow extends React.Component {
     }
   }
 
+  async handleRentalDelete() {
+    const { rental } = this.props
+
+    try {
+      await deleteRental(rental.id)
+
+      // TODO: add redux delete
+    } catch (error) {
+      alert('Error cancelling rental')
+    }
+  }
+
   render() {
     const { rental, options } = this.props
-    const { showEditRentalModal } = this.state
+    const { showEditRentalModal, showDeleteRentalModal } = this.state
 
     return (
       <React.Fragment>
@@ -68,6 +83,13 @@ class RentalRow extends React.Component {
           show={showEditRentalModal}
           onRentalEdit={this.handleRentalEdit.bind(this)}
           onHide={() => this.setState({ showEditRentalModal: false })}
+        />
+
+        <DeleteRentalModal
+          show={showDeleteRentalModal}
+          rental={rental}
+          onRentalDelete={this.handleRentalDelete.bind(this)}
+          onHide={() => this.setState({ showDeleteRentalModal: false })}
         />
 
         <tr>
@@ -98,13 +120,12 @@ class RentalRow extends React.Component {
                     </Dropdown.Item>
                   </StyledDropDownItem>
 
-                  {/* TODO: Add back when adding cancel rental functionality */}
-                  {/*<StyledDropDownItem>*/}
-                  {/*  <Dropdown.Item disabled onClick={() => console.log('Cancel Rental')}>*/}
-                  {/*    <FaSlash/>*/}
-                  {/*    <span>Cancel Rental</span>*/}
-                  {/*  </Dropdown.Item>*/}
-                  {/*</StyledDropDownItem>*/}
+                  <StyledDropDownItem>
+                    <Dropdown.Item onClick={() => this.setState({ showDeleteRentalModal: true })}>
+                      <FaBan/>
+                      <span>Cancel Rental</span>
+                    </Dropdown.Item>
+                  </StyledDropDownItem>
                 </Dropdown.Menu>
               </Dropdown>
             </td>

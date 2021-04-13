@@ -207,6 +207,23 @@ router.put('/rentals/:id', async (req, res) => {
   }
 })
 
+router.delete('/rentals/:id', async (req, res) => {
+  const { id } = req.params
+  const { authorization: jwtToken } = req.headers
+
+  const { userId, isAdmin } = await decodeJwt(jwtToken)
+
+  const rental = await api.rentals.getRental(id)
+
+  if (isAdmin || String(rental.rentedBy) === String(userId)) {
+    const deletedRental = await api.rentals.deleteRental(id)
+
+    res.send(deletedRental)
+  } else {
+    res.status(401).send('You don\'t have permission to delete this rental')
+  }
+})
+
 /*******************************************************************************
  * Payments
  */

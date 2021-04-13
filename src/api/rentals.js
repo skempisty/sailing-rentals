@@ -1,11 +1,17 @@
 const db = require('../connectDb')
 
 exports.getMyRentals = async (userId) => {
-  return await db.query(`SELECT * FROM ${db.name}.rentals WHERE rentedBy = '${userId}' ORDER BY start`)
+  return await db.query(`SELECT * FROM ${db.name}.rentals WHERE rentedBy = '${userId}' AND deletedAt = "0000-00-00 00:00:00" ORDER BY start`)
 }
 
 exports.getAllRentals = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.rentals ORDER BY start`)
+  return await db.query(`SELECT * FROM ${db.name}.rentals WHERE deletedAt = "0000-00-00 00:00:00" ORDER BY start`)
+}
+
+exports.getRental = async (id) => {
+  const [ rental ] = await db.query(`SELECT * FROM ${db.name}.rentals WHERE id = ?`, [id])
+
+  return rental
 }
 
 exports.createRental = async (createdBy, rentalObj) => {
@@ -51,4 +57,8 @@ exports.updateRental = async (id, updateFields = false) => {
   const sql = `UPDATE ${db.name}.rentals SET ${updateSql.join(', ')} WHERE id = ?`
 
   return await db.query(sql, sqlArgs)
+}
+
+exports.deleteRental = async (id) => {
+  return await db.query(`UPDATE ${db.name}.rentals SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
 }

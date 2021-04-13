@@ -7,7 +7,7 @@ export default async function deleteUser(id) {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('tokenId'),
+      'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
     }
   };
 
