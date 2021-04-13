@@ -71,6 +71,17 @@ class AddRentalModal extends React.Component {
     }
   }
 
+  handleMonthViewEventClick(event) {
+    const { start } = event
+
+    const eventMoment = moment(start)
+
+    this.setState({
+      view: 'day',
+      date: new Date(eventMoment.year(), eventMoment.month(), eventMoment.date())
+    })
+  }
+
   handleBoatSelect(id) {
     const { selectedBoatId } = this.state
 
@@ -336,27 +347,46 @@ class AddRentalModal extends React.Component {
 
     const { name: boatName } = getBoatById(rental.boatId)
 
+    let label, icon
+
     if (editRental && editRental.id === rental.id) {
-      return <EventLabel label={'Saved time slot'} svgComponent={<RiSailboatFill/>} view={view} />
+      label = 'Saved time slot'
+      icon = <RiSailboatFill/>
     } else if (rental.rentedBy === currentUser.id) {
-      return <EventLabel label={'My rental'} svgComponent={<RiSailboatFill/>} view={view} />
+      label = 'My rental'
+      icon = <RiSailboatFill/>
     } else if (rental.id) {
-      return <EventLabel label={'Unavailable'} svgComponent={<RiSailboatFill/>} view={view} />
+      label = 'Unavailable'
+      icon = <RiSailboatFill/>
     } else if (this.alreadyRentedThisDay(rental)) {
-      return <EventLabel label={`You've rented the ${this.getBlockingBoatName(rental)} for today already`} svgComponent={<FaExclamationTriangle/>} view={view} />
+      label = `You've rented the ${this.getBlockingBoatName(rental)} for today already`
+      icon = <FaExclamationTriangle/>
     } else if (this.selectionOverlapsOtherRental(rental)) {
-      return <EventLabel label={'Boat already rented at this time'} svgComponent={<FaExclamationTriangle/>} view={view} />
+      label = 'Boat already rented at this time'
+      icon = <FaExclamationTriangle/>
     } else if (this.rentalStartsInPast(rental)) {
-      return <EventLabel label={'Please select a time slot in the future'} svgComponent={<FaExclamationTriangle/>} view={view} />
+      label = 'Please select a time slot in the future'
+      icon = <FaExclamationTriangle/>
     } else if (!this.selectedThreeHourSlot(rental)) {
-      return <EventLabel label={'Please select a 3 hour time slot'} svgComponent={<FaExclamationTriangle/>} view={view} />
-    } else if (!boatName) {
-      return <EventLabel label={'Select a boat'} svgComponent={<FaExclamationTriangle/>} view={view} />
+      label = 'Please select a 3 hour time slot'
+      icon = <FaExclamationTriangle/>
     } else if (editRental && !rental.id) {
-      return <EventLabel label='Updated time slot' svgComponent={<RiSailboatFill/>} view={view} />
+      label = 'Updated time slot'
+      icon = <RiSailboatFill/>
     } else {
-      return <EventLabel label={`Sailing on the ${boatName}`} svgComponent={<RiSailboatFill/>} view={view} />
+      label = `Sailing on the ${boatName}`
+      icon = <RiSailboatFill/>
     }
+
+    return (
+      <EventLabel
+        label={label}
+        rental={rental}
+        svgComponent={icon}
+        view={view}
+        onMonthViewEventClick={this.handleMonthViewEventClick.bind(this)}
+      />
+    )
   }
 
   render() {
