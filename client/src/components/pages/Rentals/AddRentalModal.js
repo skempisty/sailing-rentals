@@ -40,7 +40,8 @@ class AddRentalModal extends React.Component {
       crewCount: editRental ? editRental.crewCount : 0,
       view: 'month',
       date: new Date(),
-      newRentalPeriod: {}
+      newRentalPeriod: {},
+      paypalButtonReady: false
     }
   }
 
@@ -360,7 +361,7 @@ class AddRentalModal extends React.Component {
 
   render() {
     const { show, boats, editRental, onRentalAdd } = this.props
-    const { selectedBoatId, newRentalPeriod, crewCount, view, date } = this.state
+    const { selectedBoatId, newRentalPeriod, crewCount, view, date, paypalButtonReady } = this.state
 
     const that = this
 
@@ -375,7 +376,7 @@ class AddRentalModal extends React.Component {
             <Form.Row>
               <Form.Group as={Col}>
                 {/* Boat Select */}
-                <Form.Label><b>Boat</b></Form.Label>
+                <Form.Label><b>Boat</b> <span style={{ color: 'red' }}>*</span></Form.Label>
 
                 {editRental ?
                   <Form.Control
@@ -404,7 +405,7 @@ class AddRentalModal extends React.Component {
 
               <Form.Group as={Col}>
                 {/* Crew Members Select */}
-                <Form.Label><b>Crew Members</b></Form.Label>
+                <Form.Label><b>Crew Members</b> <span style={{ color: 'red' }}>*</span></Form.Label>
                 <Form.Control
                   type='number'
                   value={crewCount}
@@ -415,22 +416,28 @@ class AddRentalModal extends React.Component {
           </Form>
         </Modal.Body>
 
+        <div style={{ padding: '0 1em' }}>
+          <Form.Label><b>Select 3 hour time slot</b> <span style={{ color: 'red' }}>*</span></Form.Label>
+        </div>
+
         <div style={{ position: 'relative' }}>
           {/* Blocking overlay */}
-          <div style={{
-            display: selectedBoatId ? 'none' : 'flex',
-            pointerEvents: selectedBoatId ? 'none' : null,
-            position: 'absolute',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            height: '100%',
-            color: 'white',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            zIndex: '5' // need 5 to fully overlay Calendar
-          }}>
-            <h2>Select a boat first!</h2>
-          </div>
+          {!selectedBoatId &&
+            <div style={{
+              display: 'flex',
+              pointerEvents: null,
+              position: 'absolute',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '100%',
+              color: 'white',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              zIndex: '5' // need 5 to fully overlay Calendar
+            }}>
+              <h2>Select a boat first!</h2>
+            </div>
+          }
 
           <StyledCalendar>
             <Calendar
@@ -453,64 +460,87 @@ class AddRentalModal extends React.Component {
           </StyledCalendar>
         </div>
 
-        <Modal.Footer>
-          <Button variant='secondary' onClick={this.resetAndHide.bind(this)}>
-            Cancel
-          </Button>
-
-          {editRental &&
-            <Button
-              variant='primary'
-              disabled={!this.validRental}
-              onClick={this.handleSaveChanges.bind(this)}
-            >
-              Save Changes
-            </Button>
+        <Modal.Footer
+          style={{
+            position: 'relative',
+            justifyContent: editRental ? 'flex-end' : 'center',
+            borderTop: 'none'
+          }}
+        >
+          {/* Blocking overlay */}
+          {(!this.validRental || !paypalButtonReady) && !editRental &&
+            <div
+              style={{
+                pointerEvents: null,
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                zIndex: '225' // need 225 to fully overlay Paypal buttons
+              }}
+            />
           }
 
-          <PayPalButton
-            amount={this.selectedBoatRentalPrice}
-            shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
-            onSuccess={(details) => {
-              const { id: orderId, payer, purchase_units } = details
-              const payee = purchase_units[0].payee
-              const capture = purchase_units[0].payments.captures[0]
+          {!editRental ?
+            <PayPalButton
+              amount={this.selectedBoatRentalPrice}
+              shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
+              onSuccess={(details) => {
+                const { id: orderId, payer, purchase_units } = details
+                const payee = purchase_units[0].payee
+                const capture = purchase_units[0].payments.captures[0]
 
-              const newRental = new Rental({
-                id: null,
-                start: newRentalPeriod.start,
-                end: newRentalPeriod.end,
-                boatId: newRentalPeriod.boatId,
-                crewCount,
-                createdAt: null
-              })
+                const newRental = new Rental({
+                  id: null,
+                  start: newRentalPeriod.start,
+                  end: newRentalPeriod.end,
+                  boatId: newRentalPeriod.boatId,
+                  crewCount,
+                  createdAt: null
+                })
 
-              const paymentObj = new Payment({
-                orderId,
-                amount: capture.amount.value,
-                currency: capture.amount.currency_code,
-                payerId: payer.payer_id,
-                payerCountryCode: payer.address.country_code,
-                payerPostalCode: payer.address.postal_code,
-                payerEmailAddress: payer.email_address,
-                payerPhone: payer.phone.phone_number.national_number,
-                payerGivenName: payer.name.given_name,
-                payerSurname: payer.name.surname,
-                payeeEmail: payee.email_address,
-                payeeMerchantId: payee.merchant_id,
-                paypalCaptureId: capture.id,
-              })
+                const paymentObj = new Payment({
+                  orderId,
+                  amount: capture.amount.value,
+                  currency: capture.amount.currency_code,
+                  payerId: payer.payer_id,
+                  payerCountryCode: payer.address.country_code,
+                  payerPostalCode: payer.address.postal_code,
+                  payerEmailAddress: payer.email_address,
+                  payerPhone: payer.phone.phone_number.national_number,
+                  payerGivenName: payer.name.given_name,
+                  payerSurname: payer.name.surname,
+                  payeeEmail: payee.email_address,
+                  payeeMerchantId: payee.merchant_id,
+                  paypalCaptureId: capture.id,
+                })
 
-              onRentalAdd(newRental, paymentObj)
+                onRentalAdd(newRental, paymentObj)
 
-              that.resetAndHide()
-            }}
-            options={{
-              clientId: 'sb', // 'PRODUCTION_CLIENT_ID'
-              disableFunding: 'paylater'
-            }}
-            onShippingChange={() => { return '' }} // Just having this prop forces all payment forms to render in popups instead of inline
-          />
+                that.resetAndHide()
+              }}
+              options={{
+                clientId: 'sb', // 'PRODUCTION_CLIENT_ID'
+                disableFunding: 'paylater'
+              }}
+              onButtonReady={() => that.setState({ paypalButtonReady: true })}
+              onShippingChange={() => { return '' }} // Just having this prop forces all payment forms to render in popups instead of inline
+            />
+            :
+            <React.Fragment>
+              <Button variant='secondary' onClick={this.resetAndHide.bind(this)}>
+                Cancel
+              </Button>
+
+              <Button
+                variant='primary'
+                disabled={!this.validRental}
+                onClick={this.handleSaveChanges.bind(this)}
+              >
+                Save Changes
+              </Button>
+            </React.Fragment>
+          }
         </Modal.Footer>
       </Modal>
     )
