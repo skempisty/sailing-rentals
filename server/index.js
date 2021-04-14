@@ -43,6 +43,17 @@
     next();
   });
 
+  /**
+   * Redirect http to https in production (Heroku host requires this)
+   */
+  app.use('*', (req, res, next) => {
+    if ('https' !== req.headers['x-forwarded-proto'] && 'production' === process.env.NODE_ENV) {
+      res.redirect('https://' + req.hostname + req.url)
+    } else {
+      next()
+    }
+  })
+
   app.use('/api', routes)
 
   if (process.env.NODE_ENV === 'production') {
