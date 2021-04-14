@@ -314,7 +314,9 @@ class AddRentalModal extends React.Component {
 
   eventStyleGetter(rental) {
     const { currentUser, editRental } = this.props
+    const { view } = this.state
 
+    // background color
     let backgroundColor
 
     if (editRental && editRental.id === rental.id) {
@@ -334,7 +336,18 @@ class AddRentalModal extends React.Component {
       backgroundColor = 'green' // valid time slot selection
     }
 
+    // event relative size
+    const width = `${(rental.end - rental.start) / (this.maxTime - this.minTime) * 100}%`
+
+    // positioning
+    const minTimeDate = this.minTime.setFullYear(rental.start.getFullYear(), rental.start.getMonth(), rental.start.getDate())
+
+    const left = `${(rental.start - minTimeDate) / (this.maxTime - this.minTime) * 100}%`
+
     const style = {
+      position: view === 'month' ? 'relative' : null,
+      left: view === 'month' ? left : null,
+      width: view === 'month' ? width : null,
       backgroundColor
     }
 
