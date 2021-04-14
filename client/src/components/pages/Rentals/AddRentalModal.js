@@ -7,7 +7,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import { PayPalButton } from 'react-paypal-button-v2'
 
 import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap'
-import { FaExclamationTriangle } from 'react-icons/fa'
+import { FaExclamationTriangle, FaBan } from 'react-icons/fa'
 import { RiSailboatFill } from 'react-icons/ri'
 
 import EventLabel from './EventLabel'
@@ -23,6 +23,8 @@ const StyledCalendar = styled.div`
   .rbc-calendar { padding: 0 1em 1em 1em; }
 
   .rbc-time-slot { min-height: 3em; }
+  
+  .rbc-event-content { overflow: visible }
 `
 
 class AddRentalModal extends React.Component {
@@ -370,7 +372,7 @@ class AddRentalModal extends React.Component {
       icon = <RiSailboatFill/>
     } else if (rental.id) {
       label = 'Unavailable'
-      icon = <RiSailboatFill/>
+      icon = <FaBan/>
     } else if (this.alreadyRentedThisDay(rental)) {
       label = `You've rented the ${this.getBlockingBoatName(rental)} for today already`
       icon = <FaExclamationTriangle/>
@@ -391,11 +393,13 @@ class AddRentalModal extends React.Component {
       icon = <RiSailboatFill/>
     }
 
+    const showSvgComponent = view === 'day' || this.getRentalDurationHours(rental) >= 3
+
     return (
       <EventLabel
-        label={label}
+        label={view === 'day' ? label : null}
         rental={rental}
-        svgComponent={icon}
+        svgComponent={showSvgComponent ? icon : null}
         view={view}
         onMonthViewEventClick={this.handleMonthViewEventClick.bind(this)}
       />

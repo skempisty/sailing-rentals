@@ -10,22 +10,40 @@ export default class EventLabel extends React.Component {
     }
   }
 
+  get isMonthView() {
+    const { view } = this.props
+
+    return view === 'month'
+  }
+
   render() {
-    const { label, svgComponent, view } = this.props
+    const { label, svgComponent } = this.props
 
     return (
       <div
         onClick={this.handleEventClick.bind(this)}
         style={{
           display: 'flex',
-          alignItems: 'center'
+          justifyContent: this.isMonthView ? 'center' : null,
+          alignItems: 'center',
+          height: this.isMonthView ? '24px' : null
         }}
       >
-        {view !== 'month' &&
-          <span>{svgComponent}</span>
+        {svgComponent &&
+          <span
+            style={{
+              display: this.isMonthView ? 'flex' : null,
+              justifyContent: this.isMonthView ? 'center' : null,
+              alignItems: this.isMonthView ? 'center' : null
+            }}
+          >
+            {svgComponent}
+          </span>
         }
 
-        <b style={{ marginLeft: '0.5em' }}>{label}</b>
+        {label &&
+          <b style={{ marginLeft: '0.5em' }}>{label}</b>
+        }
       </div>
     )
   }
