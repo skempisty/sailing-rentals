@@ -115,7 +115,7 @@ class Profile extends React.Component {
 
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: '1em' }}>
               {!!currentUser.isAdmin &&
-                <Badge variant='danger' style={{ width: '4.5em', marginRight: '0.5em' }}>Admin</Badge>
+                <Badge variant='warning' style={{ width: '4.5em', marginRight: '0.5em' }}>Admin</Badge>
               }
 
               <div><b>Approved:</b> {currentUser.isApproved ? <FaCheck color='green' /> : <FaTimes color='red' />}</div>

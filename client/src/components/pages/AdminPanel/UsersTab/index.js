@@ -10,7 +10,7 @@ class UsersTab extends React.Component {
     const { users } = this.props;
 
     return (
-      <Card>
+      <Card style={{ maxWidth: '40em' }}>
         <Table>
           <thead><tr>
             <th>Sailor</th>
