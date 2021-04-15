@@ -25,11 +25,12 @@
    */
   await db.query(`CREATE TABLE ${SAILING_DB_NAME}.users (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
-    'googleId VARCHAR(255),' +
+    'googleId VARCHAR(255) NOT NULL,' +
     'imageUrl VARCHAR(255),' +
     'isApproved BOOLEAN DEFAULT false,' +
     'isAdmin BOOLEAN DEFAULT false,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deletedAt TIMESTAMP,' +
     'firstName VARCHAR(255),' +
     'lastName VARCHAR(255),' +
@@ -42,46 +43,49 @@
 
   await db.query(`CREATE TABLE ${SAILING_DB_NAME}.carousel_slides (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
-    'createdBy INT,' +
+    'createdBy INT NOT NULL,' +
     'FOREIGN KEY (createdBy) REFERENCES users(id),' +
     'label VARCHAR(255),' +
     'subText TEXT,' +
-    'imageUrl VARCHAR(255),' +
+    'imageUrl VARCHAR(255) NOT NULL,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deletedAt TIMESTAMP' +
     ');'
   )
 
   await db.query(`CREATE TABLE ${SAILING_DB_NAME}.posts (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
-    'createdBy INT,' +
+    'createdBy INT NOT NULL,' +
     'FOREIGN KEY (createdBy) REFERENCES users(id),' +
-    'title VARCHAR(255),' +
+    'title VARCHAR(255) NOT NULL,' +
     'body TEXT,' +
     'imageUrl VARCHAR(255),' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deletedAt TIMESTAMP' +
     ');'
   )
 
   await db.query(`CREATE TABLE ${SAILING_DB_NAME}.boats (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
-    'createdBy INT,' +
+    'createdBy INT NOT NULL,' +
     'FOREIGN KEY (createdBy) REFERENCES users(id),' +
-    'name VARCHAR(255),' +
-    'model VARCHAR(255),' +
+    'name VARCHAR(255) NOT NULL,' +
+    'model VARCHAR(255) NOT NULL,' +
     'description TEXT,' +
-    'perHourRentalCost DOUBLE(10,2),' +
+    'perHourRentalCost DOUBLE(10,2) NOT NULL,' +
     'imageUrl VARCHAR(255),' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deletedAt TIMESTAMP' +
     ');'
   )
 
   await db.query(`CREATE TABLE ${SAILING_DB_NAME}.rentals (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
-    'boatId INT,' +
-    'rentedBy INT,' +
+    'boatId INT NOT NULL,' +
+    'rentedBy INT NOT NULL,' +
     'FOREIGN KEY (boatId) REFERENCES boats(id),' +
     'FOREIGN KEY (rentedBy) REFERENCES users(id),' +
     'crewCount INT,' +

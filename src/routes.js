@@ -148,13 +148,52 @@ router.get('/boats', async (req, res) => {
 /*** ADMIN ONLY */
 router.post('/boats', async (req, res) => {
   const { authorization: jwtToken } = req.headers
-  const { name } = req.body
+  const { boat } = req.body
 
-  const { userId: creatorId } = await decodeJwt(jwtToken);
+  const { userId: creatorId, isAdmin } = await decodeJwt(jwtToken)
 
-  const boats = await api.boats.createBoat(creatorId, name);
+  if (isAdmin) {
+    const newBoat = await api.boats.createBoat(creatorId, boat)
 
-  res.send(boats)
+    res.send(newBoat)
+  } else {
+    res.status(401).send('You don\'t have permission to create this boat')
+  }
+})
+
+/*** ADMIN ONLY */
+router.put('/boats/:id', async (req, res) => {
+  const { id } = req.params
+  const { authorization: jwtToken } = req.headers
+  const updateFields = req.body
+
+  console.log('UPDATE_FIELDS', updateFields)
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const updatedBoat = await api.boats.updateBoat(id, updateFields)
+
+    res.send(updatedBoat)
+  } else {
+    res.status(401).send('You don\'t have permission to update this boat')
+  }
+})
+
+/*** ADMIN ONLY */
+router.delete('/boats/:id', async (req, res) => {
+  const { id } = req.params
+  const { authorization: jwtToken } = req.headers
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const deletedBoat = await api.boats.deleteBoat(id)
+
+    res.send(deletedBoat)
+  } else {
+    res.status(401).send('You don\'t have permission to delete this boat')
+  }
 })
 
 /*******************************************************************************

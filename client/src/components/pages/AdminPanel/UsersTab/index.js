@@ -10,26 +10,24 @@ class UsersTab extends React.Component {
     const { users } = this.props;
 
     return (
-      <React.Fragment>
-        <Card>
-          <Table>
-            <thead><tr>
-              <th>Sailor</th>
-              <th>Email</th>
-              <th/>
-            </tr></thead>
+      <Card>
+        <Table>
+          <thead><tr>
+            <th>Sailor</th>
+            <th>Email</th>
+            <th/>
+          </tr></thead>
 
-            <tbody>
-              {users.map((user, index) =>
-                <UserRow
-                  key={`user-row-${user.id}-${index}`}
-                  user={user}
-                />
-              )}
-            </tbody>
-          </Table>
-        </Card>
-      </React.Fragment>
+          <tbody>
+            {users.map((user, index) =>
+              <UserRow
+                key={`user-row-${user.id}-${index}`}
+                user={user}
+              />
+            )}
+          </tbody>
+        </Table>
+      </Card>
     )
   }
 }
