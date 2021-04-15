@@ -91,7 +91,7 @@ class UserInfoModal extends React.Component {
               {/* Name */}
               <Form.Group as={Col}>
                 <Form.Label><b>Name</b></Form.Label>
-                <Form.Control value={buildFullName(user.first_name, user.last_name)} readOnly/>
+                <Form.Control value={buildFullName(user.firstName, user.lastName)} readOnly/>
                 <Form.Text className='text-muted'>
                   From Google
                 </Form.Text>
