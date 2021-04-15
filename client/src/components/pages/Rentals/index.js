@@ -43,7 +43,7 @@ class Rentals extends React.Component {
 
       this.hideAddRentalModal()
     } catch (error) {
-      alert('Error adding your rental')
+      alert(`Error adding your rental: ${error}`)
     }
   }
 

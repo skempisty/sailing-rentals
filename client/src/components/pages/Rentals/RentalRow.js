@@ -5,7 +5,7 @@ import moment from 'moment'
 import styled from 'styled-components'
 
 import { Dropdown } from 'react-bootstrap'
-import { FaEllipsisH, FaInfoCircle, FaBan } from 'react-icons/fa'
+import { FaEllipsisH, FaEdit, FaBan } from 'react-icons/fa'
 
 import AddRentalModal from './AddRentalModal'
 import DeleteRentalModal from './DeleteRentalModal'
@@ -115,7 +115,7 @@ class RentalRow extends React.Component {
                 <Dropdown.Menu>
                   <StyledDropDownItem>
                     <Dropdown.Item onClick={() => this.setState({ showEditRentalModal: true })}>
-                      <FaInfoCircle/>
+                      <FaEdit/>
                       <span>Edit Rental</span>
                     </Dropdown.Item>
                   </StyledDropDownItem>

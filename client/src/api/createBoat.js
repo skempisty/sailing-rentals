@@ -1,7 +1,12 @@
-import Constants from '../utils/constants';
+import Constants from '../utils/constants'
 
-export default async function createBoat(name) {
-  const url = `${Constants.baseUrl}/api/boats`;
+/**
+ * Create a boat
+ * @param {Boat} boat specs to tell backend what the new boat should be
+ * @return {Promise<Boat>} the newly created Boat object
+ */
+export default async function createBoat(boat) {
+  const url = `${Constants.baseUrl}/api/boats`
 
   const postOptions = {
     method: 'POST',
@@ -9,10 +14,10 @@ export default async function createBoat(name) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
     },
-    body: JSON.stringify({ name })
-  };
+    body: JSON.stringify({ boat })
+  }
 
-  const boatRes = await fetch(url, postOptions);
+  const boatRes = await fetch(url, postOptions)
 
-  return await boatRes.json();
+  return await boatRes.json()
 }

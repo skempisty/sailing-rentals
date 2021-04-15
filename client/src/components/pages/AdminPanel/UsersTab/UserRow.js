@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components'
 
 import { Dropdown, Badge } from 'react-bootstrap';
-import { FaEllipsisH, FaTrash, FaInfoCircle, FaDollarSign } from 'react-icons/fa';
+import { FaEllipsisH, FaTrash, FaInfoCircle, FaDollarSign, FaLock } from 'react-icons/fa';
 import { RiSailboatFill } from 'react-icons/ri';
 import UserInfoModal from './UserInfoModal';
 import buildFullName from '../../../../utils/buildUserFullName';
@@ -71,8 +71,8 @@ class UserRow extends React.Component {
               </Badge>
             }
 
-            {user.is_approved !== 1 &&
-              <span style={{ marginLeft: '0.5em' }}><RiSailboatFill color='red' /></span>
+            {user.isApproved !== 1 &&
+              <span style={{ marginLeft: '0.5em' }}><FaLock color='red' /></span>
             }
           </td>
 

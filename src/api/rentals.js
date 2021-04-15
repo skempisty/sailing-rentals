@@ -15,7 +15,7 @@ exports.getRental = async (id) => {
 }
 
 exports.createRental = async (createdBy, rentalObj) => {
-  const { boatId, start, end, crewCount } = rentalObj;
+  const { boatId, start, end, crewCount } = rentalObj
 
   const newRental = [ createdBy, boatId, start, end, crewCount ]
 
@@ -26,7 +26,7 @@ exports.createRental = async (createdBy, rentalObj) => {
   return rental
 }
 
-exports.updateRental = async (id, updateFields = false) => {
+exports.updateRental = async (id, updateFields) => {
   const { boatId, crewCount, start, end  } = updateFields
 
   const updateSql = ['updatedAt = CURRENT_TIMESTAMP']
