@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Card, Table, Button } from 'react-bootstrap';
+import { Card, Table, Button, Jumbotron } from 'react-bootstrap';
+import { FaPlusCircle } from 'react-icons/fa'
 
 import ContentWrapper from '../../ContentWrapper';
 import AddRentalModal from './AddRentalModal';
@@ -61,14 +62,23 @@ class Rentals extends React.Component {
           onRentalAdd={this.handleAddRental.bind(this)}
         />
 
-        <h1 style={{ color: 'white' }}>Rentals</h1>
-
-        <Button
-          onClick={() => this.setState({ showAddRentalModal: true })}
-          style={{ marginBottom: '1em' }}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1em'
+          }}
         >
-          Rent
-        </Button>
+          <h1 style={{ color: 'white', margin: '0' }}>Sailing Rentals</h1>
+
+          <Button onClick={() => this.setState({ showAddRentalModal: true })}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <FaPlusCircle/>
+              <div style={{ marginLeft: '0.5em' }}>Rent a sailboat</div>
+            </div>
+          </Button>
+        </div>
 
         {myRentals.length > 0 ?
           <React.Fragment>
@@ -133,7 +143,20 @@ class Rentals extends React.Component {
             }
           </React.Fragment>
           :
-          <div>No Rentals Found. Purchase a rental and you'll find it here!</div>
+          <Jumbotron>
+            <h1>You've never rented a sailboat before!</h1>
+            <p>
+              Click below to start the rental process
+            </p>
+            <p>
+              <Button onClick={() => this.setState({ showAddRentalModal: true })}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <FaPlusCircle/>
+                  <div style={{ marginLeft: '0.5em' }}>Rent a sailboat</div>
+                </div>
+              </Button>
+            </p>
+          </Jumbotron>
         }
       </ContentWrapper>
     )

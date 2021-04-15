@@ -142,7 +142,7 @@ class TopNavBar extends React.Component {
                       Profile
                   </Dropdown.Item>
 
-                  <Dropdown.Item onClick={() => history.push('/rentals')}>Rentals</Dropdown.Item>
+                  <Dropdown.Item onClick={() => history.push('/rentals')}>Sailboat Rentals</Dropdown.Item>
 
                   {!!currentUser.isAdmin &&
                     <React.Fragment>
