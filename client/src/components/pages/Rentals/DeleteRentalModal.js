@@ -3,31 +3,23 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
-import {Button, Form, Modal} from 'react-bootstrap'
+import { Button, Form, Modal } from 'react-bootstrap'
 
 import getBoatById from '../../../store/orm/boats/getBoatById'
 
 class DeleteRentalModal extends React.Component {
   handleConfirmDelete() {
-    const { onRentalDelete } = this.props
+    const { onRentalDelete, onHide } = this.props
 
     onRentalDelete()
-
-    this.resetAndHide()
-  }
-
-  resetAndHide() {
-    const { onHide } = this.props
-
-    this.setState(this.initialState)
     onHide()
   }
 
   render() {
-    const { rental, show } = this.props
+    const { rental, show, onHide } = this.props
 
     return (
-      <Modal show={show} onHide={this.resetAndHide.bind(this)}>
+      <Modal show={show} onHide={onHide}>
         <Modal.Header closeButton>
           <Modal.Title>Cancel Rental</Modal.Title>
         </Modal.Header>
@@ -57,7 +49,7 @@ class DeleteRentalModal extends React.Component {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant='secondary' onClick={this.resetAndHide.bind(this)}>
+          <Button variant='secondary' onClick={onHide}>
             Keep Rental
           </Button>
 
