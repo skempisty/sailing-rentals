@@ -10,7 +10,7 @@ import { removeBoat } from "../../../../store/boats";
 
 class DeleteBoatModal extends React.Component {
   async handleConfirmDelete() {
-    const { boat, onHide, removeBoat } = this.props
+    const { boat, removeBoat } = this.props
 
     try {
       await deleteBoat(boat.id)
@@ -18,8 +18,6 @@ class DeleteBoatModal extends React.Component {
       removeBoat({ id: boat.id })
     } catch (error) {
       alert(`Error deleting boat: ${error}`)
-    } finally {
-      onHide()
     }
   }
 

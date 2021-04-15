@@ -1,8 +1,6 @@
 import Constants from '../utils/constants';
 
 export default async function updateBoat(id, updateFields) {
-  console.log('updateFields', updateFields)
-
   const url = `${Constants.baseUrl}/api/boats/${id}`;
 
   const putOptions = {

@@ -167,8 +167,6 @@ router.put('/boats/:id', async (req, res) => {
   const { authorization: jwtToken } = req.headers
   const updateFields = req.body
 
-  console.log('UPDATE_FIELDS', updateFields)
-
   const { isAdmin } = await decodeJwt(jwtToken)
 
   if (isAdmin) {
