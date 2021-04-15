@@ -51,7 +51,11 @@ exports.updateBoat = async (id, updateFields) => {
 
   const sql = `UPDATE ${db.name}.boats SET ${updateSql.join(', ')} WHERE id = ?`
 
-  return await db.query(sql, sqlArgs)
+  await db.query(sql, sqlArgs)
+
+  const [ boat ] = await db.query(`SELECT * FROM ${db.name}.boats WHERE id = ?`, [id])
+
+  return boat
 }
 
 exports.deleteBoat = async (id) => {
