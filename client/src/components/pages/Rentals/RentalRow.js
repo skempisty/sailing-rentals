@@ -12,8 +12,9 @@ import DeleteRentalModal from './DeleteRentalModal'
 
 import updateRental from '../../../api/updateRental'
 import deleteRental from '../../../api/deleteRental'
+
 import getBoatById from '../../../store/orm/boats/getBoatById'
-import { editRental } from '../../../store/rentals'
+import { editRental, removeRental } from '../../../store/rentals'
 
 const StyledDropDownToggle = styled.div`
   button {
@@ -61,12 +62,12 @@ class RentalRow extends React.Component {
   }
 
   async handleRentalDelete() {
-    const { rental } = this.props
+    const { rental, removeRental } = this.props
 
     try {
       await deleteRental(rental.id)
 
-      // TODO: add redux delete
+      removeRental({ id: rental.id })
     } catch (error) {
       alert('Error cancelling rental')
     }
@@ -142,7 +143,8 @@ RentalRow.propTypes = {
 }
 
 const mapDispatchToProps = {
-  editRental
+  editRental,
+  removeRental
 }
 
 export default connect(
