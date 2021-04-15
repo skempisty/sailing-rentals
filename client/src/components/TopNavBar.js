@@ -87,65 +87,76 @@ class TopNavBar extends React.Component {
     const { currentUser, history } = this.props;
 
     return (
-      <Navbar bg='dark' variant='dark'>
-        <Navbar.Brand href='#home' style={{ display: 'flex', alignItems: 'center' }}>
-          <img src={logo} style={{ height: '2.5em' }} alt=''/>
+      <div style={{ background: '#343a40' }}>
+        <Navbar
+          bg='dark'
+          variant='dark'
+          style={{
+            margin: '0 auto',
+            paddingLeft: '5em',
+            paddingRight: '5em',
+            maxWidth: '92em'
+          }}
+        >
+          <Navbar.Brand href='#home' style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={logo} style={{ height: '2.5em' }} alt=''/>
 
-          <span
-            style={{
-              marginLeft: '0.5em',
-              color: '#fec114',
-              fontFamily: 'arial'
-            }}
-          >
-            NPSF YACHT CLUB
-          </span>
-        </Navbar.Brand>
-        <Nav className='mr-auto'>
-          <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
+            <span
+              style={{
+                marginLeft: '0.5em',
+                color: '#fec114',
+                fontFamily: 'arial'
+              }}
+            >
+              NPSF YACHT CLUB
+            </span>
+          </Navbar.Brand>
+          <Nav className='mr-auto'>
+            <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
 
-          <Nav.Link href='https://ca-logos.printavo.com/merch/npsfyc' target='_blank'>
-            Apparel
-          </Nav.Link>
+            <Nav.Link href='https://ca-logos.printavo.com/merch/npsfyc' target='_blank'>
+              Apparel
+            </Nav.Link>
 
-          <Nav.Link href='#pricing'>Contact Us</Nav.Link>
-        </Nav>
+            <Nav.Link href='#pricing'>Contact Us</Nav.Link>
+          </Nav>
 
-        <Nav>
-          {!currentUser ?
-            <LoginBtn
-              onLogin={(res) => this.handleLoginSuccess(res)}
-              onFailure={(res) => this.handleLoginFailure(res)}
-            />
-            :
-            <Dropdown alignRight>
-              <Dropdown.Toggle variant='dark' id='dropdown-basic'>
-                <img
-                  src={currentUser.imageUrl}
-                  style={{ height: '3em', marginRight: '1em' }}
-                  alt=''
-                />
-              </Dropdown.Toggle>
+          <Nav>
+            {!currentUser ?
+              <LoginBtn
+                onLogin={(res) => this.handleLoginSuccess(res)}
+                onFailure={(res) => this.handleLoginFailure(res)}
+              />
+              :
+              <Dropdown alignRight>
+                <Dropdown.Toggle variant='dark' id='dropdown-basic'>
+                  <img
+                    src={currentUser.imageUrl}
+                    style={{ height: '3em', marginRight: '1em' }}
+                    alt=''
+                  />
+                </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={() => history.push('/profile')}>
-                    Profile
-                </Dropdown.Item>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => history.push('/profile')}>
+                      Profile
+                  </Dropdown.Item>
 
-                <Dropdown.Item onClick={() => history.push('/rentals')}>Rentals</Dropdown.Item>
+                  <Dropdown.Item onClick={() => history.push('/rentals')}>Rentals</Dropdown.Item>
 
-                {!!currentUser.isAdmin &&
-                  <React.Fragment>
-                    <Dropdown.Item onClick={() => history.push('/admin-panel')}>Admin Panel</Dropdown.Item>
-                  </React.Fragment>
-                }
+                  {!!currentUser.isAdmin &&
+                    <React.Fragment>
+                      <Dropdown.Item onClick={() => history.push('/admin-panel')}>Admin Panel</Dropdown.Item>
+                    </React.Fragment>
+                  }
 
-                <Dropdown.Item><LogoutBtn onLogoutClick={this.handleLogout.bind(this)} /></Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          }
-        </Nav>
-      </Navbar>
+                  <Dropdown.Item><LogoutBtn onLogoutClick={this.handleLogout.bind(this)} /></Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            }
+          </Nav>
+        </Navbar>
+      </div>
     )
   }
 }

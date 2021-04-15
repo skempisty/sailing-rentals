@@ -10,9 +10,10 @@ export default class ContentWrapper extends React.Component {
     return (
       <div
         style={{
+          margin: '0 auto',
           padding: '2em 5em',
           height: '100%',
-          background: '#004679'
+          maxWidth: '92em'
         }}
       >
         {children}
