@@ -95,21 +95,21 @@ class UserRow extends React.Component {
                 </StyledDropDownItem>
 
                 <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showUserInfoModal: true })}>
+                  <Dropdown.Item onClick={() => this.setState({ showUserInfoModal: true })} disabled>
                     <RiSailboatFill/>
                     <span>Rentals</span>
                   </Dropdown.Item>
                 </StyledDropDownItem>
 
                 <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showUserInfoModal: true })}>
+                  <Dropdown.Item onClick={() => this.setState({ showUserInfoModal: true })} disabled>
                     <FaDollarSign/>
                     <span>Payments</span>
                   </Dropdown.Item>
                 </StyledDropDownItem>
 
                 <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showUserInfoModal: true })}>
+                  <Dropdown.Item onClick={() => this.setState({ showUserInfoModal: true })} disabled>
                     <FaTrash/>
                     <span>Delete User</span>
                   </Dropdown.Item>

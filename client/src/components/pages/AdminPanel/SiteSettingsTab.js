@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-class RentalsTab extends React.Component {
+class SiteSettingsTab extends React.Component {
   render() {
     return (
-      <div>Rentals tab</div>
+      <div>Site Settings tab</div>
     )
   }
 }
@@ -12,4 +12,4 @@ class RentalsTab extends React.Component {
 export default connect(
   null,
   null
-)(RentalsTab)
+)(SiteSettingsTab)

@@ -1,13 +1,15 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Tabs, Tab } from 'react-bootstrap';
+import React from 'react'
+import styled from 'styled-components'
+import { Tabs, Tab } from 'react-bootstrap'
 
-import ContentWrapper from '../../ContentWrapper';
-import UsersTab from './UsersTab';
-import CarouselTab from './CarouselTab';
-import PostsTab from './PostsTab';
-import BoatsTab from './BoatsTab';
-import RentalsTab from './RentalsTab';
+import ContentWrapper from '../../ContentWrapper'
+import UsersTab from './UsersTab'
+import CarouselTab from './CarouselTab'
+import PostsTab from './PostsTab'
+import BoatsTab from './BoatsTab'
+import RentalsTab from './RentalsTab'
+import PaymentsTab from './PaymentsTab'
+import SiteSettingsTab from './SiteSettingsTab'
 
 const StyledWrapper = styled.div`
   h1 {
@@ -21,17 +23,17 @@ const StyledWrapper = styled.div`
       color: grey;
     }
   }
-`;
+`
 
 export default class AdminPanel extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.state = { activeKey: 'users' };
+    this.state = { activeKey: 'users' }
   }
 
   render() {
-    const { activeKey } = this.state;
+    const { activeKey } = this.state
 
     return (
       <ContentWrapper>
@@ -66,6 +68,14 @@ export default class AdminPanel extends React.Component {
 
             <Tab eventKey='rentals' title='Rentals' disabled>
               <RentalsTab/>
+            </Tab>
+
+            <Tab eventKey='payments' title='Payments' disabled>
+              <PaymentsTab/>
+            </Tab>
+
+            <Tab eventKey='site_settings' title='Site Settings' disabled>
+              <SiteSettingsTab/>
             </Tab>
           </Tabs>
         </StyledWrapper>

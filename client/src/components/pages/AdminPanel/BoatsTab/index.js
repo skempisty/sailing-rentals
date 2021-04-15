@@ -37,7 +37,7 @@ class BoatsTab extends React.Component {
             <thead><tr>
               <th>Boat Name</th>
               <th>Model</th>
-              <th>Price/Hour</th>
+              <th>$Price/Hour</th>
               <th/>
             </tr></thead>
 
