@@ -98,7 +98,14 @@ class TopNavBar extends React.Component {
             maxWidth: '92em'
           }}
         >
-          <Navbar.Brand href='#home' style={{ display: 'flex', alignItems: 'center' }}>
+          <Navbar.Brand
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer'
+            }}
+            onClick={() => history.push('/')}
+          >
             <img src={logo} style={{ height: '2.5em' }} alt=''/>
 
             <span
