@@ -71,7 +71,7 @@ class UserRow extends React.Component {
               </Badge>
             }
 
-            {user.is_approved !== 1 &&
+            {user.isApproved !== 1 &&
               <span style={{ marginLeft: '0.5em' }}><FaLock color='red' /></span>
             }
           </td>

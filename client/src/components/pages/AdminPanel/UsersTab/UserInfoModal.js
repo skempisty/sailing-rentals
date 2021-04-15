@@ -9,7 +9,7 @@ import { Button, Col, Form, InputGroup, Modal } from 'react-bootstrap';
 import buildFullName from '../../../../utils/buildUserFullName';
 import updateUser from '../../../../api/updateUser';
 
-import { updateUserById } from '../.././../../store/users';
+import { updateUserById } from '../../../../store/users';
 
 class UserInfoModal extends React.Component {
   constructor(props) {
@@ -17,9 +17,9 @@ class UserInfoModal extends React.Component {
 
     const {
       phone,
-      job_title: jobTitle,
+      jobTitle,
       affiliation,
-      is_approved: isApproved
+      isApproved
     } = props.user;
 
     const incomingUserObj = {

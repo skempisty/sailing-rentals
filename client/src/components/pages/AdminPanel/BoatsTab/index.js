@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Card, Button, Modal, Form } from 'react-bootstrap';
 
-import createBoat from "../../../../api/createBoat";
+import createBoat from '../../../../api/createBoat';
 
 import { addNewBoat } from '../../../../store/boats';
 

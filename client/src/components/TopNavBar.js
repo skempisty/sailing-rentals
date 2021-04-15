@@ -56,7 +56,7 @@ class TopNavBar extends React.Component {
       toggleLoading(false);
 
       // put user on profile page to complete profile
-      if (!user.is_approved) {
+      if (!user.isApproved) {
         history.push('/profile');
       }
     } catch (error) {
