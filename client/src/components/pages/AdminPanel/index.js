@@ -66,7 +66,7 @@ export default class AdminPanel extends React.Component {
               <BoatsTab/>
             </Tab>
 
-            <Tab eventKey='rentals' title='Rentals' disabled>
+            <Tab eventKey='rentals' title='Rentals'>
               <RentalsTab/>
             </Tab>
 
