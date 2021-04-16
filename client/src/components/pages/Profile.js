@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { InputGroup, Col, Alert, Card, Form, Button, Badge } from 'react-bootstrap';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 
-import ContentWrapper from '../ContentWrapper';
-import VanishingAlert from '../VanishingAlert';
+import ContentWrapper from '../shared/ContentWrapper';
+import VanishingAlert from '../shared/VanishingAlert';
 
 import updateUser from '../../api/updateUser';
 import buildFullName from '../../utils/buildUserFullName'

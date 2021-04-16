@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import { Card, Table } from 'react-bootstrap'
 
-import RentalRow from '../../Rentals/RentalRow'
+import RentalRow from '../../../shared/table-rows/RentalRow'
 
 import splitUpcomingAndPastRentals from '../../../../utils/splitUpcomingAndPastRentals'
 
@@ -20,22 +20,24 @@ class RentalsTab extends React.Component {
         <Card>
           <Table>
             <thead><tr>
+              <th>Sailor</th>
               <th>Start</th>
               <th>End</th>
               <th>Boat</th>
-              <th>Crew Count</th>
+              <th>Crew</th>
               <th>Rented At</th>
               <th/>
             </tr></thead>
 
             <tbody>
-            {upcomingRentals.map((rental, index) =>
-              <RentalRow
-                key={`rental-row-${rental.id}-${index}`}
-                rental={rental}
-                options
-              />
-            )}
+              {upcomingRentals.map((rental, index) =>
+                <RentalRow
+                  key={`rental-row-${rental.id}-${index}`}
+                  rental={rental}
+                  options
+                  showSailor
+                />
+              )}
             </tbody>
           </Table>
         </Card>
@@ -45,20 +47,22 @@ class RentalsTab extends React.Component {
         <Card>
           <Table>
             <thead><tr>
+              <th>Sailor</th>
               <th>Start</th>
               <th>End</th>
               <th>Boat</th>
-              <th>Crew Count</th>
+              <th>Crew</th>
               <th>Rented At</th>
             </tr></thead>
 
             <tbody>
-            {pastRentals.map((rental, index) =>
-              <RentalRow
-                key={`rental-row-${rental.id}-${index}`}
-                rental={rental}
-              />
-            )}
+              {pastRentals.map((rental, index) =>
+                <RentalRow
+                  key={`rental-row-${rental.id}-${index}`}
+                  rental={rental}
+                  showSailor
+                />
+              )}
             </tbody>
           </Table>
         </Card>

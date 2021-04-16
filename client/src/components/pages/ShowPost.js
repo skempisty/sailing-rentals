@@ -1,5 +1,5 @@
 import React from 'react';
-import ContentWrapper from "../ContentWrapper";
+import ContentWrapper from "../shared/ContentWrapper";
 
 import getPost from '../../api/getPost';
 import LoadingPageMessage from "../LoadingPageMessage";

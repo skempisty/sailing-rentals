@@ -4,17 +4,19 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import styled from 'styled-components'
 
-import { Dropdown } from 'react-bootstrap'
+import { Dropdown, Button } from 'react-bootstrap'
 import { FaEllipsisH, FaEdit, FaBan } from 'react-icons/fa'
 
-import AddRentalModal from './AddRentalModal'
-import DeleteRentalModal from './DeleteRentalModal'
+import AddRentalModal from '../modals/AddRentalModal'
+import DeleteRentalModal from '../modals/DeleteRentalModal'
 
 import updateRental from '../../../api/updateRental'
 import deleteRental from '../../../api/deleteRental'
 
+import getUserById from '../../../store/orm/users/getUserById'
 import getBoatById from '../../../store/orm/boats/getBoatById'
 import { editRental, removeRental } from '../../../store/rentals'
+import UserInfoModal from "../modals/UserInfoModal";
 
 const StyledDropDownToggle = styled.div`
   button {
@@ -45,7 +47,8 @@ class RentalRow extends React.Component {
 
     this.state = {
       showEditRentalModal: false,
-      showDeleteRentalModal: false
+      showDeleteRentalModal: false,
+      showSailorModal: false
     }
   }
 
@@ -74,8 +77,8 @@ class RentalRow extends React.Component {
   }
 
   render() {
-    const { rental, options } = this.props
-    const { showEditRentalModal, showDeleteRentalModal } = this.state
+    const { rental, options, showSailor } = this.props
+    const { showEditRentalModal, showDeleteRentalModal, showSailorModal } = this.state
 
     return (
       <React.Fragment>
@@ -93,7 +96,25 @@ class RentalRow extends React.Component {
           onHide={() => this.setState({ showDeleteRentalModal: false })}
         />
 
+        <UserInfoModal
+          user={getUserById(rental.rentedBy)}
+          show={showSailorModal}
+          onHide={() => this.setState({ showSailorModal: false })}
+        />
+
         <tr>
+          {showSailor &&
+            <td>
+              <Button
+                variant='link'
+                onClick={() => this.setState({ showSailorModal: true })}
+                style={{ padding: '0' }}
+              >
+                {getUserById(rental.rentedBy).email}
+              </Button>
+            </td>
+          }
+
           <td>{moment(rental.start).format('MM/DD/YY LT')}</td>
 
           <td>{moment(rental.end).format('MM/DD/YY LT')}</td>
@@ -139,7 +160,8 @@ class RentalRow extends React.Component {
 
 RentalRow.propTypes = {
   options: PropTypes.bool,
-  rental: PropTypes.object.isRequired
+  rental: PropTypes.object.isRequired,
+  showSailor: PropTypes.bool
 }
 
 const mapDispatchToProps = {
