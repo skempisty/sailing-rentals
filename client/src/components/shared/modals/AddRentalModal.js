@@ -10,7 +10,7 @@ import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap'
 import { FaExclamationTriangle, FaBan } from 'react-icons/fa'
 import { RiSailboatFill } from 'react-icons/ri'
 
-import EventLabel from './EventLabel'
+import EventLabel from '../../pages/Rentals/EventLabel'
 
 import Rental from '../../../models/Rental'
 import Payment from '../../../models/Payment';

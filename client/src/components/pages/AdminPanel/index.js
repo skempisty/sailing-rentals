@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Tabs, Tab } from 'react-bootstrap'
 
-import ContentWrapper from '../../ContentWrapper'
+import ContentWrapper from '../../shared/ContentWrapper'
 import UsersTab from './UsersTab'
 import CarouselTab from './CarouselTab'
 import PostsTab from './PostsTab'
@@ -66,7 +66,7 @@ export default class AdminPanel extends React.Component {
               <BoatsTab/>
             </Tab>
 
-            <Tab eventKey='rentals' title='Rentals' disabled>
+            <Tab eventKey='rentals' title='Rentals'>
               <RentalsTab/>
             </Tab>
 

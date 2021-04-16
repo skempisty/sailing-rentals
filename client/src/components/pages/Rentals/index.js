@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { Card, Table, Button, Jumbotron } from 'react-bootstrap';
 import { FaPlusCircle } from 'react-icons/fa'
 
-import ContentWrapper from '../../ContentWrapper';
-import AddRentalModal from './AddRentalModal';
-import RentalRow from './RentalRow'
+import ContentWrapper from '../../shared/ContentWrapper';
+import AddRentalModal from '../../shared/modals/AddRentalModal';
+import RentalRow from '../../shared/table-rows/RentalRow'
 
 import createRental from '../../../api/createRental'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals';
@@ -93,7 +93,7 @@ class Rentals extends React.Component {
                       <th>Start</th>
                       <th>End</th>
                       <th>Boat</th>
-                      <th>Crew Count</th>
+                      <th>Crew</th>
                       <th>Rented At</th>
                       <th/>
                     </tr>
@@ -102,6 +102,7 @@ class Rentals extends React.Component {
                     <tbody>
                       {upcomingRentals.map((rental, index) =>
                         <RentalRow
+
                           options
                           key={`rental-row-${rental.id}-${index}`}
                           rental={rental}
@@ -124,7 +125,7 @@ class Rentals extends React.Component {
                       <th>Start</th>
                       <th>End</th>
                       <th>Boat</th>
-                      <th>Crew Count</th>
+                      <th>Crew</th>
                       <th>Rented At</th>
                     </tr>
                     </thead>

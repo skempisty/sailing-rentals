@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Carousel, Card, Button } from 'react-bootstrap';
 
-import ContentWrapper from '../../ContentWrapper';
+import ContentWrapper from '../../shared/ContentWrapper';
 
 class HomePage extends React.Component {
   render() {

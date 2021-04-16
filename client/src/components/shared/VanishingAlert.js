@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Alert } from 'react-bootstrap';
 
-import setStateAsync from '../utils/setStateAsync';
+import setStateAsync from '../../utils/setStateAsync';
 
 export default class VanishingAlert extends React.Component {
   constructor(props) {

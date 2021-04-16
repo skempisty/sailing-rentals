@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Dropdown, Badge } from 'react-bootstrap';
 import { FaEllipsisH, FaTrash, FaInfoCircle, FaDollarSign, FaLock } from 'react-icons/fa';
 import { RiSailboatFill } from 'react-icons/ri';
-import UserInfoModal from './UserInfoModal';
+import UserInfoModal from '../../../shared/modals/UserInfoModal';
 import buildFullName from '../../../../utils/buildUserFullName';
 
 const StyledDropDownToggle = styled.div`
