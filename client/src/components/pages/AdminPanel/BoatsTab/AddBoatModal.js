@@ -81,7 +81,7 @@ class AddBoatModal extends React.Component {
 
   render() {
     const { show, boat } = this.props
-    const { name, model, description, perHourRentalCost } = this.state
+    const { name, model, description, perHourRentalCost, imageUrl } = this.state
 
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} style={{ transform: 'translate(4em, 0)' }}>
@@ -105,8 +105,10 @@ class AddBoatModal extends React.Component {
             <Form.Label><b>Image</b></Form.Label>
 
             <FileUploader
+              file={imageUrl}
               bucketDirectory='boats'
               onFileChange={(downloadUrl) => this.setState({ imageUrl: downloadUrl })}
+              onRemoveFileClick={() => this.setState({ imageUrl: '' })}
             />
           </div>
 
