@@ -5,11 +5,13 @@ import { connect } from 'react-redux'
 import { Button, Form, Modal } from 'react-bootstrap'
 import CurrencyInput from 'react-currency-input-field'
 
-import createBoat from '../../../../api/createBoat';
-import updateBoat from '../../../../api/updateBoat';
-import Boat from '../../../../models/Boat';
+import FileUploader from '../../../shared/FileUploader';
 
-import { addBoat, editBoat } from '../../../../store/boats';
+import createBoat from '../../../../api/createBoat'
+import updateBoat from '../../../../api/updateBoat'
+import Boat from '../../../../models/Boat'
+
+import { addBoat, editBoat } from '../../../../store/boats'
 
 class AddBoatModal extends React.Component {
   constructor(props) {
@@ -21,13 +23,30 @@ class AddBoatModal extends React.Component {
   get initialState() {
     const { boat } = this.props
 
-    return new Boat({
+    const boatObj = new Boat({
       name: boat ? boat.name : '',
       model: boat ? boat.model : '',
       perHourRentalCost: boat ? boat.perHourRentalCost : '',
       description: boat ? boat.description : '',
       imageUrl: boat ? boat.imageUrl : ''
     })
+
+    return {
+      ...boatObj,
+      uploadedImageUrl: ''
+    }
+  }
+
+  get boatToSubmit() {
+    const { name, model, perHourRentalCost, description, imageUrl, uploadedImageUrl } = this.state
+
+    return {
+      name,
+      model,
+      perHourRentalCost,
+      description,
+      imageUrl: uploadedImageUrl || imageUrl
+    }
   }
 
   async handleSaveBoatClick() {
@@ -35,7 +54,7 @@ class AddBoatModal extends React.Component {
 
     try {
       if (boat) {
-        const updatedBoat = await updateBoat(boat.id, this.state)
+        const updatedBoat = await updateBoat(boat.id, this.boatToSubmit)
 
         editBoat({ updatedBoat: new Boat({
           id: updatedBoat.id,
@@ -46,7 +65,7 @@ class AddBoatModal extends React.Component {
           imageUrl: updatedBoat.imageUrl
         })})
       } else {
-        const newBoat = await createBoat(this.state)
+        const newBoat = await createBoat(this.boatToSubmit)
 
         addBoat({ boat: new Boat({
           id: newBoat.id,
@@ -79,17 +98,39 @@ class AddBoatModal extends React.Component {
 
   render() {
     const { show, boat } = this.props
-    const { name, model, description, perHourRentalCost } = this.state
+    const { name, model, description, perHourRentalCost, imageUrl } = this.state
 
     return (
-      <Modal show={show} onHide={this.resetAndHide.bind(this)}>
+      <Modal show={show} onHide={this.resetAndHide.bind(this)} style={{ transform: 'translate(4em, 0)' }}>
         <Modal.Header closeButton>
           <Modal.Title>{boat ? 'Edit Boat' : 'Add Boat'}</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
+        <Modal.Body style={{ position: 'relative' }}>
+          {/* Image uploader flyout */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '0',
+              right: '100%',
+              padding: '0.75em',
+              width: '12em',
+              background: 'white',
+              borderRadius: '5px 0 0 5px'
+            }}
+          >
+            <Form.Label><b>Image</b></Form.Label>
+
+            <FileUploader
+              file={imageUrl}
+              bucketDirectory='boats'
+              onFileChange={(downloadUrl) => this.setState({ uploadedImageUrl: downloadUrl })}
+              onRemoveFileClick={() => this.setState({ imageUrl: '' })}
+            />
+          </div>
+
           <Form>
-            <Form.Group controlId='addBoatForm'>
+            <Form.Group>
               <Form.Label><b>Name</b></Form.Label>
               <Form.Control
                 type='text'

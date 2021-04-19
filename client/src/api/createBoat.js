@@ -2,7 +2,7 @@ import Constants from '../utils/constants'
 
 /**
  * Create a boat
- * @param {Boat} boat specs to tell backend what the new boat should be
+ * @param {Object} boat specs to tell backend what the new boat should be
  * @return {Promise<Boat>} the newly created Boat object
  */
 export default async function createBoat(boat) {
