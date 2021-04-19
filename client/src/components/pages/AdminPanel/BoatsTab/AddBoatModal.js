@@ -23,13 +23,30 @@ class AddBoatModal extends React.Component {
   get initialState() {
     const { boat } = this.props
 
-    return new Boat({
+    const boatObj = new Boat({
       name: boat ? boat.name : '',
       model: boat ? boat.model : '',
       perHourRentalCost: boat ? boat.perHourRentalCost : '',
       description: boat ? boat.description : '',
       imageUrl: boat ? boat.imageUrl : ''
     })
+
+    return {
+      ...boatObj,
+      uploadedImageUrl: ''
+    }
+  }
+
+  get boatToSubmit() {
+    const { name, model, perHourRentalCost, description, imageUrl, uploadedImageUrl } = this.state
+
+    return {
+      name,
+      model,
+      perHourRentalCost,
+      description,
+      imageUrl: uploadedImageUrl || imageUrl
+    }
   }
 
   async handleSaveBoatClick() {
@@ -37,7 +54,7 @@ class AddBoatModal extends React.Component {
 
     try {
       if (boat) {
-        const updatedBoat = await updateBoat(boat.id, this.state)
+        const updatedBoat = await updateBoat(boat.id, this.boatToSubmit)
 
         editBoat({ updatedBoat: new Boat({
           id: updatedBoat.id,
@@ -48,7 +65,7 @@ class AddBoatModal extends React.Component {
           imageUrl: updatedBoat.imageUrl
         })})
       } else {
-        const newBoat = await createBoat(this.state)
+        const newBoat = await createBoat(this.boatToSubmit)
 
         addBoat({ boat: new Boat({
           id: newBoat.id,
@@ -107,7 +124,7 @@ class AddBoatModal extends React.Component {
             <FileUploader
               file={imageUrl}
               bucketDirectory='boats'
-              onFileChange={(downloadUrl) => this.setState({ imageUrl: downloadUrl })}
+              onFileChange={(downloadUrl) => this.setState({ uploadedImageUrl: downloadUrl })}
               onRemoveFileClick={() => this.setState({ imageUrl: '' })}
             />
           </div>
