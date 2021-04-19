@@ -2,14 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Button, Form, Modal } from 'react-bootstrap'
+import { Button, Form, Modal, Col } from 'react-bootstrap'
 import CurrencyInput from 'react-currency-input-field'
 
-import createBoat from '../../../../api/createBoat';
-import updateBoat from '../../../../api/updateBoat';
-import Boat from '../../../../models/Boat';
+import FileUploader from '../../../shared/FileUploader';
 
-import { addBoat, editBoat } from '../../../../store/boats';
+import createBoat from '../../../../api/createBoat'
+import updateBoat from '../../../../api/updateBoat'
+import Boat from '../../../../models/Boat'
+
+import { addBoat, editBoat } from '../../../../store/boats'
 
 class AddBoatModal extends React.Component {
   constructor(props) {
@@ -89,15 +91,24 @@ class AddBoatModal extends React.Component {
 
         <Modal.Body>
           <Form>
-            <Form.Group controlId='addBoatForm'>
-              <Form.Label><b>Name</b></Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Boat name'
-                value={name}
-                onChange={(e) => this.setState({ name: e.target.value })}
-              />
-            </Form.Group>
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label><b>Name</b></Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Boat name'
+                  value={name}
+                  onChange={(e) => this.setState({ name: e.target.value })}
+                />
+              </Form.Group>
+
+              <Form.Group as={Col}>
+                <FileUploader
+                  bucketDirectory='boats'
+                  onFileChange={(downloadUrl) => this.setState({ imageUrl: downloadUrl })}
+                />
+              </Form.Group>
+            </Form.Row>
 
             <Form.Group>
               <Form.Label><b>Model</b></Form.Label>

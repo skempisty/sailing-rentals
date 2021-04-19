@@ -5,6 +5,11 @@ const decodeJwt = require('./utils/decodeJwt')
 const getNewLoginJwt = require('./utils/getNewLoginJwt')
 const googleTokenIdToUser = require('./utils/googleTokenIdToUser')
 
+// adds form-data/multipart data from request into req.files
+const multer  = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage })
+
 const router = express.Router()
 
 /*******************************************************************************
@@ -16,6 +21,30 @@ const router = express.Router()
  */
 router.get('/health', async (req, res) => {
   res.send(`ok ${process.env.BASE_URL}`)
+})
+
+/*******************************************************************************
+ * Image Upload
+ */
+
+/**
+ * Upload an image to Backblaze storage - get back friendly url for image download
+ */
+/*** ADMIN ONLY */
+router.post('/images', upload.any(), async (req, res) => {
+  const buffer = req.files[0].buffer
+  const { category: imageCategory } = req.query
+  const { authorization: jwtToken } = req.headers
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const fileDownloadUrl = await api.images.uploadFile(buffer, imageCategory)
+
+    res.send(fileDownloadUrl)
+  } else {
+    res.status(401).send('Only admins may upload a file')
+  }
 })
 
 /*******************************************************************************
