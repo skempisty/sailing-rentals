@@ -25,6 +25,7 @@
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "filepond": "^4.27.0",
+    "filepond-plugin-file-validate-type": "^1.2.6",
     "filepond-plugin-image-exif-orientation": "^1.0.11",
     "filepond-plugin-image-preview": "^4.6.6",
     "google-auth-library": "^7.0.2",

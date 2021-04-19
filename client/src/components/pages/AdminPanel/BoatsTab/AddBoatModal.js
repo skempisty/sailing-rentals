@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Button, Form, Modal, Col } from 'react-bootstrap'
+import { Button, Form, Modal } from 'react-bootstrap'
 import CurrencyInput from 'react-currency-input-field'
 
 import FileUploader from '../../../shared/FileUploader';
@@ -84,31 +84,42 @@ class AddBoatModal extends React.Component {
     const { name, model, description, perHourRentalCost } = this.state
 
     return (
-      <Modal show={show} onHide={this.resetAndHide.bind(this)}>
+      <Modal show={show} onHide={this.resetAndHide.bind(this)} style={{ transform: 'translate(4em, 0)' }}>
         <Modal.Header closeButton>
           <Modal.Title>{boat ? 'Edit Boat' : 'Add Boat'}</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
-          <Form>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <Form.Label><b>Name</b></Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Boat name'
-                  value={name}
-                  onChange={(e) => this.setState({ name: e.target.value })}
-                />
-              </Form.Group>
+        <Modal.Body style={{ position: 'relative' }}>
+          {/* Image uploader flyout */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '0',
+              right: '100%',
+              padding: '0.75em',
+              width: '12em',
+              background: 'white',
+              borderRadius: '5px 0 0 5px'
+            }}
+          >
+            <Form.Label><b>Image</b></Form.Label>
 
-              <Form.Group as={Col}>
-                <FileUploader
-                  bucketDirectory='boats'
-                  onFileChange={(downloadUrl) => this.setState({ imageUrl: downloadUrl })}
-                />
-              </Form.Group>
-            </Form.Row>
+            <FileUploader
+              bucketDirectory='boats'
+              onFileChange={(downloadUrl) => this.setState({ imageUrl: downloadUrl })}
+            />
+          </div>
+
+          <Form>
+            <Form.Group>
+              <Form.Label><b>Name</b></Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Boat name'
+                value={name}
+                onChange={(e) => this.setState({ name: e.target.value })}
+              />
+            </Form.Group>
 
             <Form.Group>
               <Form.Label><b>Model</b></Form.Label>

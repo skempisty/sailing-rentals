@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
 
 import Constants from '../../utils/constants'
 
@@ -13,10 +14,15 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(
   FilePondPluginImageExifOrientation, // ensure image isn't rotated
-  FilePondPluginImagePreview // enable image preview on drop
+  FilePondPluginImagePreview, // enable image preview on drop
+  FilePondPluginFileValidateType // enable file type validation
 )
 
 const StyledFileUploader = styled.div`
+  .filepond--root {
+    margin-bottom: 0;
+  }
+  
   .filepond--credits {
     display: none;
   }
@@ -38,6 +44,7 @@ export default class FileUploader extends React.Component {
               onload: (response) => onFileChange(response)
             }
           }}
+          acceptedFileTypes={['image/*']}
         />
       </StyledFileUploader>
     )
