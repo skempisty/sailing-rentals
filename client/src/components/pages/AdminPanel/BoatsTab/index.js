@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import {Card, Button, Table} from 'react-bootstrap'
+import { Card, Button, Table } from 'react-bootstrap'
 
 import AddBoatModal from './AddBoatModal'
 
