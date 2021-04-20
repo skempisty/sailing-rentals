@@ -3,14 +3,16 @@ import { connect } from 'react-redux'
 
 import { ReactSortable } from 'react-sortablejs'
 import { Card, Button, Alert } from 'react-bootstrap'
-import { FaArrowsAltV, FaPlusCircle, FaArrowCircleDown } from 'react-icons/fa'
+import { FaArrowsAltV, FaPlusCircle, FaArrowCircleDown, FaEdit, FaBan } from 'react-icons/fa'
 
-import FileUploader from '../../shared/FileUploader'
+import FileUploader from '../../../shared/FileUploader'
+import SelectMenu from '../../../shared/SelectMenu'
+import SelectMenuItem from '../../../shared/SelectMenuItem'
 
-import createCarouselSlide from '../../../api/createCarouselSlide'
-import rearrangeCarouselSlides from '../../../api/rearrangeCarouselSlides'
+import createCarouselSlide from '../../../../api/createCarouselSlide'
+import rearrangeCarouselSlides from '../../../../api/rearrangeCarouselSlides'
 
-import { addCarouselSlide } from '../../../store/carouselSlides'
+import { addCarouselSlide } from '../../../../store/carouselSlides'
 
 class CarouselTab extends React.Component {
   constructor(props) {
@@ -134,37 +136,54 @@ class CarouselTab extends React.Component {
               style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
             >
               {sortableCarouselSlides.map((slide, index) => (
-                <div
-                  key={`slide-${index}-${slide.id}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'stretch',
-                    marginBottom: '0.5em'
-                  }}
-                >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   <div
-                    className='handle'
+                    key={`slide-${index}-${slide.id}`}
                     style={{
                       display: 'flex',
-                      alignItems: 'center',
-                      padding: '0 0.25em',
-                      background: '#343a3f',
-                      borderTopLeftRadius: '5px',
-                      borderBottomLeftRadius: '5px',
-                      cursor: 'pointer'
+                      alignItems: 'stretch',
+                      marginRight: '1em',
+                      marginBottom: '0.5em'
                     }}
                   >
-                    <FaArrowsAltV color='white'/>
+                    <div
+                      className='handle'
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '0 0.25em',
+                        background: '#343a3f',
+                        borderTopLeftRadius: '5px',
+                        borderBottomLeftRadius: '5px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <FaArrowsAltV color='white'/>
+                    </div>
+
+                    <img
+                      src={slide.imageUrl}
+                      style={{
+                        height: '10em',
+                        background: 'white' // for png backgrounds
+                      }}
+                      alt=''
+                    />
                   </div>
 
-                  <img
-                    src={slide.imageUrl}
-                    style={{
-                      height: '10em',
-                      background: 'white' // for png backgrounds
-                    }}
-                    alt=''
-                  />
+                  <SelectMenu variant='light'>
+                    <SelectMenuItem
+                      label='Edit'
+                      iconComponent={<FaEdit/>}
+                      callback={() => this.setState({ showEditSlideModal: true })}
+                    />
+
+                    <SelectMenuItem
+                      label='Delete'
+                      iconComponent={<FaBan/>}
+                      callback={() => this.setState({ showDeleteSlideModal: true })}
+                    />
+                  </SelectMenu>
                 </div>
               ))}
             </ReactSortable>
