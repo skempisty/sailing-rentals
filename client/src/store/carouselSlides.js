@@ -1,12 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
 const carouselSlideSlice = createSlice({
   name: 'carouselSlides',
   initialState: {
     carouselSlides: [{
-      img_src: 'http://loremflickr.com/1600/400/sailing',
       label: 'First slide label',
-      sub_text: 'Nulla vitae elit libero, a pharetra augue mollis interdum.'
+      subText: 'Nulla vitae elit libero, a pharetra augue mollis interdum.',
+      imageUrl: 'http://loremflickr.com/1600/400/sailing'
+    },
+    {
+      label: 'Second slide label',
+      subText: 'Nulla vitae elit libero, a pharetra augue mollis interdum.',
+      imageUrl: 'http://loremflickr.com/1600/400/sailing'
     }]
   },
   reducers: {
@@ -18,10 +23,10 @@ const carouselSlideSlice = createSlice({
       }
     }
   }
-});
+})
 
 export const {
   initCarousel,
-} = carouselSlideSlice.actions;
+} = carouselSlideSlice.actions
 
-export default carouselSlideSlice.reducer;
+export default carouselSlideSlice.reducer
