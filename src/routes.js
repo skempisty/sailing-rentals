@@ -166,18 +166,18 @@ router.post('/carousel_slides', async (req, res) => {
 })
 
 /*** ADMIN ONLY */
-router.put('/carousel_slides/move', async (req, res) => {
+router.put('/carousel_slides/rearrange', async (req, res) => {
   const { authorization: jwtToken } = req.headers
-  const { oldIndex, newIndex } = req.query
+  const sortIdOrder = req.body
 
   const { isAdmin } = await decodeJwt(jwtToken)
 
   if (isAdmin) {
-    await api.carouselSlides.moveCarouselSlides(oldIndex, newIndex)
+    await api.carouselSlides.rearrangeCarouselSlides(sortIdOrder)
 
     res.send('ok')
   } else {
-    res.status(401).send('You don\'t have permission to move these slides')
+    res.status(401).send('You don\'t have permission to rearrange these slides')
   }
 })
 

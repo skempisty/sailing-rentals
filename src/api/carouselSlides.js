@@ -55,23 +55,20 @@ exports.updateCarouselSlide = async (id, updateFields) => {
   return slide
 }
 
-exports.moveCarouselSlides = async (oldIndex, newIndex) => {
-  const sql = `
-    UPDATE 
-      ${db.name}.carousel_slides
-    SET
-      slideOrder = CASE
-    WHEN 
-      slideOrder = ? THEN ?
-    WHEN
-      slideOrder = ? THEN ?
-    ELSE
-      slideOrder END
-  `
+exports.rearrangeCarouselSlides = async (sortIdOrder) => {
+  const sql = [`UPDATE ${db.name}.carousel_slides SET slideOrder = CASE`]
+  const sqlArgs = []
 
-  const sqlArgs = [ oldIndex, newIndex, newIndex, oldIndex ]
+  sortIdOrder.forEach((slideId, index) => {
+    const slidePosition = index
 
-  await db.query(sql, sqlArgs)
+    sql.push('WHEN id = ? THEN ?')
+    sqlArgs.push(slideId, slidePosition)
+  })
+
+  sql.push('END')
+
+  await db.query(sql.join(' '), sqlArgs)
 }
 
 exports.deleteCarouselSlide = async (id) => {

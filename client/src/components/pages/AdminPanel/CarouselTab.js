@@ -8,7 +8,7 @@ import { FaArrowsAltV, FaPlusCircle } from 'react-icons/fa'
 import FileUploader from '../../shared/FileUploader'
 
 import createCarouselSlide from '../../../api/createCarouselSlide'
-import moveCarouselSlide from '../../../api/moveCarouselSlide'
+import rearrangeCarouselSlides from '../../../api/rearrangeCarouselSlides'
 
 import { addCarouselSlide } from '../../../store/carouselSlides'
 
@@ -42,8 +42,12 @@ class CarouselTab extends React.Component {
     // TODO: handle delete slide similarly
   }
 
-  async handleCarouselSort({ oldIndex, newIndex }) {
-    await moveCarouselSlide(oldIndex, newIndex)
+  async handleCarouselSort() {
+    const { sortableCarouselSlides } = this.state
+
+    const sortIdOrder = sortableCarouselSlides.map(slide => slide.id)
+
+    await rearrangeCarouselSlides(sortIdOrder)
   }
 
   async handleSubmitClick() {
