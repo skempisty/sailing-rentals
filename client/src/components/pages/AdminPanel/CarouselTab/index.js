@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 
 import { ReactSortable } from 'react-sortablejs'
 import { Card, Button, Alert } from 'react-bootstrap'
-import { FaArrowsAltV, FaPlusCircle, FaArrowCircleDown, FaEdit, FaBan } from 'react-icons/fa'
+import { FaPlusCircle, FaArrowCircleDown } from 'react-icons/fa'
+
+import CarouselSlide from './CarouselSlide'
 
 import FileUploader from '../../../shared/FileUploader'
-import SelectMenu from '../../../shared/SelectMenu'
-import SelectMenuItem from '../../../shared/SelectMenuItem'
 
 import createCarouselSlide from '../../../../api/createCarouselSlide'
 import rearrangeCarouselSlides from '../../../../api/rearrangeCarouselSlides'
@@ -135,57 +135,12 @@ class CarouselTab extends React.Component {
               handle='.handle'
               style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
             >
-              {sortableCarouselSlides.map((slide, index) => (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div
-                    key={`slide-${index}-${slide.id}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'stretch',
-                      marginRight: '1em',
-                      marginBottom: '0.5em'
-                    }}
-                  >
-                    <div
-                      className='handle'
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '0 0.25em',
-                        background: '#343a3f',
-                        borderTopLeftRadius: '5px',
-                        borderBottomLeftRadius: '5px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <FaArrowsAltV color='white'/>
-                    </div>
-
-                    <img
-                      src={slide.imageUrl}
-                      style={{
-                        height: '10em',
-                        background: 'white' // for png backgrounds
-                      }}
-                      alt=''
-                    />
-                  </div>
-
-                  <SelectMenu variant='light'>
-                    <SelectMenuItem
-                      label='Edit'
-                      iconComponent={<FaEdit/>}
-                      callback={() => this.setState({ showEditSlideModal: true })}
-                    />
-
-                    <SelectMenuItem
-                      label='Delete'
-                      iconComponent={<FaBan/>}
-                      callback={() => this.setState({ showDeleteSlideModal: true })}
-                    />
-                  </SelectMenu>
-                </div>
-              ))}
+              {sortableCarouselSlides.map((slide, index) =>
+                <CarouselSlide
+                  key={`slide-${index}-${slide.id}`}
+                  slide={slide}
+                />
+              )}
             </ReactSortable>
           </React.Fragment>
           :
