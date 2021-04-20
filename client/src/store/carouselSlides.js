@@ -1,13 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
 const carouselSlideSlice = createSlice({
   name: 'carouselSlides',
   initialState: {
-    carouselSlides: [{
-      img_src: 'http://loremflickr.com/1600/400/sailing',
-      label: 'First slide label',
-      sub_text: 'Nulla vitae elit libero, a pharetra augue mollis interdum.'
-    }]
+    carouselSlides: []
   },
   reducers: {
     initCarousel: (state, action) => {
@@ -16,12 +12,32 @@ const carouselSlideSlice = createSlice({
       if (carouselSlides && carouselSlides.length) {
         state.carouselSlides = carouselSlides
       }
+    },
+    addCarouselSlide: (state, action) => {
+      const { newSlide } = action.payload
+
+      state.carouselSlides.push(newSlide)
+    },
+    editCarouselSlide: (state, action) => {
+      const { updatedSlide } = action.payload
+
+      const slideIndex = state.carouselSlides.findIndex(slide => slide.id === updatedSlide.id)
+
+      state.carouselSlides[slideIndex] = updatedSlide
+    },
+    removeCarouselSlide: (state, action) => {
+      const { id } = action.payload
+
+      state.carouselSlides = state.carouselSlides.filter(slide => slide.id !== id)
     }
   }
-});
+})
 
 export const {
   initCarousel,
-} = carouselSlideSlice.actions;
+  addCarouselSlide,
+  editCarouselSlide,
+  removeCarouselSlide
+} = carouselSlideSlice.actions
 
-export default carouselSlideSlice.reducer;
+export default carouselSlideSlice.reducer

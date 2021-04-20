@@ -45,9 +45,10 @@
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'createdBy INT NOT NULL,' +
     'FOREIGN KEY (createdBy) REFERENCES users(id),' +
-    'label VARCHAR(255),' +
-    'subText TEXT,' +
+    'label VARCHAR(255) DEFAULT NULL,' +
+    'subText TEXT DEFAULT NULL,' +
     'imageUrl VARCHAR(255) NOT NULL,' +
+    'slideOrder INT NOT NULL,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deletedAt TIMESTAMP' +

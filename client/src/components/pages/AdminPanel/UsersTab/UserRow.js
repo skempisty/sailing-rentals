@@ -1,39 +1,20 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import styled from 'styled-components'
+import React from 'react'
+import { connect } from 'react-redux'
 
-import { Dropdown, Badge } from 'react-bootstrap';
-import { FaEllipsisH, FaTrash, FaInfoCircle, FaDollarSign, FaLock } from 'react-icons/fa';
-import { RiSailboatFill } from 'react-icons/ri';
-import UserInfoModal from '../../../shared/modals/UserInfoModal';
-import buildFullName from '../../../../utils/buildUserFullName';
+import { Badge } from 'react-bootstrap'
+import { FaTrash, FaDollarSign, FaLock, FaEdit } from 'react-icons/fa'
+import { RiSailboatFill } from 'react-icons/ri'
 
-const StyledDropDownToggle = styled.div`
-  button {
-    display: flex;
-    align-items: center;
-    height: 2em;
-    
-    &:after {
-      display: none;
-    }
-  }
-`;
+import UserInfoModal from '../../../shared/modals/UserInfoModal'
 
-const StyledDropDownItem = styled.div`
-  a.dropdown-item {
-    display: flex;
-    align-items: center;
-    
-    span {
-      margin-left: 0.5em;
-    }
-  }
-`;
+import SelectMenuItem from '../../../shared/SelectMenuItem'
+import SelectMenu from '../../../shared/SelectMenu'
+
+import buildFullName from '../../../../utils/buildUserFullName'
 
 class UserRow extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       showUserInfoModal: false
@@ -41,8 +22,8 @@ class UserRow extends React.Component {
   }
 
   render() {
-    const { user } = this.props;
-    const { showUserInfoModal } = this.state;
+    const { user } = this.props
+    const { showUserInfoModal } = this.state
 
     return (
       <React.Fragment>
@@ -79,43 +60,34 @@ class UserRow extends React.Component {
           <td>{user.email}</td>
 
           <td>
-            <Dropdown alignRight>
-              <StyledDropDownToggle>
-                <Dropdown.Toggle variant='outline-dark'>
-                  <FaEllipsisH/>
-                </Dropdown.Toggle>
-              </StyledDropDownToggle>
+            <SelectMenu variant='outline-dark'>
+              <SelectMenuItem
+                label='Edit Info'
+                iconComponent={<FaEdit/>}
+                callback={() => this.setState({ showUserInfoModal: true })}
+              />
 
-              <Dropdown.Menu>
-                <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showUserInfoModal: true })}>
-                    <FaInfoCircle/>
-                    <span>Edit Info</span>
-                  </Dropdown.Item>
-                </StyledDropDownItem>
+              <SelectMenuItem
+                label='Rentals'
+                iconComponent={<RiSailboatFill/>}
+                callback={() => this.setState({ showUserInfoModal: true })}
+                disabled
+              />
 
-                <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showUserInfoModal: true })} disabled>
-                    <RiSailboatFill/>
-                    <span>Rentals</span>
-                  </Dropdown.Item>
-                </StyledDropDownItem>
+              <SelectMenuItem
+                label='Payments'
+                iconComponent={<FaDollarSign/>}
+                callback={() => this.setState({ showUserInfoModal: true })}
+                disabled
+              />
 
-                <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showUserInfoModal: true })} disabled>
-                    <FaDollarSign/>
-                    <span>Payments</span>
-                  </Dropdown.Item>
-                </StyledDropDownItem>
-
-                <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showUserInfoModal: true })} disabled>
-                    <FaTrash/>
-                    <span>Delete User</span>
-                  </Dropdown.Item>
-                </StyledDropDownItem>
-              </Dropdown.Menu>
-            </Dropdown>
+              <SelectMenuItem
+                label='Delete User'
+                iconComponent={<FaTrash/>}
+                callback={() => this.setState({ showUserInfoModal: true })}
+                disabled
+              />
+            </SelectMenu>
           </td>
         </tr>
       </React.Fragment>
@@ -126,4 +98,4 @@ class UserRow extends React.Component {
 export default connect(
   null,
   null
-)(UserRow);
+)(UserRow)

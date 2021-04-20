@@ -15,7 +15,7 @@ class HomePage extends React.Component {
             <Carousel.Item key={`carousel-slide-${slide.id}-${index}`}>
               <img
                 className='d-block w-100'
-                src={slide.img_src}
+                src={slide.imageUrl}
                 style={{
                   height: '22.5em',
                   objectFit: 'cover'
@@ -25,7 +25,7 @@ class HomePage extends React.Component {
 
               <Carousel.Caption>
                 <h3>{slide.label}</h3>
-                <p>{slide.sub_text}</p>
+                <p>{slide.subText}</p>
               </Carousel.Caption>
             </Carousel.Item>
           )}

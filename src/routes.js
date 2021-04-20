@@ -150,9 +150,69 @@ router.get('/carousel_slides', async (req, res) => {
 })
 
 /*** ADMIN ONLY */
-// router.post('/carousel_slides', async (req, res) => {
-//
-// })
+router.post('/carousel_slides', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+  const { slideImageUrl } = req.body
+
+  const { userId: creatorId, isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const newSlide = await api.carouselSlides.createCarouselSlide(creatorId, slideImageUrl)
+
+    res.send(newSlide)
+  } else {
+    res.status(401).send('You don\'t have permission to create this carousel slide')
+  }
+})
+
+/*** ADMIN ONLY */
+router.put('/carousel_slides/rearrange', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+  const sortIdOrder = req.body
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    await api.carouselSlides.rearrangeCarouselSlides(sortIdOrder)
+
+    res.send('ok')
+  } else {
+    res.status(401).send('You don\'t have permission to rearrange these slides')
+  }
+})
+
+/*** ADMIN ONLY */
+router.put('/carousel_slides/:id', async (req, res) => {
+  const { id } = req.params
+  const { authorization: jwtToken } = req.headers
+  const updateFields = req.body
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const updatedSlide = await api.carouselSlides.updateCarouselSlide(id, updateFields)
+
+    res.send(updatedSlide)
+  } else {
+    res.status(401).send('You don\'t have permission to update this slide')
+  }
+})
+
+/*** ADMIN ONLY */
+router.delete('/carousel_slides/:id', async (req, res) => {
+  const { id } = req.params
+  const { authorization: jwtToken } = req.headers
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const deletedSlide = await api.carouselSlides.deleteCarouselSlide(id)
+
+    res.send(deletedSlide)
+  } else {
+    res.status(401).send('You don\'t have permission to delete this slide')
+  }
+})
 
 /*******************************************************************************
  * POSTS
@@ -162,6 +222,55 @@ router.get('/posts', async (req, res) => {
   const posts = await api.posts.getPosts();
 
   res.send(posts)
+})
+
+/*** ADMIN ONLY */
+router.post('/posts', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+  const { post } = req.body
+
+  const { userId: creatorId, isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const newPost = await api.posts.createPost(creatorId, post)
+
+    res.send(newPost)
+  } else {
+    res.status(401).send('You don\'t have permission to create this post')
+  }
+})
+
+/*** ADMIN ONLY */
+router.put('/posts/:id', async (req, res) => {
+  const { id } = req.params
+  const { authorization: jwtToken } = req.headers
+  const updateFields = req.body
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const updatedPost = await api.posts.updatePost(id, updateFields)
+
+    res.send(updatedPost)
+  } else {
+    res.status(401).send('You don\'t have permission to update this post')
+  }
+})
+
+/*** ADMIN ONLY */
+router.delete('/posts/:id', async (req, res) => {
+  const { id } = req.params
+  const { authorization: jwtToken } = req.headers
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const deletedPost = await api.posts.deletePost(id)
+
+    res.send(deletedPost)
+  } else {
+    res.status(401).send('You don\'t have permission to delete this post')
+  }
 })
 
 /*******************************************************************************

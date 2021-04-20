@@ -30,8 +30,25 @@ const StyledFileUploader = styled.div`
 `
 
 export default class FileUploader extends React.Component {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.triggerPreviewRemove !== this.props.triggerPreviewRemove) {
+      this.removePreview()
+    }
+  }
+
+  removePreview() {
+    this.pond.removeFile()
+  }
+
   render() {
-    const { file, bucketDirectory, onFileChange, onRemoveFileClick } = this.props
+    const {
+      file,
+      bucketDirectory,
+      allowMultiple,
+      onFileChange,
+      onRemoveFileClick,
+      onPreviewRemove
+    } = this.props
 
     return (
       <StyledFileUploader>
@@ -69,8 +86,10 @@ export default class FileUploader extends React.Component {
           </div>
           :
           <FilePond
+            ref={ref => this.pond = ref}
             server={{
               url: `${Constants.baseUrl}/api/images?category=${bucketDirectory}`,
+              revert: null, // endpoint for when image is removed
               headers: {
                 'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`
               },
@@ -79,6 +98,8 @@ export default class FileUploader extends React.Component {
               }
             }}
             acceptedFileTypes={['image/*']}
+            allowMultiple={allowMultiple}
+            onremovefile={onPreviewRemove}
           />
         }
       </StyledFileUploader>
@@ -88,6 +109,9 @@ export default class FileUploader extends React.Component {
 
 FileUploader.propTypes = {
   bucketDirectory: PropTypes.oneOf(['boats', 'carousel', 'posts']).isRequired,
+  allowMultiple: PropTypes.bool,
   onFileChange: PropTypes.func.isRequired,
-  onRemoveFileClick: PropTypes.func
+  onRemoveFileClick: PropTypes.func,
+  onPreviewRemove: PropTypes.func,
+  triggerPreviewRemove: PropTypes.bool
 }
