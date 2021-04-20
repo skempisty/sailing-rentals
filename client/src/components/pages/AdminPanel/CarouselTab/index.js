@@ -34,14 +34,58 @@ class CarouselTab extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { sortableCarouselSlides } = this.state
 
+    const slideWasAdded = prevProps.carouselSlides.length < this.props.carouselSlides.length
+    const slideWasRemoved = prevProps.carouselSlides.length > this.props.carouselSlides.length
+
     // slide has been added - add it to sortable slides as well
-    if (prevProps.carouselSlides.length < this.props.carouselSlides.length) {
+    if (slideWasAdded) {
       const plusOneSlide = sortableCarouselSlides.concat(this.props.carouselSlides[this.props.carouselSlides.length - 1])
 
       this.setState({ sortableCarouselSlides: plusOneSlide })
     }
 
-    // TODO: handle delete slide similarly
+    // slide deleted - update sortable slides accordingly
+    if (slideWasRemoved) {
+      const slideIdArray = this.props.carouselSlides.map(slide => slide.id)
+
+      const slideRemoved = sortableCarouselSlides.filter(slide => slideIdArray.includes(slide.id))
+
+      this.setState({ sortableCarouselSlides: slideRemoved })
+    }
+
+    const newSlidesString = getNormalizedSortedSlidesJsonString(this.props.carouselSlides)
+    const oldSlidesString = getNormalizedSortedSlidesJsonString(sortableCarouselSlides)
+
+    // slide edited - update sortable slides to match redux state
+    if ((!slideWasAdded && !slideWasRemoved) && newSlidesString !== oldSlidesString) {
+      this.setState({ sortableCarouselSlides: normalizeSlides(this.props.carouselSlides) })
+    }
+
+    // Have to make sure Slide objects have the same properties to compare properly
+    function normalizeSlides(slidesArray) {
+      return slidesArray.map(slide => {
+        return {
+          id: slide.id,
+          imageUrl: slide.imageUrl,
+          label: slide.label,
+          subText: slide.subText
+        }
+      })
+    }
+
+    /*
+     * Normalizes, then sorts a Slide array, before processing into JSON string.
+     * Used to compare current vs previous state
+     */
+    function getNormalizedSortedSlidesJsonString(slidesArray) {
+      return normalizeSlides(slidesArray)
+        .slice()
+        .sort((a, b) => {
+          return a.id - b.id
+        })
+        .map(slide => JSON.stringify(slide))
+        .join()
+    }
   }
 
   async handleCarouselSort() {

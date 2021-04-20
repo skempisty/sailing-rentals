@@ -4,6 +4,9 @@ import { connect } from 'react-redux'
 
 import { FaEdit, FaBan, FaArrowsAltV } from 'react-icons/fa'
 
+import DeleteSlideModal from './DeleteSlideModal'
+import EditSlideModal from './EditSlideModal'
+
 import SelectMenu from '../../../shared/SelectMenu'
 import SelectMenuItem from '../../../shared/SelectMenuItem'
 
@@ -23,6 +26,18 @@ class CarouselSlide extends React.Component {
 
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
+        <EditSlideModal
+          slide={slide}
+          show={showEditSlideModal}
+          onHide={() => this.setState({ showEditSlideModal: false })}
+        />
+
+        <DeleteSlideModal
+          slide={slide}
+          show={showDeleteSlideModal}
+          onHide={() => this.setState({ showDeleteSlideModal: false })}
+        />
+
         <div
           style={{
             display: 'flex',
