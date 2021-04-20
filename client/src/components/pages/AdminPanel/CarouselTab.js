@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import { ReactSortable } from 'react-sortablejs'
 import { Card, Button, Alert } from 'react-bootstrap'
-import { FaArrowsAltV, FaPlusCircle } from 'react-icons/fa'
+import { FaArrowsAltV, FaPlusCircle, FaArrowCircleDown } from 'react-icons/fa'
 
 import FileUploader from '../../shared/FileUploader'
 
@@ -111,46 +111,61 @@ class CarouselTab extends React.Component {
         </Card>
 
         {carouselSlides.length > 0 ?
-          <ReactSortable
-            list={sortableCarouselSlides}
-            setList={(newState) => this.setState({ sortableCarouselSlides: newState })}
-            onSort={this.handleCarouselSort.bind(this)}
-            animation='150'
-            handle='.handle'
-            style={{ display: 'inline-flex', flexDirection: 'column' }}
-          >
-            {sortableCarouselSlides.map((slide, index) => (
-              <div
-                key={`slide-${index}-${slide.id}`}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '0.5em',
-                  background: '#343a3f',
-                  borderTopLeftRadius: '5px',
-                  borderBottomLeftRadius: '5px'
-                }}
-              >
+          <React.Fragment>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '0.5em',
+                color: 'white'
+              }}
+            >
+              <FaArrowCircleDown color='white'/>
+              <span style={{ margin: '0 0.5em' }}>First Slide</span>
+              <FaArrowCircleDown color='white'/>
+            </div>
+
+            <ReactSortable
+              list={sortableCarouselSlides}
+              setList={(newState) => this.setState({ sortableCarouselSlides: newState })}
+              onSort={this.handleCarouselSort.bind(this)}
+              animation='150'
+              handle='.handle'
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
+            >
+              {sortableCarouselSlides.map((slide, index) => (
                 <div
-                  className='handle'
+                  key={`slide-${index}-${slide.id}`}
                   style={{
-                    padding: '0 0.25em',
-                    cursor: 'pointer'
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: '0.5em',
+                    background: '#343a3f',
+                    borderTopLeftRadius: '5px',
+                    borderBottomLeftRadius: '5px'
                   }}
                 >
-                  <FaArrowsAltV color='white'/>
-                </div>
+                  <div
+                    className='handle'
+                    style={{
+                      padding: '0 0.25em',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <FaArrowsAltV color='white'/>
+                  </div>
 
-                <img
-                  src={slide.imageUrl}
-                  style={{
-                    height: '10em'
-                  }}
-                  alt=''
-                />
-              </div>
-            ))}
-          </ReactSortable>
+                  <img
+                    src={slide.imageUrl}
+                    style={{
+                      height: '10em'
+                    }}
+                    alt=''
+                  />
+                </div>
+              ))}
+            </ReactSortable>
+          </React.Fragment>
           :
           <Alert
             variant='danger'
