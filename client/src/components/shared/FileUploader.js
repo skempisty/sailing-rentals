@@ -36,7 +36,8 @@ export default class FileUploader extends React.Component {
       bucketDirectory,
       allowMultiple,
       onFileChange,
-      onRemoveFileClick
+      onRemoveFileClick,
+      onPreviewRemove
     } = this.props
 
     return (
@@ -77,6 +78,7 @@ export default class FileUploader extends React.Component {
           <FilePond
             server={{
               url: `${Constants.baseUrl}/api/images?category=${bucketDirectory}`,
+              revert: null, // endpoint for when image is removed
               headers: {
                 'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`
               },
@@ -86,6 +88,7 @@ export default class FileUploader extends React.Component {
             }}
             acceptedFileTypes={['image/*']}
             allowMultiple={allowMultiple}
+            onremovefile={onPreviewRemove}
           />
         }
       </StyledFileUploader>
@@ -97,5 +100,6 @@ FileUploader.propTypes = {
   bucketDirectory: PropTypes.oneOf(['boats', 'carousel', 'posts']).isRequired,
   allowMultiple: PropTypes.bool,
   onFileChange: PropTypes.func.isRequired,
-  onRemoveFileClick: PropTypes.func
+  onRemoveFileClick: PropTypes.func,
+  onPreviewRemove: PropTypes.func
 }
