@@ -15,19 +15,22 @@ class CarouselTab extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = { uploadedImageUrl: '' }
+    this.state = { uploadedImageUrl: '', previewRemoveTrigger: false }
   }
 
   async handleSubmitClick() {
     const { addCarouselSlide } = this.props
-    const { uploadedImageUrl } = this.state
+    const { uploadedImageUrl, previewRemoveTrigger } = this.state
 
     try {
       const newSlide = await createCarouselSlide(uploadedImageUrl)
 
       addCarouselSlide({ newSlide })
 
-      this.setState({ uploadedImageUrl: '' })
+      this.setState({
+        uploadedImageUrl: '',
+        previewRemoveTrigger: !previewRemoveTrigger
+      })
     } catch (error) {
       alert(`Error adding carousel slide: ${error}`)
     }
@@ -35,7 +38,7 @@ class CarouselTab extends React.Component {
 
   render() {
     const { carouselSlides } = this.props
-    const { uploadedImageUrl } = this.state
+    const { uploadedImageUrl, previewRemoveTrigger } = this.state
 
     return (
       <React.Fragment>
@@ -67,6 +70,7 @@ class CarouselTab extends React.Component {
             bucketDirectory='carousel'
             onFileChange={(downloadUrl) => this.setState({ uploadedImageUrl: downloadUrl })}
             onPreviewRemove={() => this.setState({ uploadedImageUrl: '' })}
+            triggerPreviewRemove={previewRemoveTrigger}
           />
         </Card>
 

@@ -30,6 +30,16 @@ const StyledFileUploader = styled.div`
 `
 
 export default class FileUploader extends React.Component {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.triggerPreviewRemove !== this.props.triggerPreviewRemove) {
+      this.removePreview()
+    }
+  }
+
+  removePreview() {
+    this.pond.removeFile()
+  }
+
   render() {
     const {
       file,
@@ -76,6 +86,7 @@ export default class FileUploader extends React.Component {
           </div>
           :
           <FilePond
+            ref={ref => this.pond = ref}
             server={{
               url: `${Constants.baseUrl}/api/images?category=${bucketDirectory}`,
               revert: null, // endpoint for when image is removed
@@ -101,5 +112,6 @@ FileUploader.propTypes = {
   allowMultiple: PropTypes.bool,
   onFileChange: PropTypes.func.isRequired,
   onRemoveFileClick: PropTypes.func,
-  onPreviewRemove: PropTypes.func
+  onPreviewRemove: PropTypes.func,
+  triggerPreviewRemove: PropTypes.bool
 }
