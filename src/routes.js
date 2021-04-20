@@ -152,12 +152,12 @@ router.get('/carousel_slides', async (req, res) => {
 /*** ADMIN ONLY */
 router.post('/carousel_slides', async (req, res) => {
   const { authorization: jwtToken } = req.headers
-  const { slide } = req.body
+  const { slideImageUrl } = req.body
 
   const { userId: creatorId, isAdmin } = await decodeJwt(jwtToken)
 
   if (isAdmin) {
-    const newSlide = await api.carouselSlides.createCarouselSlide(creatorId, slide)
+    const newSlide = await api.carouselSlides.createCarouselSlide(creatorId, slideImageUrl)
 
     res.send(newSlide)
   } else {

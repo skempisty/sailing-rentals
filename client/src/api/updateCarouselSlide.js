@@ -1,7 +1,7 @@
 import Constants from '../utils/constants'
 
-export default async function updateRental(id, updateFields) {
-  const url = `${Constants.baseUrl}/api/rentals/${id}`
+export default async function updateCarouselSlide(id, updateFields) {
+  const url = `${Constants.baseUrl}/api/carousel_slides/${id}`
 
   const putOptions = {
     method: 'PUT',
@@ -12,7 +12,7 @@ export default async function updateRental(id, updateFields) {
     body: JSON.stringify(updateFields)
   };
 
-  const rentalRes = await fetch(url, putOptions)
+  const slideRes = await fetch(url, putOptions)
 
-  return await rentalRes.json()
+  return await slideRes.json()
 }

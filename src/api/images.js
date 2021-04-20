@@ -44,6 +44,8 @@ exports.uploadFile = async (fileBuffer, fileCategory = '') => {
 
   const { fileId } = uploadFileResponse.data
 
+  console.log(`Uploaded file id: ${fileId}`)
+
   return [
     baseDownloadUrl,
     'b2api',

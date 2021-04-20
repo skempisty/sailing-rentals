@@ -1,40 +1,72 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { ReactSortable } from 'react-sortablejs';
-import { Card } from 'react-bootstrap'
-import { FaArrowsAltV } from 'react-icons/fa';
+import { ReactSortable } from 'react-sortablejs'
+import { Card, Button, Alert } from 'react-bootstrap'
+import { FaArrowsAltV, FaPlusCircle } from 'react-icons/fa'
 
 import FileUploader from '../../shared/FileUploader'
+
+import createCarouselSlide from '../../../api/createCarouselSlide'
+
+import { addCarouselSlide } from '../../../store/carouselSlides'
 
 class CarouselTab extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = this.initialState
+    this.state = { uploadedImageUrl: '' }
   }
 
-  get initialState() {
-    const { carouselSlides } = this.props
+  async handleSubmitClick() {
+    const { addCarouselSlide } = this.props
+    const { uploadedImageUrl } = this.state
 
-    return {
-      carouselSlides,
-      imageUrl: ''
+    try {
+      const newSlide = await createCarouselSlide(uploadedImageUrl)
+
+      addCarouselSlide({ newSlide })
+
+      this.setState({ uploadedImageUrl: '' })
+    } catch (error) {
+      alert(`Error adding carousel slide: ${error}`)
     }
   }
 
   render() {
-    const { carouselSlides, imageUrl } = this.state
+    const { carouselSlides } = this.props
+    const { uploadedImageUrl } = this.state
 
     return (
       <React.Fragment>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1em'
+          }}
+        >
+          <h3 style={{ color: 'white', margin: '0' }}>Homepage Carousel</h3>
+
+          <Button
+            variant='primary'
+            disabled={!uploadedImageUrl}
+            onClick={this.handleSubmitClick.bind(this)}
+          >
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <FaPlusCircle/>
+
+              <div style={{ marginLeft: '0.5em' }}>Submit New Slide</div>
+            </div>
+          </Button>
+        </div>
+
         <Card style={{ marginBottom: '0.5em' }}>
           <FileUploader
-            file={imageUrl}
             bucketDirectory='carousel'
-            allowMultiple
             onFileChange={(downloadUrl) => this.setState({ uploadedImageUrl: downloadUrl })}
-            onRemoveFileClick={() => this.setState({ imageUrl: '' })}
+            onPreviewRemove={() => this.setState({ uploadedImageUrl: '' })}
           />
         </Card>
 
@@ -59,7 +91,7 @@ class CarouselTab extends React.Component {
                 }}
               >
                 <div
-                  className="handle"
+                  className='handle'
                   style={{
                     padding: '0 0.25em',
                     cursor: 'pointer'
@@ -79,7 +111,12 @@ class CarouselTab extends React.Component {
             ))}
           </ReactSortable>
           :
-          <Card>hi</Card>
+          <Alert
+            variant='danger'
+            style={{ display: 'inline-block' }}
+          >
+            No Homepage slides found - add some above or the site will not look great!
+          </Alert>
         }
       </React.Fragment>
     )
@@ -92,7 +129,11 @@ const mapStateToProps = (state) => {
   return { carouselSlides }
 }
 
+const mapDispatchToProps = {
+  addCarouselSlide
+}
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(CarouselTab)

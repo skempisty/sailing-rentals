@@ -1,15 +1,13 @@
 const db = require('../connectDb')
 
 exports.getCarouselSlides = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.carousel_slides WHERE deletedAt = NULL`)
+  return await db.query(`SELECT * FROM ${db.name}.carousel_slides WHERE deletedAt = "0000-00-00 00:00:00"`)
 }
 
-exports.createCarouselSlide = async (createdBy, slideObj) => {
-  const { label, subText, imageUrl } = slideObj
+exports.createCarouselSlide = async (createdBy, imageUrl) => {
+  const newSlide = [ createdBy, imageUrl ]
 
-  const newSlide = [ createdBy, label, subText, imageUrl ]
-
-  await db.query(`INSERT INTO ${db.name}.carousel_slides (createdBy, label, subText, imageUrl) VALUES (?, ?, ?, ?)`, newSlide)
+  await db.query(`INSERT INTO ${db.name}.carousel_slides (createdBy, imageUrl) VALUES (?, ?)`, newSlide)
 
   const [ slide ] = await db.query(`SELECT * FROM ${db.name}.carousel_slides WHERE id = LAST_INSERT_ID()`)
 
