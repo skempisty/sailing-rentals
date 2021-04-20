@@ -1,40 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import styled from 'styled-components'
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
-import { Dropdown } from 'react-bootstrap';
-import { FaEllipsisH, FaEdit, FaHistory, FaBan } from 'react-icons/fa';
+import { FaEdit, FaHistory, FaBan } from 'react-icons/fa'
 
-import AddBoatModal from './AddBoatModal';
-import DeleteBoatModal from './DeleteBoatModal';
+import AddBoatModal from './AddBoatModal'
+import DeleteBoatModal from './DeleteBoatModal'
 
-const StyledDropDownToggle = styled.div`
-  button {
-    display: flex;
-    align-items: center;
-    height: 2em;
-    
-    &:after {
-      display: none;
-    }
-  }
-`;
-
-const StyledDropDownItem = styled.div`
-  a.dropdown-item {
-    display: flex;
-    align-items: center;
-    
-    span {
-      margin-left: 0.5em;
-    }
-  }
-`;
+import SelectMenu from '../../../shared/SelectMenu'
+import SelectMenuItem from '../../../shared/SelectMenuItem'
 
 class BoatRow extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       showEditBoatModal: false,
@@ -43,8 +21,8 @@ class BoatRow extends React.Component {
   }
 
   render() {
-    const { boat } = this.props;
-    const { showEditBoatModal, showDeleteBoatModal } = this.state;
+    const { boat } = this.props
+    const { showEditBoatModal, showDeleteBoatModal } = this.state
 
     return (
       <React.Fragment>
@@ -66,36 +44,26 @@ class BoatRow extends React.Component {
           <td>{boat.perHourRentalCost}</td>
 
           <td>
-            <Dropdown alignRight>
-              <StyledDropDownToggle>
-                <Dropdown.Toggle variant='outline-dark'>
-                  <FaEllipsisH/>
-                </Dropdown.Toggle>
-              </StyledDropDownToggle>
+            <SelectMenu variant='outline-dark'>
+              <SelectMenuItem
+                label='Rental History'
+                iconComponent={<FaHistory/>}
+                callback={() => this.setState({ showEditBoatModal: true })}
+                disabled
+              />
 
-              <Dropdown.Menu>
-                <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showEditBoatModal: true })} disabled>
-                    <FaHistory/>
-                    <span>Rental History</span>
-                  </Dropdown.Item>
-                </StyledDropDownItem>
+              <SelectMenuItem
+                label='Edit'
+                iconComponent={<FaEdit/>}
+                callback={() => this.setState({ showEditBoatModal: true })}
+              />
 
-                <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showEditBoatModal: true })}>
-                    <FaEdit/>
-                    <span>Edit</span>
-                  </Dropdown.Item>
-                </StyledDropDownItem>
-
-                <StyledDropDownItem>
-                  <Dropdown.Item onClick={() => this.setState({ showDeleteBoatModal: true })}>
-                    <FaBan/>
-                    <span>Delete</span>
-                  </Dropdown.Item>
-                </StyledDropDownItem>
-              </Dropdown.Menu>
-            </Dropdown>
+              <SelectMenuItem
+                label='Delete'
+                iconComponent={<FaBan/>}
+                callback={() => this.setState({ showDeleteBoatModal: true })}
+              />
+            </SelectMenu>
           </td>
         </tr>
       </React.Fragment>
@@ -110,4 +78,4 @@ BoatRow.propTypes = {
 export default connect(
   null,
   null
-)(BoatRow);
+)(BoatRow)

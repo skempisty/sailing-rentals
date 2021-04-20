@@ -20,11 +20,11 @@ const StyledDropDownItem = styled.div`
  */
 export default class SelectMenuItem extends React.Component {
   render() {
-    const { label, iconComponent, callback } = this.props
+    const { label, iconComponent, disabled, callback } = this.props
 
     return (
       <StyledDropDownItem>
-        <Dropdown.Item onClick={callback}>
+        <Dropdown.Item onClick={callback} disabled={disabled}>
           {iconComponent}
           <span>{label}</span>
         </Dropdown.Item>
@@ -36,5 +36,6 @@ export default class SelectMenuItem extends React.Component {
 SelectMenuItem.propTypes = {
   label: PropTypes.string,
   iconComponent: PropTypes.node,
+  disabled: PropTypes.bool,
   callback: PropTypes.func
 }
