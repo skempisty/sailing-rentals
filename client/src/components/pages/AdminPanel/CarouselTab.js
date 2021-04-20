@@ -47,7 +47,11 @@ class CarouselTab extends React.Component {
 
     const sortIdOrder = sortableCarouselSlides.map(slide => slide.id)
 
-    await rearrangeCarouselSlides(sortIdOrder)
+    try {
+      await rearrangeCarouselSlides(sortIdOrder)
+    } catch (error) {
+      alert('Error rearranging slides')
+    }
   }
 
   async handleSubmitClick() {
