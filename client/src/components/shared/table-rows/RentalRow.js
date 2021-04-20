@@ -2,13 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import styled from 'styled-components'
 
-import { Dropdown, Button } from 'react-bootstrap'
-import { FaEllipsisH, FaEdit, FaBan } from 'react-icons/fa'
+import { Button } from 'react-bootstrap'
+import { FaEdit, FaBan } from 'react-icons/fa'
 
 import AddRentalModal from '../modals/AddRentalModal'
 import DeleteRentalModal from '../modals/DeleteRentalModal'
+import UserInfoModal from '../modals/UserInfoModal'
+
+import SelectMenuItem from '../SelectMenuItem'
+import SelectMenu from '../SelectMenu'
 
 import updateRental from '../../../api/updateRental'
 import deleteRental from '../../../api/deleteRental'
@@ -16,30 +19,6 @@ import deleteRental from '../../../api/deleteRental'
 import getUserById from '../../../store/orm/users/getUserById'
 import getBoatById from '../../../store/orm/boats/getBoatById'
 import { editRental, removeRental } from '../../../store/rentals'
-import UserInfoModal from "../modals/UserInfoModal";
-
-const StyledDropDownToggle = styled.div`
-  button {
-    display: flex;
-    align-items: center;
-    height: 2em;
-    
-    &:after {
-      display: none;
-    }
-  }
-`;
-
-const StyledDropDownItem = styled.div`
-  a.dropdown-item {
-    display: flex;
-    align-items: center;
-    
-    span {
-      margin-left: 0.5em;
-    }
-  }
-`;
 
 class RentalRow extends React.Component {
   constructor(props) {
@@ -127,29 +106,20 @@ class RentalRow extends React.Component {
 
           {options &&
             <td>
-              <Dropdown alignRight>
-                <StyledDropDownToggle>
-                  <Dropdown.Toggle variant='outline-dark'>
-                    <FaEllipsisH/>
-                  </Dropdown.Toggle>
-                </StyledDropDownToggle>
+              <SelectMenu variant='outline-dark'>
+                <SelectMenuItem
+                  label='Edit Rental'
+                  iconComponent={<FaEdit/>}
+                  callback={() => this.setState({ showEditRentalModal: true })}
+                />
 
-                <Dropdown.Menu>
-                  <StyledDropDownItem>
-                    <Dropdown.Item onClick={() => this.setState({ showEditRentalModal: true })}>
-                      <FaEdit/>
-                      <span>Edit Rental</span>
-                    </Dropdown.Item>
-                  </StyledDropDownItem>
-
-                  <StyledDropDownItem>
-                    <Dropdown.Item onClick={() => this.setState({ showDeleteRentalModal: true })}>
-                      <FaBan/>
-                      <span>Cancel Rental</span>
-                    </Dropdown.Item>
-                  </StyledDropDownItem>
-                </Dropdown.Menu>
-              </Dropdown>
+                <SelectMenuItem
+                  label='Cancel Rental'
+                  iconComponent={<FaBan/>}
+                  callback={() => this.setState({ showDeleteRentalModal: true })}
+                  disabled
+                />
+              </SelectMenu>
             </td>
           }
         </tr>
