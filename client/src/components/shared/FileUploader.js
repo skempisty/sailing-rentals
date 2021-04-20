@@ -31,7 +31,13 @@ const StyledFileUploader = styled.div`
 
 export default class FileUploader extends React.Component {
   render() {
-    const { file, bucketDirectory, onFileChange, onRemoveFileClick } = this.props
+    const {
+      file,
+      bucketDirectory,
+      allowMultiple,
+      onFileChange,
+      onRemoveFileClick
+    } = this.props
 
     return (
       <StyledFileUploader>
@@ -79,6 +85,7 @@ export default class FileUploader extends React.Component {
               }
             }}
             acceptedFileTypes={['image/*']}
+            allowMultiple={allowMultiple}
           />
         }
       </StyledFileUploader>
@@ -88,6 +95,7 @@ export default class FileUploader extends React.Component {
 
 FileUploader.propTypes = {
   bucketDirectory: PropTypes.oneOf(['boats', 'carousel', 'posts']).isRequired,
+  allowMultiple: PropTypes.bool,
   onFileChange: PropTypes.func.isRequired,
   onRemoveFileClick: PropTypes.func
 }
