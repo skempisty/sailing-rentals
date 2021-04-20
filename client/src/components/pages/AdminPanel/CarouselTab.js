@@ -138,17 +138,19 @@ class CarouselTab extends React.Component {
                   key={`slide-${index}-${slide.id}`}
                   style={{
                     display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: '0.5em',
-                    background: '#343a3f',
-                    borderTopLeftRadius: '5px',
-                    borderBottomLeftRadius: '5px'
+                    alignItems: 'stretch',
+                    marginBottom: '0.5em'
                   }}
                 >
                   <div
                     className='handle'
                     style={{
+                      display: 'flex',
+                      alignItems: 'center',
                       padding: '0 0.25em',
+                      background: '#343a3f',
+                      borderTopLeftRadius: '5px',
+                      borderBottomLeftRadius: '5px',
                       cursor: 'pointer'
                     }}
                   >
@@ -158,7 +160,8 @@ class CarouselTab extends React.Component {
                   <img
                     src={slide.imageUrl}
                     style={{
-                      height: '10em'
+                      height: '10em',
+                      background: 'white' // for png backgrounds
                     }}
                     alt=''
                   />
