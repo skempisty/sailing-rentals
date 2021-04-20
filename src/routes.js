@@ -166,6 +166,22 @@ router.post('/carousel_slides', async (req, res) => {
 })
 
 /*** ADMIN ONLY */
+router.put('/carousel_slides/move', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+  const { oldIndex, newIndex } = req.query
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    await api.carouselSlides.moveCarouselSlides(oldIndex, newIndex)
+
+    res.send('ok')
+  } else {
+    res.status(401).send('You don\'t have permission to move these slides')
+  }
+})
+
+/*** ADMIN ONLY */
 router.put('/carousel_slides/:id', async (req, res) => {
   const { id } = req.params
   const { authorization: jwtToken } = req.headers

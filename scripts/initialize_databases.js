@@ -48,6 +48,7 @@
     'label VARCHAR(255) DEFAULT NULL,' +
     'subText TEXT DEFAULT NULL,' +
     'imageUrl VARCHAR(255) NOT NULL,' +
+    'slideOrder INT NOT NULL,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deletedAt TIMESTAMP' +
