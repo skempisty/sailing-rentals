@@ -15,7 +15,30 @@ class CarouselTab extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = { uploadedImageUrl: '', previewRemoveTrigger: false }
+    this.state = this.initialState
+  }
+
+  get initialState() {
+    const { carouselSlides } = this.props
+
+    return {
+      sortableCarouselSlides: carouselSlides,
+      uploadedImageUrl: '',
+      previewRemoveTrigger: false
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { sortableCarouselSlides } = this.state
+
+    // slide has been added - add it to sortable slides as well
+    if (prevProps.carouselSlides.length < this.props.carouselSlides.length) {
+      const plusOneSlide = sortableCarouselSlides.concat(this.props.carouselSlides[this.props.carouselSlides.length - 1])
+
+      this.setState({ sortableCarouselSlides: plusOneSlide })
+    }
+    
+    // TODO: handle delete slide similarly
   }
 
   async handleSubmitClick() {
@@ -38,7 +61,7 @@ class CarouselTab extends React.Component {
 
   render() {
     const { carouselSlides } = this.props
-    const { uploadedImageUrl, previewRemoveTrigger } = this.state
+    const { sortableCarouselSlides, uploadedImageUrl, previewRemoveTrigger } = this.state
 
     return (
       <React.Fragment>
@@ -76,13 +99,13 @@ class CarouselTab extends React.Component {
 
         {carouselSlides.length > 0 ?
           <ReactSortable
-            list={carouselSlides}
-            setList={(newState) => this.setState({ carouselSlides: newState })}
+            list={sortableCarouselSlides}
+            setList={(newState) => this.setState({ sortableCarouselSlides: newState })}
             animation='150'
             handle='.handle'
             style={{ display: 'inline-flex', flexDirection: 'column' }}
           >
-            {carouselSlides.map((slide, index) => (
+            {sortableCarouselSlides.map((slide, index) => (
               <div
                 key={`slide-${index}-${slide.id}`}
                 style={{
