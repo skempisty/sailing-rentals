@@ -58,7 +58,7 @@ export default class AdminPanel extends React.Component {
               <CarouselTab/>
             </Tab>
 
-            <Tab eventKey='posts' title='Posts' disabled>
+            <Tab eventKey='posts' title='Posts'>
               <PostsTab/>
             </Tab>
 
