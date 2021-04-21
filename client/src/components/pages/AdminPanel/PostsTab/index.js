@@ -5,7 +5,7 @@ import { Alert, Button } from 'react-bootstrap'
 import { FaPlusCircle } from 'react-icons/fa'
 
 import AddPostModal from './AddPostModal'
-import Post from '../../../shared/Post'
+import PostAdminView from './PostAdminView'
 
 class PostsTab extends React.Component {
   constructor(props) {
@@ -55,7 +55,7 @@ class PostsTab extends React.Component {
             }}
           >
             {posts.map((post, index) =>
-              <Post
+              <PostAdminView
                 key={`post-${post.id}-${index}`}
                 post={post}
               />

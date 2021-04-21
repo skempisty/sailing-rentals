@@ -1,9 +1,9 @@
-import Constants from '../utils/constants';
+import Constants from '../utils/constants'
 
 export default async function getPosts() {
-  const url = `${Constants.baseUrl}/api/posts`;
+  const url = `${Constants.baseUrl}/api/posts`
 
-  const postsRes = await fetch(url);
+  const postsRes = await fetch(url)
 
-  return await postsRes.json();
+  return await postsRes.json()
 }

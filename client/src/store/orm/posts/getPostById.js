@@ -7,5 +7,5 @@ export default function getPostById(id) {
 
   const { posts } = state.posts
 
-  return posts.find(post => post.id === id)
+  return posts.find(post => post.id === Number(id))
 }

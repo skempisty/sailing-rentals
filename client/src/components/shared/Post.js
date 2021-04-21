@@ -1,10 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Card } from "react-bootstrap";
+import { withRouter } from 'react-router'
 
-export default class Post extends React.Component {
+import { Button, Card } from 'react-bootstrap'
+
+
+class Post extends React.Component {
   shortenBody(body) {
-    return body.substr(0, 100) + '…'
+    let truncatedText = body.substr(0, 100)
+
+    if (truncatedText.length >= 100) {
+      truncatedText = truncatedText + '…'
+    }
+
+    return truncatedText
   }
 
   render() {
@@ -44,3 +53,5 @@ export default class Post extends React.Component {
 Post.propTypes = {
   label: PropTypes.string
 }
+
+export default withRouter(Post)

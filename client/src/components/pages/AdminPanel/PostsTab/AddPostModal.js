@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { Button, Form, Modal } from 'react-bootstrap'
 
-import FileUploader from '../../../shared/FileUploader';
+import FileUploader from '../../../shared/FileUploader'
 
 import createPost from '../../../../api/createPost'
 import updatePost from '../../../../api/updatePost'
@@ -54,6 +54,7 @@ class AddPostModal extends React.Component {
         editPost({ updatedPost: new Post({
           id: updatedPost.id,
           title: updatedPost.title,
+          body: updatedPost.body,
           imageUrl: updatedPost.imageUrl
         })})
       } else {

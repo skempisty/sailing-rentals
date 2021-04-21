@@ -70,6 +70,6 @@ export default connect(
 
 DeleteSlideModal.propTypes = {
   show: PropTypes.bool,
-  boat: PropTypes.object,
+  slide: PropTypes.object,
   onHide: PropTypes.func
 }
