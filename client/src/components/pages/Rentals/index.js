@@ -154,7 +154,7 @@ class Rentals extends React.Component {
           <Jumbotron>
             <h1>You've never rented a sailboat before!</h1>
             <p>
-              Click below to start the rental process
+              Click below to begin
             </p>
             <p>
               <Button onClick={() => this.setState({ showAddRentalModal: true })}>
