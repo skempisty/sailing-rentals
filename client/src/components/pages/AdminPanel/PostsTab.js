@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Button } from 'react-bootstrap'
+import { Alert, Button } from 'react-bootstrap'
 import { FaPlusCircle } from 'react-icons/fa'
 
 class PostsTab extends React.Component {
@@ -29,6 +29,13 @@ class PostsTab extends React.Component {
             </div>
           </Button>
         </div>
+
+        <Alert
+          variant='danger'
+          style={{ display: 'inline-block' }}
+        >
+          No Posts found - the homepage is looking a little bare
+        </Alert>
       </React.Fragment>
     )
   }

@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Carousel, Jumbotron, Card, Button } from 'react-bootstrap'
+import { Carousel, Jumbotron, Button } from 'react-bootstrap'
 import { FaPlusCircle } from 'react-icons/fa'
 
 import ContentWrapper from '../../shared/ContentWrapper'
+import Post from '../../shared/Post'
 
 class HomePage extends React.Component {
   shortenBody(body) {
@@ -71,33 +72,10 @@ class HomePage extends React.Component {
                 }}
               >
                 {posts.map((post, index) =>
-                  <Card
-                    style={{
-                      width: '16.25em',
-                      minWidth: '16.25em',
-                      marginRight: '1em',
-                      marginBottom: '1em'
-                    }}
+                  <Post
                     key={`post-${post.id}-${index}`}
-                  >
-                    <Card.Img
-                      variant='top'
-                      src={post.imageUrl}
-                    />
-
-                    <Card.Body>
-                      <Card.Title>{post.title}</Card.Title>
-
-                      <Card.Text>{this.shortenBody(post.body)}</Card.Text>
-
-                      <Button
-                        variant='primary'
-                        onClick={() => history.push(`/posts/${post.id}`)}
-                      >
-                        See more
-                      </Button>
-                    </Card.Body>
-                  </Card>
+                    post={post}
+                  />
                 )}
               </div>
             </div>
