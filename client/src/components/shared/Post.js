@@ -17,15 +17,14 @@ class Post extends React.Component {
   }
 
   render() {
-    const { post, history } = this.props
+    const { post, margin, history } = this.props
 
     return (
       <Card
         style={{
+          margin,
           width: '16.25em',
-          minWidth: '16.25em',
-          marginRight: '1em',
-          marginBottom: '1em'
+          minWidth: '16.25em'
         }}
       >
         <Card.Img
@@ -51,7 +50,8 @@ class Post extends React.Component {
 }
 
 Post.propTypes = {
-  label: PropTypes.string
+  post: PropTypes.string,
+  margin: PropTypes.string,
 }
 
 export default withRouter(Post)

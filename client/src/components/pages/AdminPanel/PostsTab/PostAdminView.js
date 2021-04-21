@@ -39,12 +39,12 @@ class PostAdminView extends React.Component {
           onHide={() => this.setState({ showDeletePostModal: false })}
         />
 
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative', margin: '0 1em 1em 0' }}>
           <div
             style={{
               position: 'absolute',
-              top: '0',
-              right: '0',
+              top: '0.5em',
+              right: '0.5em',
               zIndex: '1'
             }}
           >

@@ -75,6 +75,7 @@ class HomePage extends React.Component {
                   <Post
                     key={`post-${post.id}-${index}`}
                     post={post}
+                    margin='0 1em 1em 0'
                   />
                 )}
               </div>
