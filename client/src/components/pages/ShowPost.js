@@ -1,45 +1,21 @@
-import React from 'react';
-import ContentWrapper from "../shared/ContentWrapper";
+import React from 'react'
 
-import getPost from '../../api/getPost';
-import LoadingPageMessage from "../LoadingPageMessage";
+import ContentWrapper from '../shared/ContentWrapper'
+import getPostById from "../../store/orm/posts/getPostById";
 
 export default class ShowPost extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      loading: true
-    }
-  }
-
-  async componentDidMount() {
-    const id = this.props.match.params.id
-
-    try {
-      this.post = await getPost(id);
-
-      this.setState({ loading: false });
-    } catch (err) {
-
-    }
-  }
-
   render() {
-    const { loading } = this.state;
-    const { post } = this;
+    const post = getPostById(this.props.match.params.id)
 
     return (
       <ContentWrapper>
-        {!loading ?
-          <React.Fragment>
-            <h3>{post.title}</h3>
-            <img src={post.img_src} alt='' />
-            <div>{post.description}</div>
-          </React.Fragment>
-          :
-          <LoadingPageMessage />
-        }
+        <React.Fragment>
+          <h3>{post.title}</h3>
+
+          <img src={post.imageUrl} alt='' />
+
+          <div>{post.body}</div>
+        </React.Fragment>
       </ContentWrapper>
     )
   }

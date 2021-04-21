@@ -1,29 +1,36 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from 'react'
+import { connect } from 'react-redux'
+import qs from 'qs'
 
-import { Card, Table, Button, Jumbotron } from 'react-bootstrap';
+import { Card, Table, Button, Jumbotron } from 'react-bootstrap'
 import { FaPlusCircle } from 'react-icons/fa'
 
-import ContentWrapper from '../../shared/ContentWrapper';
-import AddRentalModal from '../../shared/modals/AddRentalModal';
+import ContentWrapper from '../../shared/ContentWrapper'
+import AddRentalModal from '../../shared/modals/AddRentalModal'
 import RentalRow from '../../shared/table-rows/RentalRow'
 
 import createRental from '../../../api/createRental'
-import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals';
+import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
 
 import { addNewRental } from '../../../store/rentals'
 
 class Rentals extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.state = {
-      showAddRentalModal: false
+    this.state = this.initialState
+  }
+
+  get initialState() {
+    const { showAddRentalModal } = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })
+
+    return {
+      showAddRentalModal: !!showAddRentalModal
     }
   }
 
   hideAddRentalModal() {
-    this.setState({ showAddRentalModal: false });
+    this.setState({ showAddRentalModal: false })
   }
 
   /**
@@ -33,7 +40,7 @@ class Rentals extends React.Component {
    * @param {Payment} payment object from addRentalModal
    */
   async handleAddRental(rental, payment) {
-    const { addNewRental } = this.props;
+    const { addNewRental } = this.props
 
     try {
       // TODO: combine api and redux functions into a async thunk
@@ -49,8 +56,8 @@ class Rentals extends React.Component {
   }
 
   render() {
-    const { myRentals } = this.props;
-    const { showAddRentalModal } = this.state;
+    const { myRentals } = this.props
+    const { showAddRentalModal } = this.state
 
     const { upcomingRentals, pastRentals } = splitUpcomingAndPastRentals(myRentals)
 
@@ -165,16 +172,16 @@ class Rentals extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { myRentals } = state.rentals;
+  const { myRentals } = state.rentals
 
-  return { myRentals };
-};
+  return { myRentals }
+}
 
 const mapDispatchToProps = {
   addNewRental
-};
+}
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Rentals);
+)(Rentals)

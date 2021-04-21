@@ -1,12 +1,18 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { Carousel, Card, Button } from 'react-bootstrap';
+import React from 'react'
+import { connect } from 'react-redux'
 
-import ContentWrapper from '../../shared/ContentWrapper';
+import { Carousel, Jumbotron, Card, Button } from 'react-bootstrap'
+import { FaPlusCircle } from 'react-icons/fa'
+
+import ContentWrapper from '../../shared/ContentWrapper'
 
 class HomePage extends React.Component {
+  shortenBody(body) {
+    return body.substr(0, 100) + '…'
+  }
+
   render() {
-    const { carouselSlides, posts, history } = this.props;
+    const { carouselSlides, posts, history } = this.props
 
     return (
       <React.Fragment>
@@ -32,39 +38,68 @@ class HomePage extends React.Component {
         </Carousel>
 
         <ContentWrapper>
-          <div style={{ margin: '0 auto', maxWidth: '45em' }}>
-            <h2
-              style={{
-                marginBottom: '1em',
-                color: 'white',
-                textAlign: 'center'
-              }}
-            >
-              News/Announcements
-            </h2>
-
+          <div style={{ display: 'flex' }}>
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-around',
-                margin: '1em auto 0 auto'
+                alignItems: 'flex-start',
+                width: '35%'
               }}
             >
-              {posts.map((post, index) =>
-                <Card style={{ width: '18rem' }} key={`post-${post.id}-${index}`}>
-                  <Card.Img variant='top' src={post.img_src} />
-                  <Card.Body>
-                    <Card.Title>{post.title}</Card.Title>
-                    <Card.Text>{post.short_description}</Card.Text>
-                    <Button
-                      variant='primary'
-                      onClick={() => history.push(`/posts/${post.id}`)}
-                    >
-                      See more
-                    </Button>
-                  </Card.Body>
-                </Card>
-              )}
+              <Jumbotron style={{ width: '100%' }}>
+                <h1>Sail with the NPSF Yacht Club</h1>
+                <p>
+                  Click below to begin
+                </p>
+                <p>
+                  <Button onClick={() => history.push(`/rentals?showAddRentalModal=true`)}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <FaPlusCircle/>
+                      <div style={{ marginLeft: '0.5em' }}>Rent a sailboat</div>
+                    </div>
+                  </Button>
+                </p>
+              </Jumbotron>
+            </div>
+
+            <div style={{ width: '65%' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  paddingLeft: '1.5em',
+                  flexWrap: 'wrap'
+                }}
+              >
+                {posts.map((post, index) =>
+                  <Card
+                    style={{
+                      width: '16.25em',
+                      minWidth: '16.25em',
+                      marginRight: '1em',
+                      marginBottom: '1em'
+                    }}
+                    key={`post-${post.id}-${index}`}
+                  >
+                    <Card.Img
+                      variant='top'
+                      src={post.imageUrl}
+                    />
+
+                    <Card.Body>
+                      <Card.Title>{post.title}</Card.Title>
+
+                      <Card.Text>{this.shortenBody(post.body)}</Card.Text>
+
+                      <Button
+                        variant='primary'
+                        onClick={() => history.push(`/posts/${post.id}`)}
+                      >
+                        See more
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                )}
+              </div>
             </div>
           </div>
         </ContentWrapper>
@@ -77,10 +112,10 @@ const mapStateToProps = (state) => {
   const { posts } = state.posts
   const { carouselSlides } = state.carouselSlides
 
-  return { carouselSlides, posts };
-};
+  return { carouselSlides, posts }
+}
 
 export default connect(
   mapStateToProps,
   null
-)(HomePage);
+)(HomePage)
