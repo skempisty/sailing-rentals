@@ -133,10 +133,23 @@ router.put('/users/:id', async (req, res) => {
 /*** ADMIN ONLY */
 router.delete('/users/:id', async (req, res) => {
   const { id } = req.params
+  const { authorization: jwtToken } = req.headers
 
-  await api.users.deleteUser(id);
+  const { userId, isAdmin } = await decodeJwt(jwtToken)
 
-  return true
+  const isDeletingSelf = Number(userId) === Number(id)
+
+  if (isAdmin && !isDeletingSelf) {
+    await api.users.deleteUser(id)
+
+    res.send('ok')
+  } else {
+    if (isDeletingSelf) {
+      res.status(400).send('You cannot delete yourself')
+    } else {
+      res.status(401).send('You don\'t have permission to delete this user')
+    }
+  }
 })
 
 /*******************************************************************************

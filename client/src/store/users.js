@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
 const userSlice = createSlice({
   name: 'users',
@@ -20,13 +20,19 @@ const userSlice = createSlice({
       if (toUpdate.jobTitle !== null) state.users[toChangeUserIndex].jobTitle = toUpdate.jobTitle
       if (toUpdate.affiliation !== null) state.users[toChangeUserIndex].affiliation = toUpdate.affiliation
       if (toUpdate.isApproved !== null) state.users[toChangeUserIndex].isApproved = toUpdate.isApproved ? 1 : 0
+    },
+    removeUser: (state, action) => {
+      const { id } = action.payload
+
+      state.users = state.users.filter(users => users.id !== id)
     }
   }
-});
+})
 
 export const {
   initUsers,
-  updateUserById
+  updateUserById,
+  removeUser
 } = userSlice.actions;
 
 export default userSlice.reducer;

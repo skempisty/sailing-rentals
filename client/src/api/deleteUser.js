@@ -1,7 +1,7 @@
-import Constants from "../utils/constants";
+import Constants from '../utils/constants'
 
 export default async function deleteUser(id) {
-  const url = `${Constants.baseUrl}/api/users/${id}`;
+  const url = `${Constants.baseUrl}/api/users/${id}`
 
   const deleteOptions = {
     method: 'DELETE',
@@ -9,9 +9,7 @@ export default async function deleteUser(id) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
     }
-  };
+  }
 
-  const res = await fetch(url, deleteOptions);
-
-  return await res.json();
+  await fetch(url, deleteOptions)
 }

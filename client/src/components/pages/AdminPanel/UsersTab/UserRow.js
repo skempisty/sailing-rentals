@@ -6,6 +6,7 @@ import { FaTrash, FaDollarSign, FaLock, FaEdit } from 'react-icons/fa'
 import { RiSailboatFill } from 'react-icons/ri'
 
 import UserInfoModal from '../../../shared/modals/UserInfoModal'
+import DeleteUserModal from './DeleteUserModal'
 
 import SelectMenuItem from '../../../shared/SelectMenuItem'
 import SelectMenu from '../../../shared/SelectMenu'
@@ -17,13 +18,14 @@ class UserRow extends React.Component {
     super(props)
 
     this.state = {
-      showUserInfoModal: false
+      showUserInfoModal: false,
+      showDeleteUserModal: false
     }
   }
 
   render() {
     const { user } = this.props
-    const { showUserInfoModal } = this.state
+    const { showUserInfoModal, showDeleteUserModal } = this.state
 
     return (
       <React.Fragment>
@@ -31,6 +33,12 @@ class UserRow extends React.Component {
           user={user}
           show={showUserInfoModal}
           onHide={() => this.setState({ showUserInfoModal: false })}
+        />
+
+        <DeleteUserModal
+          user={user}
+          show={showDeleteUserModal}
+          onHide={() => this.setState({ showDeleteUserModal: false })}
         />
 
         <tr>
@@ -84,8 +92,7 @@ class UserRow extends React.Component {
               <SelectMenuItem
                 label='Delete User'
                 iconComponent={<FaTrash/>}
-                callback={() => this.setState({ showUserInfoModal: true })}
-                disabled
+                callback={() => this.setState({ showDeleteUserModal: true })}
               />
             </SelectMenu>
           </td>

@@ -27,15 +27,10 @@ exports.createRental = async (createdBy, rentalObj) => {
 }
 
 exports.updateRental = async (id, updateFields) => {
-  const { boatId, crewCount, start, end  } = updateFields
+  const { crewCount, start, end  } = updateFields
 
   const updateSql = ['updatedAt = CURRENT_TIMESTAMP']
   const sqlArgs = []
-
-  if (boatId !== null) {
-    updateSql.push('boatId = ?')
-    sqlArgs.push(boatId)
-  }
 
   if (crewCount !== null) {
     updateSql.push('crewCount = ?')

@@ -19,7 +19,7 @@ exports.createCarouselSlide = async (createdBy, imageUrl) => {
 }
 
 exports.updateCarouselSlide = async (id, updateFields) => {
-  const { label, subText, imageUrl, slideOrder } = updateFields
+  const { label, subText, imageUrl } = updateFields
 
   const updateSql = ['updatedAt = CURRENT_TIMESTAMP']
   const sqlArgs = []
@@ -37,11 +37,6 @@ exports.updateCarouselSlide = async (id, updateFields) => {
   if (imageUrl !== null) {
     updateSql.push('imageUrl = ?')
     sqlArgs.push(imageUrl)
-  }
-
-  if (slideOrder !== null) {
-    updateSql.push('slideOrder = ?')
-    sqlArgs.push(slideOrder)
   }
 
   sqlArgs.push(id)
