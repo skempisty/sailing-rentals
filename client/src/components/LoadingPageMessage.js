@@ -1,5 +1,7 @@
-import React from 'react';
-import { Spinner } from "react-bootstrap";
+import React from 'react'
+import { Spinner} from 'react-bootstrap'
+
+import logo from '../images/logo.png'
 
 export default class LoadingPageMessage extends React.Component {
   render() {
@@ -7,13 +9,32 @@ export default class LoadingPageMessage extends React.Component {
       <div
         style={{
           display: 'flex',
+          justifyContent: 'center',
           alignItems: 'center',
-          margin: '2em auto 0 auto'
+          height: '100%'
         }}
       >
-        <Spinner animation="border" />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: '2em',
+            background: 'rgba(52, 58, 63, 0.85)',
+            borderRadius: '30px',
+          }}
+        >
+          <img src={logo} style={{ width: '12em' }} alt=''/>
 
-        <span style={{ marginLeft: '1em' }}>Loading…</span>
+          <Spinner
+            animation='border'
+            style={{
+              marginTop: '1em',
+              fontSize: '2em',
+              color: 'white'
+            }}
+          />
+        </div>
       </div>
     )
   }
