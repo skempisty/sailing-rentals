@@ -117,7 +117,6 @@ class RentalRow extends React.Component {
                   label='Cancel Rental'
                   iconComponent={<FaBan/>}
                   callback={() => this.setState({ showDeleteRentalModal: true })}
-                  disabled
                 />
               </SelectMenu>
             </td>
