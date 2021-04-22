@@ -109,7 +109,7 @@ class App extends React.Component {
 
     return (
       <React.Fragment>
-        {!loading ?
+        {false ?
           <Router>
             <TopNavBar />
 
