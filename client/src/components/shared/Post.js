@@ -50,7 +50,7 @@ class Post extends React.Component {
 }
 
 Post.propTypes = {
-  post: PropTypes.string,
+  post: PropTypes.object,
   margin: PropTypes.string,
 }
 
