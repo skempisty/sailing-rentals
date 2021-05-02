@@ -13,6 +13,7 @@ import createRental from '../../../api/createRental'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
 
 import { addNewRental } from '../../../store/rentals'
+import { addNewPayment } from '../../../store/payments'
 
 class Rentals extends React.Component {
   constructor(props) {
@@ -36,18 +37,18 @@ class Rentals extends React.Component {
   /**
    * Takes a rental object from a submitted add rental modal and calls the
    * createRental api function, updates Redux
-   * @param {Rental} rental object from addRentalModal
-   * @param {Payment} payment object from addRentalModal
+   * @param {Rental} rentalParams object that comes from addRentalModal's Paypal integration. Not a full Rental object
+   * @param {Payment} paymentParams object that comes from addRentalModal's Paypal integration. Not a full Payment object
    */
-  async handleAddRental(rental, payment) {
-    const { addNewRental } = this.props
+  async handleAddRental(rentalParams, paymentParams) {
+    const { addNewRental, addNewPayment } = this.props
 
     try {
       // TODO: combine api and redux functions into a async thunk
-      const { rental: newRental, payment: newPayment } = await createRental(rental, payment)
+      const { rental: newRental, payment: newPayment } = await createRental(rentalParams, paymentParams)
 
       addNewRental({ newRental })
-      // TODO add new payment to redux here as well
+      addNewPayment({ newPayment })
 
       this.hideAddRentalModal()
     } catch (error) {
@@ -178,7 +179,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-  addNewRental
+  addNewRental,
+  addNewPayment
 }
 
 export default connect(
