@@ -1,9 +1,10 @@
 export default class Payment {
   constructor({
+    id,
     orderId,
     amount,
     currency,
-    payerId,
+    paidBy,
     payerCountryCode,
     payerPostalCode,
     payerEmailAddress,
@@ -14,10 +15,11 @@ export default class Payment {
     payeeMerchantId,
     paypalCaptureId
   }) {
+    this.id = id
     this.orderId = orderId
     this.amount = amount
     this.currency = currency
-    this.payerId = payerId
+    this.paidBy = paidBy
     this.payerCountryCode = payerCountryCode
     this.payerPostalCode = payerPostalCode
     this.payerEmailAddress = payerEmailAddress
