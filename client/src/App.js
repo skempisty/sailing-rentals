@@ -18,11 +18,14 @@ import getUsers from './api/getUsers'
 import getBoats from './api/getBoats'
 import getMyRentals from './api/getMyRentals'
 import getAllRentals from './api/getAllRentals'
+import getMyPayments from './api/getMyPayments'
+import getAllPayments from './api/getAllPayments'
 
 import { toggleLoading, initSession } from './store/session'
 import { initUsers } from './store/users'
 import { initBoats } from './store/boats'
 import { initRentals } from './store/rentals'
+import { initPayments } from './store/payments'
 import { initPosts } from './store/posts'
 import { initCarousel } from './store/carouselSlides'
 
@@ -31,14 +34,16 @@ import { initCarousel } from './store/carouselSlides'
  */
 class App extends React.Component {
   async componentDidMount() {
-    const { toggleLoading } = this.props;
+    const { toggleLoading } = this.props
 
-    const existingJwt = sessionStorage.getItem('jwt');
+    const existingJwt = sessionStorage.getItem('jwt')
 
     try {
       let currentUser = null
       let users = []
       let myRentals = []
+      let myPayments = []
+      let allPayments = []
 
       if (existingJwt) {
         const { user: loggedInUser, updatedJwt } = await getLoggedInUser()
@@ -48,10 +53,12 @@ class App extends React.Component {
 
         // Personal data
         myRentals = await getMyRentals()
+        myPayments = await getMyPayments()
 
         // Admin data
         if (loggedInUser.isAdmin) {
           users = await getUsers()
+          allPayments = await getAllPayments()
         }
       }
 
@@ -68,12 +75,14 @@ class App extends React.Component {
         users,
         boats,
         myRentals,
-        allRentals
-      });
+        allRentals,
+        myPayments,
+        allPayments
+      })
 
-      toggleLoading({ newToggleState: false });
+      toggleLoading({ newToggleState: false })
     } catch (error) {
-      alert('Error initializing app: ' + error);
+      alert('Error initializing app: ' + error)
     }
   }
 
@@ -84,7 +93,9 @@ class App extends React.Component {
     users,
     boats,
     myRentals,
-    allRentals
+    allRentals,
+    myPayments,
+    allPayments
   }) {
     // call all slice init methods
     const {
@@ -92,6 +103,7 @@ class App extends React.Component {
       initUsers,
       initBoats,
       initRentals,
+      initPayments,
       initCarousel,
       initPosts
     } = this.props
@@ -100,6 +112,7 @@ class App extends React.Component {
     initUsers({ users })
     initBoats({ boats })
     initRentals({ myRentals, allRentals })
+    initPayments({ myPayments, allPayments })
     initPosts({ posts })
     initCarousel({ carouselSlides })
   }
@@ -128,10 +141,10 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { loading } = state.session;
+  const { loading } = state.session
 
-  return { loading };
-};
+  return { loading }
+}
 
 const mapDispatchToProps = {
   toggleLoading,
@@ -139,11 +152,12 @@ const mapDispatchToProps = {
   initUsers,
   initBoats,
   initRentals,
+  initPayments,
   initPosts,
   initCarousel
-};
+}
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(App);
+)(App)
