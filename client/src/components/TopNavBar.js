@@ -1,20 +1,21 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { Nav, Navbar, Dropdown } from 'react-bootstrap';
-import { withRouter } from 'react-router';
+import React from 'react'
+import { connect } from 'react-redux'
+import { Nav, Navbar, Dropdown } from 'react-bootstrap'
+import { withRouter } from 'react-router'
 
-import LoginBtn from './LoginBtn';
-import LogoutBtn from './LogoutBtn';
+import LoginBtn from './LoginBtn'
+import LogoutBtn from './LogoutBtn'
+import SocialMediaBar from './shared/SocialMediaBar'
 
-import setLoginJwt from '../utils/setLoginJwt';
-import loginOrCreateUser from '../api/loginOrCreateUser';
-import getUsers from '../api/getUsers';
-import getMyRentals from "../api/getMyRentals";
+import setLoginJwt from '../utils/setLoginJwt'
+import loginOrCreateUser from '../api/loginOrCreateUser'
+import getUsers from '../api/getUsers'
+import getMyRentals from '../api/getMyRentals'
 
 import logo from '../images/logo.png'
 
 import { initUsers } from '../store/users'
-import { initRentals } from "../store/rentals";
+import { initRentals } from '../store/rentals'
 import {
   assignCurrentUser,
   clearCurrentUser,
@@ -32,59 +33,59 @@ class TopNavBar extends React.Component {
       assignCurrentUser,
       toggleLoading,
       history
-    } = this.props;
+    } = this.props
 
-    toggleLoading(true);
+    toggleLoading(true)
 
     try {
-      const { user, jwt } = await loginOrCreateUser(tokenId);
+      const { user, jwt } = await loginOrCreateUser(tokenId)
 
-      setLoginJwt(jwt);
+      setLoginJwt(jwt)
 
-      assignCurrentUser({ user });
+      assignCurrentUser({ user })
 
       const myRentals = await getMyRentals()
 
       initRentals({ myRentals })
 
       if (user.isAdmin) {
-        const users = await getUsers();
+        const users = await getUsers()
 
         initUsers({ users })
       }
 
-      toggleLoading(false);
+      toggleLoading(false)
 
       // put user on profile page to complete profile
       if (!user.isApproved) {
-        history.push('/profile');
+        history.push('/profile')
       }
     } catch (error) {
-      alert(`Login error: ${error}`);
+      alert(`Login error: ${error}`)
     }
   }
 
   handleLoginFailure(res) {
-    console.log('res', res);
+    console.log('res', res)
   }
 
   handleLogout() {
-    const { clearCurrentUser, history, initRentals, initUsers } = this.props;
+    const { clearCurrentUser, history, initRentals, initUsers } = this.props
 
     // clear admin data
     initUsers({ users: [] })
     // clear personal data
     initRentals({ myRentals: [] })
 
-    history.push('/');
+    history.push('/')
 
-    sessionStorage.removeItem('jwt');
+    sessionStorage.removeItem('jwt')
 
-    clearCurrentUser();
+    clearCurrentUser()
   }
 
   render() {
-    const { currentUser, history } = this.props;
+    const { currentUser, history } = this.props
 
     return (
       <div style={{ background: '#343a40' }}>
@@ -126,6 +127,8 @@ class TopNavBar extends React.Component {
             </Nav.Link>
 
             <Nav.Link href='#pricing'>Contact Us</Nav.Link>
+
+            <SocialMediaBar margin='0 0 0 1em' />
           </Nav>
 
           <Nav>
@@ -169,10 +172,10 @@ class TopNavBar extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { currentUser } = state.session;
+  const { currentUser } = state.session
 
-  return { currentUser };
-};
+  return { currentUser }
+}
 
 const mapDispatchToProps = {
   initUsers,
@@ -180,9 +183,9 @@ const mapDispatchToProps = {
   assignCurrentUser,
   clearCurrentUser,
   toggleLoading
-};
+}
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(TopNavBar));
+)(withRouter(TopNavBar))
