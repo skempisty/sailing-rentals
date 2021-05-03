@@ -26,20 +26,24 @@ export default class LoadingPageMessage extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = {showLoadingMsg: false}
+    this.stillLoading = React.createRef()
+
+    this.state = { showLoadingMsg: false }
   }
 
   componentDidMount() {
     setTimeout(() => {
-      this.setState({showLoadingMsg: true})
+      if (this.stillLoading.current) {
+        this.setState({ showLoadingMsg: true })
+      }
     }, 2000)
   }
 
   render() {
-    const {showLoadingMsg} = this.state
+    const { showLoadingMsg } = this.state
 
     return (
-      <React.Fragment>
+      <div ref={this.stillLoading} style={{ height: '100%' }}>
         {showLoadingMsg &&
           <LoadingMsgWrapper>
             <div
@@ -58,25 +62,27 @@ export default class LoadingPageMessage extends React.Component {
                   alignItems: 'center',
                   marginBottom: '10em',
                   padding: '2em',
-                  background: 'rgba(52, 58, 63, 0.85)',
+                  background: 'rgb(52, 58, 63)',
                   borderRadius: '30px',
+                  color: 'white'
                 }}
               >
                 <img src={logo} style={{width: '12em'}} alt=''/>
 
+                <h3>Loading</h3>
+
                 <Spinner
                   animation='border'
                   style={{
-                    marginTop: '1em',
-                    fontSize: '2em',
-                    color: 'white'
+                    marginTop: '0.25em',
+                    fontSize: '2em'
                   }}
                 />
               </div>
             </div>
           </LoadingMsgWrapper>
         }
-      </React.Fragment>
+      </div>
     )
   }
 }

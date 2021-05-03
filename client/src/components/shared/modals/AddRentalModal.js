@@ -407,7 +407,7 @@ class AddRentalModal extends React.Component {
   }
 
   render() {
-    const { show, boats, editRental, onRentalAdd } = this.props
+    const { currentUser, show, boats, editRental, onRentalAdd } = this.props
     const { selectedBoatId, newRentalPeriod, crewCount, view, date, paypalButtonReady } = this.state
 
     const that = this
@@ -547,6 +547,7 @@ class AddRentalModal extends React.Component {
                 })
 
                 const paymentObj = new Payment({
+                  paidBy: currentUser.id,
                   orderId,
                   amount: capture.amount.value,
                   currency: capture.amount.currency_code,
@@ -565,6 +566,10 @@ class AddRentalModal extends React.Component {
                 onRentalAdd(newRental, paymentObj)
 
                 that.resetAndHide()
+              }}
+              onError={(e) => {
+                alert(`Error contacting Paypal. Try again later`)
+                console.log('e', e)
               }}
               options={{
                 clientId: 'sb', // 'PRODUCTION_CLIENT_ID'

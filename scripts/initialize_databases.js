@@ -105,17 +105,17 @@
     'amount DOUBLE(10,2) NOT NULL,' +
     'currency VARCHAR(255) NOT NULL,' +
 
-    'payerId VARCHAR(255) NOT NULL,' +
-    'payerCountryCode VARCHAR(255) NOT NULL,' +
-    'payerPostalCode VARCHAR(255) NOT NULL,' +
-    'payerEmailAddress VARCHAR(255) NOT NULL,' +
-    'payerPhone VARCHAR(255) NOT NULL,' +
-    'payerGivenName VARCHAR(255) NOT NULL,' +
-    'payerSurname VARCHAR(255) NOT NULL,' +
+    'payerId VARCHAR(255),' +
+    'payerCountryCode VARCHAR(255),' +
+    'payerPostalCode VARCHAR(255),' +
+    'payerEmailAddress VARCHAR(255),' +
+    'payerPhone VARCHAR(255),' +
+    'payerGivenName VARCHAR(255),' +
+    'payerSurname VARCHAR(255),' +
 
-    'payeeEmail VARCHAR(255) NOT NULL,' +
-    'payeeMerchantId VARCHAR(255) NOT NULL,' +
-    'paypalCaptureId VARCHAR(255) NOT NULL,' +
+    'payeeEmail VARCHAR(255),' +
+    'payeeMerchantId VARCHAR(255),' +
+    'paypalCaptureId VARCHAR(255),' +
 
     'rentalId INT NOT NULL,' +
     'paidBy INT NOT NULL,' +

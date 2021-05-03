@@ -7,6 +7,7 @@ import { FaTrash } from 'react-icons/fa'
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
+import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size'
 
 import Constants from '../../utils/constants'
 
@@ -16,10 +17,13 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 registerPlugin(
   FilePondPluginImageExifOrientation, // ensure image isn't rotated
   FilePondPluginImagePreview, // enable image preview on drop
-  FilePondPluginFileValidateType // enable file type validation
+  FilePondPluginFileValidateType, // enable file type validation
+  FilePondPluginFileValidateSize // handles blocking of file uploads that are too large
 )
 
 const StyledFileUploader = styled.div`
+  max-width: ${({ $maxWidth }) => $maxWidth || null};
+
   .filepond--root {
     margin-bottom: 0;
   }
@@ -45,13 +49,16 @@ export default class FileUploader extends React.Component {
       file,
       bucketDirectory,
       allowMultiple,
+      maxWidth,
       onFileChange,
       onRemoveFileClick,
       onPreviewRemove
     } = this.props
 
     return (
-      <StyledFileUploader>
+      <StyledFileUploader
+        $maxWidth={maxWidth}
+      >
         {file ?
           <div style={{ position: 'relative' }}>
             {onRemoveFileClick &&
@@ -98,6 +105,7 @@ export default class FileUploader extends React.Component {
               }
             }}
             acceptedFileTypes={['image/*']}
+            maxFileSize='3MB'
             allowMultiple={allowMultiple}
             onremovefile={onPreviewRemove}
           />
@@ -110,6 +118,7 @@ export default class FileUploader extends React.Component {
 FileUploader.propTypes = {
   bucketDirectory: PropTypes.oneOf(['boats', 'carousel', 'posts']).isRequired,
   allowMultiple: PropTypes.bool,
+  maxWidth: PropTypes.string,
   onFileChange: PropTypes.func.isRequired,
   onRemoveFileClick: PropTypes.func,
   onPreviewRemove: PropTypes.func,

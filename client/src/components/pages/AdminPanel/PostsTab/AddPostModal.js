@@ -92,39 +92,38 @@ class AddPostModal extends React.Component {
         </Modal.Header>
 
         <Modal.Body>
-          <Form style={{ display: 'flex' }}>
-            <div style={{ minWidth: '15em' }}>
-              <Form.Group>
-                <Form.Label><b>Title</b></Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Post title'
-                  value={title}
-                  onChange={(e) => this.setState({ title: e.target.value })}
-                />
-              </Form.Group>
+          <Form>
+            <Form.Group>
+              <Form.Label><b>Title</b></Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Post title'
+                value={title}
+                onChange={(e) => this.setState({ title: e.target.value })}
+              />
+            </Form.Group>
 
-              <Form.Group>
-                <Form.Label><b>Body</b></Form.Label>
-                <Form.Control
-                  as='textarea'
-                  placeholder='Post body'
-                  value={body}
-                  onChange={(e) => this.setState({ body: e.target.value })}
-                />
-              </Form.Group>
-            </div>
+            <Form.Group>
+              <Form.Label><b>Body</b></Form.Label>
+              <Form.Control
+                as='textarea'
+                placeholder='Post body'
+                value={body}
+                onChange={(e) => this.setState({ body: e.target.value })}
+              />
+            </Form.Group>
 
-            <div style={{ paddingLeft: '1em', width: '100%' }}>
+            <Form.Group>
               <Form.Label><b>Image</b></Form.Label>
 
               <FileUploader
                 file={imageUrl}
                 bucketDirectory='posts'
+                maxWidth='20em'
                 onFileChange={(downloadUrl) => this.setState({ uploadedImageUrl: downloadUrl })}
                 onRemoveFileClick={() => this.setState({ imageUrl: '' })}
               />
-            </div>
+            </Form.Group>
           </Form>
         </Modal.Body>
 

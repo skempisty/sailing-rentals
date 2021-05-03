@@ -11,8 +11,7 @@ export default class ContentWrapper extends React.Component {
       <div
         style={{
           margin: '0 auto',
-          padding: '2em 5em',
-          height: '100%',
+          padding: '2em 5em 8em',
           maxWidth: '92em'
         }}
       >
