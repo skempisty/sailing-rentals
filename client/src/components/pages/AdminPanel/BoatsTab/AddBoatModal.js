@@ -106,29 +106,7 @@ class AddBoatModal extends React.Component {
           <Modal.Title>{boat ? 'Edit Boat' : 'Add Boat'}</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body style={{ position: 'relative' }}>
-          {/* Image uploader flyout */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '0',
-              right: '100%',
-              padding: '0.75em',
-              width: '12em',
-              background: 'white',
-              borderRadius: '5px 0 0 5px'
-            }}
-          >
-            <Form.Label><b>Image</b></Form.Label>
-
-            <FileUploader
-              file={imageUrl}
-              bucketDirectory='boats'
-              onFileChange={(downloadUrl) => this.setState({ uploadedImageUrl: downloadUrl })}
-              onRemoveFileClick={() => this.setState({ imageUrl: '' })}
-            />
-          </div>
-
+        <Modal.Body>
           <Form>
             <Form.Group>
               <Form.Label><b>Name</b></Form.Label>
@@ -168,9 +146,22 @@ class AddBoatModal extends React.Component {
               <Form.Control
                 as='textarea'
                 rows={3}
-                placeholder='Boat description'
+                placeholder='Optional'
                 value={description}
                 onChange={(e) => this.setState({ description: e.target.value })}
+              />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label><b>Image</b></Form.Label>
+
+              <FileUploader
+                file={imageUrl}
+                bucketDirectory='boats'
+                maxWidth='20em'
+                labelMaxFileSize='Max file size is {filesize}'
+                onFileChange={(downloadUrl) => this.setState({ uploadedImageUrl: downloadUrl })}
+                onRemoveFileClick={() => this.setState({ imageUrl: '' })}
               />
             </Form.Group>
           </Form>
