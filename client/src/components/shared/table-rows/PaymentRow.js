@@ -91,7 +91,7 @@ class PaymentRow extends React.Component {
               <SelectMenuItem
                 label='Paypal Details'
                 iconComponent={<FaInfoCircle/>}
-                callback={() => this.setState({ showPaypalDetailsModal: true })}
+                callback={() => this.setState({ showPaymentInfoModal: true })}
               />
             </SelectMenu>
           </td>

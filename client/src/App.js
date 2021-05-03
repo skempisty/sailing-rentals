@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import LoadingPageMessage from './components/LoadingPageMessage'
 import TopNavBar from './components/TopNavBar'
+import Footer from './components/Footer'
 import HomePage from './components/pages/HomePage/index'
 import Profile from './components/pages/Profile'
 import ShowPost from './components/pages/ShowPost'
@@ -124,13 +125,15 @@ class App extends React.Component {
       <React.Fragment>
         {!loading ?
           <Router>
-            <TopNavBar />
+            <TopNavBar/>
 
             <Route exact path='/profile' component={Profile} />
             <Route exact path='/posts/:id' component={ShowPost} />
             <Route exact path='/admin-panel' component={AdminPanel} />
             <Route exact path='/rentals' component={Rentals} />
             <Route exact path='/' component={HomePage} />
+
+            <Footer/>
           </Router>
           :
           <LoadingPageMessage/>
