@@ -5,6 +5,7 @@ export default class Payment {
     amount,
     currency,
     paidBy,
+    rentalId,
     payerCountryCode,
     payerPostalCode,
     payerEmailAddress,
@@ -20,6 +21,7 @@ export default class Payment {
     this.amount = amount
     this.currency = currency
     this.paidBy = paidBy
+    this.rentalId = rentalId
     this.payerCountryCode = payerCountryCode
     this.payerPostalCode = payerPostalCode
     this.payerEmailAddress = payerEmailAddress
