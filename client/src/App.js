@@ -1,10 +1,11 @@
-import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React from 'react'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import LoadingPageMessage from './components/LoadingPageMessage'
 import TopNavBar from './components/TopNavBar'
 import Footer from './components/Footer'
+import ConditionalRoute from './components/ConditionalRoute'
 import HomePage from './components/pages/HomePage/index'
 import Profile from './components/pages/Profile'
 import ShowPost from './components/pages/ShowPost'
@@ -119,7 +120,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, currentUser } = this.props
 
     return (
       <React.Fragment>
@@ -127,11 +128,13 @@ class App extends React.Component {
           <Router>
             <TopNavBar/>
 
-            <Route exact path='/profile' component={Profile} />
-            <Route exact path='/posts/:id' component={ShowPost} />
-            <Route exact path='/admin-panel' component={AdminPanel} />
-            <Route exact path='/rentals' component={Rentals} />
-            <Route exact path='/' component={HomePage} />
+            <Switch>
+              <ConditionalRoute renderCondition={!!currentUser.id} exact path='/profile' component={Profile} />
+              <ConditionalRoute renderCondition={!!currentUser.id} exact path='/rentals' component={Rentals} />
+              <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isAdmin === 1} exact path='/admin-panel' component={AdminPanel} />
+              <Route exact path='/posts/:id' component={ShowPost} />
+              <Route component={HomePage} />
+            </Switch>
 
             <Footer/>
           </Router>
@@ -144,9 +147,9 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { loading } = state.session
+  const { loading, currentUser } = state.session
 
-  return { loading }
+  return { loading, currentUser }
 }
 
 const mapDispatchToProps = {

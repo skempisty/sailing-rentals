@@ -4,7 +4,7 @@ const sessionSlice = createSlice({
   name: 'session',
   initialState: {
     loading: true,
-    currentUser: null
+    currentUser: {}
   },
   reducers: {
     initSession: (state, action) => {
@@ -32,7 +32,7 @@ const sessionSlice = createSlice({
       if (toUpdate.affiliation !== null) state.currentUser.affiliation = toUpdate.affiliation
     },
     clearCurrentUser: (state) => {
-      state.currentUser = null;
+      state.currentUser = {}
     }
   }
 });

@@ -132,7 +132,7 @@ class TopNavBar extends React.Component {
           </Nav>
 
           <Nav>
-            {!currentUser ?
+            {!currentUser.id ?
               <LoginBtn
                 onLogin={(res) => this.handleLoginSuccess(res)}
                 onFailure={(res) => this.handleLoginFailure(res)}
