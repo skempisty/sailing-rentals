@@ -60,7 +60,6 @@ export default class LoadingPageMessage extends React.Component {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  marginBottom: '10em',
                   padding: '2em',
                   background: 'rgb(52, 58, 63)',
                   borderRadius: '30px',
