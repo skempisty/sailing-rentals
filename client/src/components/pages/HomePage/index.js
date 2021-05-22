@@ -20,6 +20,10 @@ const ResponsivenessWrapper = styled.div`
     align-items: center;
   }
   
+  .mobile-rent-call-to-action {
+    display: ${({ $currentUserIsApproved }) => $currentUserIsApproved ? null : 'none'};
+  }
+  
   div.rent-call-to-action {
     display: none;
     
@@ -29,8 +33,6 @@ const ResponsivenessWrapper = styled.div`
   }
   
   div.posts-container {
-    // width: ${({ $currentUserIsApproved }) => $currentUserIsApproved ? '65%' : null};
-    
     & > div {
       justify-content: center;
     }
@@ -56,8 +58,8 @@ const ResponsivenessWrapper = styled.div`
     }
 
     div.rent-call-to-action {
-      display: flex;
-      
+      display: ${({ $currentUserIsApproved }) => $currentUserIsApproved ? 'flex' : 'none'};
+
       .jumbotron {
         margin-bottom: 1em;
         padding: 1em 2em;
@@ -69,18 +71,18 @@ const ResponsivenessWrapper = styled.div`
         }
       }
     }
-    
+
     .mobile-rent-call-to-action {
       display: none; 
     }
-      div.cards-container {
-        div.card {
-          width: 45%;
-          margin-bottom: 1em;
-        
-          &:nth-of-type(2n) {
-            margin-left: 1em;
-          }
+
+    div.cards-container {
+      div.card {
+        width: 45%;
+        margin-bottom: 1em;
+      
+        &:nth-of-type(2n) {
+          margin-left: 1em;
         }
       }
     }
