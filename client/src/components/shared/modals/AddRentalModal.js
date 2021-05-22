@@ -534,8 +534,6 @@ class AddRentalModal extends React.Component {
               amount={this.selectedBoatRentalPrice}
               shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
               onSuccess={(details) => {
-                console.log('details', details)
-
                 const { id: orderId, payer, purchase_units } = details
                 const payee = purchase_units[0].payee
                 const capture = purchase_units[0].payments.captures[0]
@@ -549,10 +547,6 @@ class AddRentalModal extends React.Component {
                   rentedBy: currentUser.id,
                   createdAt: null
                 })
-
-                console.log('newRental', newRental)
-                console.log('payee', payee)
-                console.log('capture', capture)
 
                 const paymentObj = new Payment({
                   paidBy: currentUser.id,
@@ -571,11 +565,7 @@ class AddRentalModal extends React.Component {
                   paypalCaptureId: capture.id,
                 })
 
-                console.log('paymentObj', paymentObj)
-
                 onRentalAdd(newRental, paymentObj)
-
-                console.log('reset and hide')
 
                 that.resetAndHide()
               }}
