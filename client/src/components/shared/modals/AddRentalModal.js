@@ -16,6 +16,7 @@ import Rental from '../../../models/Rental'
 import Payment from '../../../models/Payment';
 import getBoatById from '../../../store/orm/boats/getBoatById'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
+import { paypalAccountClientId } from '../../../config'
 
 const localizer = momentLocalizer(moment)
 
@@ -572,7 +573,7 @@ class AddRentalModal extends React.Component {
                 console.log('e', e)
               }}
               options={{
-                clientId: 'sb', // 'PRODUCTION_CLIENT_ID'
+                clientId: paypalAccountClientId, // 'PRODUCTION_CLIENT_ID'
                 disableFunding: 'paylater'
               }}
               onButtonReady={() => that.setState({ paypalButtonReady: true })}
