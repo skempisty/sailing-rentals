@@ -1,3 +1,4 @@
+import fetchAndCheckStatus from '../utils/fetchAndCheckStatus'
 import Constants from '../utils/constants'
 
 export default async function createRental(rental, payment) {
@@ -12,7 +13,5 @@ export default async function createRental(rental, payment) {
     body: JSON.stringify({ rental, payment })
   }
 
-  const rentalRes = await fetch(url, postOptions)
-
-  return await rentalRes.json()
+  return await fetchAndCheckStatus(url, [200], postOptions)
 }

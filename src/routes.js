@@ -371,11 +371,22 @@ router.post('/rentals', async (req, res) => {
 
   const { userId: creatorId } = await decodeJwt(jwtToken);
 
-  const rental = await api.rentals.createRental(creatorId, rentalPostBody)
-  // payments belong to a rental - so rental must be created first
-  const payment = await api.payments.createPayment(creatorId, rental.id, paymentPostBody)
+  try {
+    const rental = await api.rentals.createRental(creatorId, rentalPostBody)
+    // payments belong to a rental - so rental must be created first
+    const payment = await api.payments.createPayment(creatorId, rental.id, paymentPostBody)
 
-  res.send({ rental, payment })
+    res.send({ rental, payment })
+  } catch (error) {
+    // TODO: extract this catch response behavior. It should be the same every time
+    switch (error.name) {
+      case 'ValidationError':
+        res.status(422).send(error.message)
+        break
+      default:
+        res.status(500).send(`Error creating rental: ${JSON.stringify(error)}`)
+    }
+  }
 })
 
 router.put('/rentals/:id', async (req, res) => {
@@ -387,9 +398,19 @@ router.put('/rentals/:id', async (req, res) => {
 
   // only allow this action if the logged in user matches the id, or token belongs to an admin
   if (isAdmin || String(updateFields.rentedBy) === String(userId)) {
-    const updatedRental = await api.rentals.updateRental(id, updateFields, isAdmin)
+    try {
+      const updatedRental = await api.rentals.updateRental(id, updateFields, isAdmin)
 
-    res.send(updatedRental)
+      res.send(updatedRental)
+    } catch (error) {
+      switch (error.name) {
+        case 'ValidationError':
+          res.status(422).send(error.message)
+          break
+        default:
+          res.status(500).send(`Error creating rental: ${JSON.stringify(error)}`)
+      }
+    }
   } else {
     res.status(401).send('You don\'t have permission to update this rental')
   }
