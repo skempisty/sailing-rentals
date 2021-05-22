@@ -11,15 +11,42 @@ import Post from '../../shared/Post'
 import { breakpoints } from '../../../config'
 
 const ResponsivenessWrapper = styled.div`
-  color: orange;
-  
   div.carousel {
     display: none;
   }
+  
+  div.rent-btn-and-posts-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  div.rent-call-to-action {
+    display: none;
+    
+    p.click-here-to-begin {
+      display: none;
+    }
+  }
+  
+  div.posts-container {
+    // width: ${({ $currentUserIsApproved }) => $currentUserIsApproved ? '65%' : null};
+    
+    & > div {
+      justify-content: center;
+    }
+
+    div.card {
+      margin: 0 0 1em 0;
+    
+      img {
+        width: unset;
+        max-height: 15em;
+        max-width: 100%;
+      }
+    }
+  }
 
   @media only screen and (min-width: ${breakpoints.tablet}) {
-    color: blue;
-    
     div.carousel {
       display: unset;
       
@@ -27,14 +54,56 @@ const ResponsivenessWrapper = styled.div`
         height: 12.5em
       }
     }
+
+    div.rent-call-to-action {
+      display: flex;
+      
+      .jumbotron {
+        margin-bottom: 1em;
+        padding: 1em 2em;
+      
+        h1 { font-size: 1.5em; }
+        
+        button {
+          width: 100%;
+        }
+      }
+    }
+    
+    .mobile-rent-call-to-action {
+      display: none; 
+    }
+      div.cards-container {
+        div.card {
+          width: 45%;
+          margin-bottom: 1em;
+        
+          &:nth-of-type(2n) {
+            margin-left: 1em;
+          }
+        }
+      }
+    }
   }
 
   @media only screen and (min-width: ${breakpoints.desktop}) {
-    color: red;
-    
     div.carousel {
       img {
         height: 22.5em
+      }
+    }
+    
+    div.rent-btn-and-posts-container {
+      flex-direction: row;
+      
+      div.rent-call-to-action {
+        .jumbotron {
+          padding: 4em 2em;
+        }
+      
+        p.click-here-to-begin {
+          display: block;
+        }
       }
     }
   }
@@ -49,7 +118,7 @@ class HomePage extends React.Component {
     const { currentUser, carouselSlides, posts, history } = this.props
 
     return (
-      <ResponsivenessWrapper>
+      <ResponsivenessWrapper $currentUserIsApproved={!!currentUser.isApproved}>
         <Carousel controls={carouselSlides.length > 1}>
           {carouselSlides.map((slide, index) =>
             <Carousel.Item key={`carousel-slide-${slide.id}-${index}`}>
@@ -69,38 +138,51 @@ class HomePage extends React.Component {
         </Carousel>
 
         <ContentWrapper>
-          <div style={{ display: 'flex' }}>
+          <div className='rent-btn-and-posts-container' style={{ display: 'flex' }}>
             {!!currentUser.isApproved &&
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  width: '35%'
-                }}
-              >
+              <React.Fragment>
+                <Button
+                  style={{
+                    width: '100%',
+                    height: '3em',
+                    marginBottom: '0.75em',
+                    fontSize: '1.5em'
+                  }}
+                  className='mobile-rent-call-to-action'
+                  onClick={() => history.push(`/rentals?showAddRentalModal=true`)}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <FaPlusCircle/>
+                    <div style={{ marginLeft: '0.5em' }}>Rent Sailboat</div>
+                  </div>
+                </Button>
 
-                <Jumbotron style={{ width: '100%' }}>
-                  <h1>Sail with the NPSF Yacht Club</h1>
-                  <p>
-                    Click below to begin
-                  </p>
-                  <p>
-                    <Button onClick={() => history.push(`/rentals?showAddRentalModal=true`)}>
-                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <FaPlusCircle/>
-                        <div style={{ marginLeft: '0.5em' }}>Rent a sailboat</div>
-                      </div>
-                    </Button>
-                  </p>
-                </Jumbotron>
-              </div>
+                <div className='rent-call-to-action'>
+                  <Jumbotron style={{ width: '100%' }}>
+                    <h1>Sail with the NPSF Yacht Club</h1>
+
+                    <p className='click-here-to-begin'>
+                      Click here to begin
+                    </p>
+
+                    <p>
+                      <Button onClick={() => history.push(`/rentals?showAddRentalModal=true`)}>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          <FaPlusCircle/>
+                          <div style={{ marginLeft: '0.5em' }}>Rent Sailboat</div>
+                        </div>
+                      </Button>
+                    </p>
+                  </Jumbotron>
+                </div>
+              </React.Fragment>
             }
 
-            <div style={{ width: !!currentUser.isApproved ? '65%' : null }}>
+            <div className='posts-container'>
               <div
+                className='cards-container'
                 style={{
                   display: 'flex',
-                  paddingLeft: '1.5em',
                   flexWrap: 'wrap'
                 }}
               >
@@ -108,7 +190,6 @@ class HomePage extends React.Component {
                   <Post
                     key={`post-${post.id}-${index}`}
                     post={post}
-                    margin='0 1em 1em 0'
                   />
                 )}
               </div>

@@ -5,7 +5,7 @@ import { breakpoints } from '../../config'
 
 const ResponsivenessWrapper = styled.div`
   div.content-wrapper {
-    padding: 2em 2em 8em;
+    padding: 1em 2em 8em;
   }
 
   @media only screen and (min-width: ${breakpoints.desktop}) {
