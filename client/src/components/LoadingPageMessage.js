@@ -6,7 +6,7 @@ import { Spinner} from 'react-bootstrap'
 import logo from '../images/logo.png'
 
 const LoadingMsgWrapper = styled.div`
-  height: 100%;
+  height: 100vh;
   
   .loading-message {
     animation: animationFrames linear 1s;
