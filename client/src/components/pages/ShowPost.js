@@ -10,17 +10,20 @@ export default class ShowPost extends React.Component {
 
     return (
       <ContentWrapper>
-        <React.Fragment>
+        <div style={{ color: 'white' }}>
           <h3>{post.title}</h3>
 
           <img
             src={post.imageUrl}
             alt=''
-            style={{ maxHeight: '25em' }}
+            style={{
+              margin: '0.5em 0 1em 0',
+              maxHeight: '25em'
+            }}
           />
 
           <div>{post.body}</div>
-        </React.Fragment>
+        </div>
       </ContentWrapper>
     )
   }

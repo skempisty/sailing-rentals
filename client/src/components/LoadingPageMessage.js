@@ -6,7 +6,7 @@ import { Spinner} from 'react-bootstrap'
 import logo from '../images/logo.png'
 
 const LoadingMsgWrapper = styled.div`
-  height: 100%;
+  height: 100vh;
   
   .loading-message {
     animation: animationFrames linear 1s;
@@ -60,7 +60,6 @@ export default class LoadingPageMessage extends React.Component {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  marginBottom: '10em',
                   padding: '2em',
                   background: 'rgb(52, 58, 63)',
                   borderRadius: '30px',

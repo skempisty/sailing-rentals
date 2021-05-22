@@ -126,7 +126,8 @@ class TopNavBar extends React.Component {
               Apparel
             </Nav.Link>
 
-            <Nav.Link href='#pricing'>Contact Us</Nav.Link>
+            {/* TODO: unhide this later when contact us page is ready */}
+            {/*<Nav.Link href='#pricing'>Contact Us</Nav.Link>*/}
 
             <SocialMediaBar margin='0 0 0 1em' />
           </Nav>
