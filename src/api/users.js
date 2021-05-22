@@ -25,7 +25,7 @@ exports.createUser = async (googleUser) => {
 }
 
 exports.updateUser = async (id, updateFields, isAdmin = false) => {
-  const { phone, jobTitle, affiliation, isApproved } = updateFields
+  const { phone, affiliation, isApproved } = updateFields
 
   const updateSql = []
   const sqlArgs = []
@@ -33,11 +33,6 @@ exports.updateUser = async (id, updateFields, isAdmin = false) => {
   if (phone !== null) {
     updateSql.push('phone = ?')
     sqlArgs.push(phone)
-  }
-
-  if (jobTitle !== null) {
-    updateSql.push('jobTitle = ?')
-    sqlArgs.push(jobTitle)
   }
 
   if (affiliation !== null) {

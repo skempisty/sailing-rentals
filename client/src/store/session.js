@@ -28,7 +28,6 @@ const sessionSlice = createSlice({
       const { toUpdate } = action.payload
 
       if (toUpdate.phone !== null) state.currentUser.phone = toUpdate.phone
-      if (toUpdate.jobTitle !== null) state.currentUser.jobTitle = toUpdate.jobTitle
       if (toUpdate.affiliation !== null) state.currentUser.affiliation = toUpdate.affiliation
     },
     clearCurrentUser: (state) => {

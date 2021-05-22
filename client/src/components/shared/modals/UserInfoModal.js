@@ -17,14 +17,12 @@ class UserInfoModal extends React.Component {
 
     const {
       phone,
-      jobTitle,
       affiliation,
       isApproved
     } = props.user
 
     const incomingUserObj = {
       phone: phone || '',
-      jobTitle: jobTitle || '',
       affiliation: affiliation || '',
       isApproved: isApproved === 1
     }
@@ -34,29 +32,28 @@ class UserInfoModal extends React.Component {
   }
 
   get savedProfileFields() {
-    const { phone, jobTitle, affiliation, isApproved } = this
+    const { phone, affiliation, isApproved } = this
 
-    return { phone, jobTitle, affiliation, isApproved }
+    return { phone, affiliation, isApproved }
   }
 
-  set savedProfileFields({ phone, jobTitle, affiliation, isApproved }) {
+  set savedProfileFields({ phone, affiliation, isApproved }) {
     this.phone = phone
-    this.jobTitle = jobTitle
     this.affiliation = affiliation
     this.isApproved = isApproved
   }
 
   get profileNotEdited() {
-    const { phone, jobTitle, affiliation, isApproved } = this.state
+    const { phone, affiliation, isApproved } = this.state
 
-    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, jobTitle, affiliation, isApproved })
+    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, affiliation, isApproved })
   }
 
   async handleSaveEditsClick() {
     const { user, onHide, updateUserById } = this.props
-    const { phone, jobTitle, affiliation, isApproved } = this.state
+    const { phone, affiliation, isApproved } = this.state
 
-    const updatedFields = { phone, jobTitle, affiliation, isApproved }
+    const updatedFields = { phone, affiliation, isApproved }
 
     try {
       // update DB
@@ -74,7 +71,7 @@ class UserInfoModal extends React.Component {
 
   render() {
     const { user, show, onHide } = this.props
-    const { phone, jobTitle, affiliation, isApproved } = this.state
+    const { phone, affiliation, isApproved } = this.state
 
     return (
       <Modal show={show} onHide={onHide}>
@@ -119,19 +116,6 @@ class UserInfoModal extends React.Component {
                   />
                 </InputGroup>
               </Form.Group>
-
-              {/* Job Title */}
-              <Form.Group as={Col}>
-                <Form.Label><b>Job Title</b></Form.Label>
-
-                <InputGroup>
-                  <Form.Control
-                    value={jobTitle}
-                    onChange={(e) => this.setState({ jobTitle: e.target.value })}
-                  />
-                </InputGroup>
-              </Form.Group>
-
 
               {/* Affiliation */}
               <Form.Group as={Col}>

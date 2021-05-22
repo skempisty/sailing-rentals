@@ -18,9 +18,9 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
 
-    const { phone, jobTitle, affiliation } = props.currentUser;
+    const { phone, affiliation } = props.currentUser;
 
-    this.savedProfileFields = { phone, jobTitle, affiliation };
+    this.savedProfileFields = { phone, affiliation };
 
     this.state = this.initialState;
   }
@@ -39,43 +39,41 @@ class Profile extends React.Component {
     return {
       showProfileUpdateSuccess: false,
       phone: currentUser.phone,
-      jobTitle: currentUser.jobTitle,
       affiliation: currentUser.affiliation
     }
   }
 
   get savedProfileFields() {
-    const { phone, jobTitle, affiliation } = this;
+    const { phone, affiliation } = this;
 
-    return { phone, jobTitle, affiliation };
+    return { phone, affiliation };
   }
 
-  set savedProfileFields({ phone, jobTitle, affiliation }) {
-    this.phone = phone;
-    this.jobTitle = jobTitle;
-    this.affiliation = affiliation;
+  set savedProfileFields({ phone, affiliation }) {
+    this.phone = phone
+    this.affiliation = affiliation
   }
 
   get profileNotEdited() {
-    const { phone, jobTitle, affiliation } = this.state;
+    const { phone, affiliation } = this.state;
 
-    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, jobTitle, affiliation });
+    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, affiliation });
   }
 
   get profileIncomplete() {
     const { currentUser } = this.props;
-    const { phone, jobTitle, affiliation } = currentUser;
+    const { phone, affiliation } = currentUser;
 
-    return (!phone || !jobTitle || !affiliation);
+    return (!phone || !affiliation);
   }
 
   async handleSaveChangesClick() {
     const { currentUser, updateCurrentUser } = this.props;
-    const { phone, jobTitle, affiliation } = this.state;
+    const { phone, affiliation } = this.state;
 
     await setStateAsync({ savingProfile: true }, this);
 
-    const updatedFields = { phone, jobTitle, affiliation };
+    const updatedFields = { phone, affiliation };
 
     try {
       await updateUser(currentUser.id, updatedFields);
@@ -92,7 +90,7 @@ class Profile extends React.Component {
 
   render() {
     const { currentUser } = this.props;
-    const { showProfileUpdateSuccess, phone, jobTitle, affiliation } = this.state;
+    const { showProfileUpdateSuccess, phone, affiliation } = this.state;
 
     return (
       <ContentWrapper>
@@ -157,19 +155,6 @@ class Profile extends React.Component {
                   />
                 </InputGroup>
               </Form.Group>
-
-              {/* Job Title */}
-              <Form.Group as={Col}>
-                <Form.Label><b>Job Title</b></Form.Label>
-
-                <InputGroup>
-                  <Form.Control
-                    value={jobTitle || ''}
-                    onChange={(e) => this.setState({ jobTitle: e.target.value })}
-                  />
-                </InputGroup>
-              </Form.Group>
-
 
               {/* Affiliation */}
               <Form.Group as={Col}>

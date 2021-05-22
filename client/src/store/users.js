@@ -17,7 +17,6 @@ const userSlice = createSlice({
       const toChangeUserIndex = state.users.findIndex(user => user.id === id);
 
       if (toUpdate.phone !== null) state.users[toChangeUserIndex].phone = toUpdate.phone
-      if (toUpdate.jobTitle !== null) state.users[toChangeUserIndex].jobTitle = toUpdate.jobTitle
       if (toUpdate.affiliation !== null) state.users[toChangeUserIndex].affiliation = toUpdate.affiliation
       if (toUpdate.isApproved !== null) state.users[toChangeUserIndex].isApproved = toUpdate.isApproved ? 1 : 0
     },

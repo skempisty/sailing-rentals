@@ -37,7 +37,6 @@
     'lastName VARCHAR(255),' +
     'email VARCHAR(255),' +
     'phone VARCHAR(255),' +
-    'jobTitle VARCHAR(255),' +
     'affiliation VARCHAR(255)' +
     ');'
   )
@@ -139,9 +138,9 @@
   /**
    * Insert Dummy data
    */
-  await db.query(`INSERT INTO ${db.name}.users (id, googleId, firstName, lastName, email, phone, jobTitle, affiliation, imageUrl, isAdmin) VALUES
-    (null, '0', 'Frodo', 'Baggins', 'one.ring@gmail.com', 2406456689, 'Ring Bearer', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/frodo', '1'),
-    (null, '1', 'Samwise', 'Gamgee', 'mrfrodo@gmail.com', 2406456690, 'Ring Bearer Bearer', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/samwise', '0')
+  await db.query(`INSERT INTO ${db.name}.users (id, googleId, firstName, lastName, email, phone, affiliation, imageUrl, isAdmin) VALUES
+    (null, '0', 'Frodo', 'Baggins', 'one.ring@gmail.com', 2406456689, 'Fellowship of the Ring', 'https://loremflickr.com/50/50/frodo', '1'),
+    (null, '1', 'Samwise', 'Gamgee', 'mrfrodo@gmail.com', 2406456690, 'Fellowship of the Ring', 'https://loremflickr.com/50/50/samwise', '0')
   `);
 
   await db.query(`INSERT INTO ${db.name}.boats (createdBy, name, model, imageUrl, description, perHourRentalCost) VALUES
