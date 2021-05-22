@@ -13,7 +13,7 @@ class HomePage extends React.Component {
   }
 
   render() {
-    const { carouselSlides, posts, history } = this.props
+    const { currentUser, carouselSlides, posts, history } = this.props
 
     return (
       <React.Fragment>
@@ -40,30 +40,33 @@ class HomePage extends React.Component {
 
         <ContentWrapper>
           <div style={{ display: 'flex' }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                width: '35%'
-              }}
-            >
-              <Jumbotron style={{ width: '100%' }}>
-                <h1>Sail with the NPSF Yacht Club</h1>
-                <p>
-                  Click below to begin
-                </p>
-                <p>
-                  <Button onClick={() => history.push(`/rentals?showAddRentalModal=true`)}>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                      <FaPlusCircle/>
-                      <div style={{ marginLeft: '0.5em' }}>Rent a sailboat</div>
-                    </div>
-                  </Button>
-                </p>
-              </Jumbotron>
-            </div>
+            {!!currentUser.isApproved &&
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  width: '35%'
+                }}
+              >
 
-            <div style={{ width: '65%' }}>
+                <Jumbotron style={{ width: '100%' }}>
+                  <h1>Sail with the NPSF Yacht Club</h1>
+                  <p>
+                    Click below to begin
+                  </p>
+                  <p>
+                    <Button onClick={() => history.push(`/rentals?showAddRentalModal=true`)}>
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <FaPlusCircle/>
+                        <div style={{ marginLeft: '0.5em' }}>Rent a sailboat</div>
+                      </div>
+                    </Button>
+                  </p>
+                </Jumbotron>
+              </div>
+            }
+
+            <div style={{ width: !!currentUser.isApproved ? '65%' : null }}>
               <div
                 style={{
                   display: 'flex',
@@ -88,10 +91,11 @@ class HomePage extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  const { currentUser } = state.session
   const { posts } = state.posts
   const { carouselSlides } = state.carouselSlides
 
-  return { carouselSlides, posts }
+  return { currentUser, carouselSlides, posts }
 }
 
 export default connect(

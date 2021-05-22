@@ -130,7 +130,7 @@ class App extends React.Component {
 
             <Switch>
               <ConditionalRoute renderCondition={!!currentUser.id} exact path='/profile' component={Profile} />
-              <ConditionalRoute renderCondition={!!currentUser.id} exact path='/rentals' component={Rentals} />
+              <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isApproved === 1} exact path='/rentals' component={Rentals} />
               <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isAdmin === 1} exact path='/admin-panel' component={AdminPanel} />
               <Route exact path='/posts/:id' component={ShowPost} />
               <Route component={HomePage} />
