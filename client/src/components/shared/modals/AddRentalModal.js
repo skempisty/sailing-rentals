@@ -226,7 +226,7 @@ class AddRentalModal extends React.Component {
     const boat = getBoatById(selectedBoatId)
     const hoursRented = this.getRentalDurationHours(newRentalPeriod)
 
-    return boat.perHourRentalCost * hoursRented
+    return (boat.perHourRentalCost * hoursRented).toFixed(2)
   }
 
   get validRental() {
