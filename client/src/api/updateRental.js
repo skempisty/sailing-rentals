@@ -1,3 +1,4 @@
+import fetchAndCheckStatus from '../utils/fetchAndCheckStatus'
 import Constants from '../utils/constants'
 
 export default async function updateRental(id, updateFields) {
@@ -10,9 +11,7 @@ export default async function updateRental(id, updateFields) {
       'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
     },
     body: JSON.stringify(updateFields)
-  };
+  }
 
-  const rentalRes = await fetch(url, putOptions)
-
-  return await rentalRes.json()
+  return await fetchAndCheckStatus(url, [200], putOptions)
 }

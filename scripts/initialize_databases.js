@@ -1,4 +1,5 @@
 (async () => {
+  require('dotenv').config()
   const db = require('../src/connectDb')
 
   const SAILING_DB_NAME = process.env.DATABASE_NAME || 'sailing'
