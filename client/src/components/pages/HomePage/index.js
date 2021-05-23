@@ -80,13 +80,11 @@ const ResponsivenessWrapper = styled.div`
     }
 
     div.cards-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      grid-gap: 1rem;
+      margin-top: -0.5em;
 
       div.card {
         max-width: 15em;
-        margin: 0;
+        margin: 0.5em;
       }
     }
   }
