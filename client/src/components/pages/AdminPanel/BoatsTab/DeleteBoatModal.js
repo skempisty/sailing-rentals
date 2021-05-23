@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 
 import { Button, Modal } from 'react-bootstrap'
 
-import deleteBoat from "../../../../api/deleteBoat";
+import deleteBoat from '../../../../api/deleteBoat'
 
-import { removeBoat } from "../../../../store/boats";
+import { removeBoat } from '../../../../store/boats'
 
 class DeleteBoatModal extends React.Component {
   async handleConfirmDelete() {

@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import { createSlice } from '@reduxjs/toolkit'
 
 const boatSlice = createSlice({
@@ -26,7 +28,11 @@ const boatSlice = createSlice({
     removeBoat: (state, action) => {
       const { id } = action.payload
 
-      state.boats = state.boats.filter(boats => boats.id !== id)
+      const currentTimestamp = moment().format('YYYY-MM-DD hh:mm:ss. mmm')
+
+      const boatIndex = state.boats.findIndex(boat => boat.id === id)
+
+      state.boats[boatIndex].deletedAt = currentTimestamp
     }
   }
 })

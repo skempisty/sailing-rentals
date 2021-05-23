@@ -110,7 +110,6 @@ class Rentals extends React.Component {
                     <tbody>
                       {upcomingRentals.map((rental, index) =>
                         <RentalRow
-
                           options
                           key={`rental-row-${rental.id}-${index}`}
                           rental={rental}

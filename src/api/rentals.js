@@ -5,11 +5,11 @@ const db = require('../connectDb')
 const ValidationError = require('../errors/ValidationError')
 
 exports.getMyRentals = async (userId) => {
-  return await db.query(`SELECT * FROM ${db.name}.rentals WHERE rentedBy = '${userId}' AND deletedAt = "0000-00-00 00:00:00" ORDER BY start`)
+  return await db.query(`SELECT * FROM ${db.name}.rentals WHERE rentedBy = '${userId}' ORDER BY start`)
 }
 
 exports.getAllRentals = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.rentals WHERE deletedAt = "0000-00-00 00:00:00" ORDER BY start`)
+  return await db.query(`SELECT * FROM ${db.name}.rentals ORDER BY start`)
 }
 
 exports.getRental = async (id) => {

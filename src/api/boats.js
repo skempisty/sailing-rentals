@@ -1,7 +1,7 @@
 const db = require('../connectDb')
 
 exports.getBoats = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.boats WHERE deletedAt = "0000-00-00 00:00:00"`)
+  return await db.query(`SELECT * FROM ${db.name}.boats`)
 }
 
 exports.createBoat = async (createdBy, boatObj) => {
