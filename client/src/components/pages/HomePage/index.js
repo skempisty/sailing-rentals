@@ -33,6 +33,8 @@ const ResponsivenessWrapper = styled.div`
   }
   
   div.posts-container {
+    margin: 0 auto;
+  
     & > div {
       justify-content: center;
     }
