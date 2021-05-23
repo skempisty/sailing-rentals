@@ -20,13 +20,7 @@ class Post extends React.Component {
     const { post, margin, history } = this.props
 
     return (
-      <Card
-        style={{
-          margin,
-          width: '16.25em',
-          minWidth: '16.25em'
-        }}
-      >
+      <Card style={{ margin }}>
         <Card.Img
           variant='top'
           src={post.imageUrl}
