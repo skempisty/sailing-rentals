@@ -61,6 +61,7 @@ const ResponsivenessWrapper = styled.div`
       display: ${({ $currentUserIsApproved }) => $currentUserIsApproved ? 'flex' : 'none'};
 
       .jumbotron {
+        width: 100%;
         margin-bottom: 1em;
         padding: 1em 2em;
       
@@ -77,13 +78,13 @@ const ResponsivenessWrapper = styled.div`
     }
 
     div.cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-gap: 1rem;
+
       div.card {
-        width: 45%;
-        margin-bottom: 1em;
-      
-        &:nth-of-type(2n) {
-          margin-left: 1em;
-        }
+        max-width: 15em;
+        margin: 0;
       }
     }
   }
@@ -97,10 +98,22 @@ const ResponsivenessWrapper = styled.div`
     
     div.rent-btn-and-posts-container {
       flex-direction: row;
+      align-items: flex-start;
       
       div.rent-call-to-action {
+        margin-right: 1em;
+      
         .jumbotron {
+          width: 25em;
           padding: 4em 2em;
+          
+          h1 {
+            font-size: 2.5em;
+          }
+          
+          button {
+            width: unset;
+          }
         }
       
         p.click-here-to-begin {
@@ -160,7 +173,7 @@ class HomePage extends React.Component {
                 </Button>
 
                 <div className='rent-call-to-action'>
-                  <Jumbotron style={{ width: '100%' }}>
+                  <Jumbotron>
                     <h1>Sail with the NPSF Yacht Club</h1>
 
                     <p className='click-here-to-begin'>
