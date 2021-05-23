@@ -62,7 +62,8 @@ class AddBoatModal extends React.Component {
           model: updatedBoat.model,
           perHourRentalCost: updatedBoat.perHourRentalCost,
           description: updatedBoat.description,
-          imageUrl: updatedBoat.imageUrl
+          imageUrl: updatedBoat.imageUrl,
+          deletedAt: updatedBoat.deletedAt
         })})
       } else {
         const newBoat = await createBoat(this.boatToSubmit)
@@ -73,7 +74,8 @@ class AddBoatModal extends React.Component {
           model: newBoat.model,
           perHourRentalCost: newBoat.perHourRentalCost,
           description: newBoat.description,
-          imageUrl: newBoat.imageUrl
+          imageUrl: newBoat.imageUrl,
+          deletedAt: newBoat.deletedAt
         })})
       }
     } catch (error) {

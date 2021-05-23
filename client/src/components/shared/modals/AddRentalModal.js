@@ -16,6 +16,7 @@ import Rental from '../../../models/Rental'
 import Payment from '../../../models/Payment';
 import getBoatById from '../../../store/orm/boats/getBoatById'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
+import isNotDeleted from '../../../utils/isNotDeleted'
 import { paypalAccountClientId } from '../../../config'
 
 const localizer = momentLocalizer(moment)
@@ -438,7 +439,7 @@ class AddRentalModal extends React.Component {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                      {boats.map((boat, index) =>
+                      {boats.filter(isNotDeleted).map((boat, index) =>
                         <Dropdown.Item
                           key={`boat-select-${boat.id}-${index}`}
                           onSelect={() => this.handleBoatSelect(boat.id)}

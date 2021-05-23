@@ -6,16 +6,16 @@ import { Button, Modal } from 'react-bootstrap'
 
 import deleteBoat from '../../../../api/deleteBoat'
 
-import { removeBoat } from '../../../../store/boats'
+import { editBoat } from '../../../../store/boats'
 
 class DeleteBoatModal extends React.Component {
   async handleConfirmDelete() {
-    const { boat, removeBoat } = this.props
+    const { boat, editBoat } = this.props
 
     try {
-      await deleteBoat(boat.id)
+      const deletedBoat = await deleteBoat(boat.id)
 
-      removeBoat({ id: boat.id })
+      editBoat({ updatedBoat: deletedBoat })
     } catch (error) {
       alert(`Error deleting boat: ${error}`)
     }
@@ -52,7 +52,7 @@ class DeleteBoatModal extends React.Component {
 }
 
 const mapDispatchToProps = {
-  removeBoat
+  editBoat
 }
 
 export default connect(

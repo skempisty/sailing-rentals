@@ -1,5 +1,3 @@
-import moment from 'moment'
-
 import { createSlice } from '@reduxjs/toolkit'
 
 const boatSlice = createSlice({
@@ -24,15 +22,6 @@ const boatSlice = createSlice({
       const boatIndex = state.boats.findIndex(boat => boat.id === updatedBoat.id)
 
       state.boats[boatIndex] = updatedBoat
-    },
-    removeBoat: (state, action) => {
-      const { id } = action.payload
-
-      const currentTimestamp = moment().format('YYYY-MM-DD hh:mm:ss. mmm')
-
-      const boatIndex = state.boats.findIndex(boat => boat.id === id)
-
-      state.boats[boatIndex].deletedAt = currentTimestamp
     }
   }
 })
@@ -40,8 +29,7 @@ const boatSlice = createSlice({
 export const {
   initBoats,
   addBoat,
-  editBoat,
-  removeBoat
+  editBoat
 } = boatSlice.actions
 
 export default boatSlice.reducer

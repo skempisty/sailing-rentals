@@ -58,6 +58,15 @@ exports.updateBoat = async (id, updateFields) => {
   return boat
 }
 
+/**
+ * Mark a boat as deleted and return that boat
+ * @param {string} id the boat's id
+ * @returns {Promise<Boat>}
+ */
 exports.deleteBoat = async (id) => {
-  return await db.query(`UPDATE ${db.name}.boats SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+  await db.query(`UPDATE ${db.name}.boats SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+
+  const [ boat ] = await db.query(`SELECT * FROM ${db.name}.boats WHERE id = ?`, [id])
+
+  return boat
 }

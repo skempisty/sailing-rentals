@@ -6,7 +6,8 @@ export default class Rental {
     rentedBy,
     boatId,
     crewCount,
-    createdAt
+    createdAt,
+    deletedAt
   }) {
     this.id = id
     this.start = start
@@ -15,5 +16,6 @@ export default class Rental {
     this.boatId = boatId
     this.crewCount = crewCount
     this.createdAt = createdAt || ''
+    this.deletedAt = deletedAt
   }
 }
