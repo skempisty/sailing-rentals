@@ -8,6 +8,7 @@ import { FaPlusCircle } from 'react-icons/fa'
 import ContentWrapper from '../../shared/ContentWrapper'
 import Post from '../../shared/Post'
 
+import isNotDeleted from '../../../utils/isNotDeleted'
 import { breakpoints } from '../../../config'
 
 const ResponsivenessWrapper = styled.div`
@@ -52,7 +53,7 @@ const ResponsivenessWrapper = styled.div`
 
   @media only screen and (min-width: ${breakpoints.tablet}) {
     div.carousel {
-      display: unset;
+      display: block;
       
       img {
         height: 12.5em
@@ -129,13 +130,26 @@ class HomePage extends React.Component {
     return body.substr(0, 100) + '…'
   }
 
+  get carouselSlidesToShow() {
+    const { carouselSlides } = this.props
+
+    return carouselSlides.filter(isNotDeleted)
+  }
+
+  get showCarouselControls() {
+    return this.carouselSlidesToShow.length > 1
+  }
+
   render() {
-    const { currentUser, carouselSlides, posts, history } = this.props
+    const { currentUser, posts, history } = this.props
 
     return (
       <ResponsivenessWrapper $currentUserIsApproved={!!currentUser.isApproved}>
-        <Carousel controls={carouselSlides.length > 1}>
-          {carouselSlides.map((slide, index) =>
+        <Carousel
+          controls={this.showCarouselControls}
+          indicators={this.showCarouselControls}
+        >
+          {this.carouselSlidesToShow.map((slide, index) =>
             <Carousel.Item key={`carousel-slide-${slide.id}-${index}`}>
               <img
                 className='d-block w-100'
@@ -201,7 +215,7 @@ class HomePage extends React.Component {
                   flexWrap: 'wrap'
                 }}
               >
-                {posts.map((post, index) =>
+                {posts.filter(isNotDeleted).map((post, index) =>
                   <Post
                     key={`post-${post.id}-${index}`}
                     post={post}
