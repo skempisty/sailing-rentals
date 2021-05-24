@@ -126,6 +126,7 @@ class TopNavBar extends React.Component {
             bg='dark'
             variant='dark'
             expand='lg'
+            collapseOnSelect
             style={{
               display: 'flex',
               margin: '0 auto',
@@ -156,32 +157,32 @@ class TopNavBar extends React.Component {
             <Navbar.Toggle aria-controls='basic-navbar-nav' />
             <Navbar.Collapse id='basic-navbar-nav'>
               <Nav className='mr-auto mobile-nav' style={{ textAlign: 'right' }}>
-                <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
+                <Nav.Link eventKey onClick={() => history.push('/')}>Home</Nav.Link>
 
-                <Nav.Link href='https://ca-logos.printavo.com/merch/npsfyc' target='_blank'>
+                <Nav.Link eventKey href='https://ca-logos.printavo.com/merch/npsfyc' target='_blank'>
                   Apparel
                 </Nav.Link>
 
                 {!!currentUser.id ?
                   <React.Fragment>
-                    <Nav.Link onClick={() => history.push('/profile')}>
+                    <Nav.Link eventKey onClick={() => history.push('/profile')}>
                       Profile
                     </Nav.Link>
 
                     {!!currentUser.isApproved &&
-                      <Nav.Link onClick={() => history.push('/rentals')}>Sailboat Rentals</Nav.Link>
+                      <Nav.Link eventKey onClick={() => history.push('/rentals')}>Sailboat Rentals</Nav.Link>
                     }
 
                     {!!currentUser.isAdmin &&
-                      <Nav.Link onClick={() => history.push('/admin-panel')}>Admin Panel</Nav.Link>
+                      <Nav.Link eventKey onClick={() => history.push('/admin-panel')}>Admin Panel</Nav.Link>
                     }
 
-                    <Nav.Link>
+                    <Nav.Link eventKey>
                       <LogoutBtn onLogoutClick={this.handleLogout.bind(this)} />
                     </Nav.Link>
                   </React.Fragment>
                   :
-                  <Nav.Link>
+                  <Nav.Link eventKey>
                     <LoginBtn
                       onLogin={(res) => this.handleLoginSuccess(res)}
                       onFailure={(res) => this.handleLoginFailure(res)}
