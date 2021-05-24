@@ -21,6 +21,31 @@ import {
   clearCurrentUser,
   toggleLoading
 } from '../store/session'
+import styled from "styled-components";
+import {breakpoints} from "../config";
+
+const ResponsivenessWrapper = styled.div`
+  .navbar {
+    padding-left: 2em;
+    padding-right: 2em;
+  
+    .navbar-brand {
+      
+    }
+  }
+  
+
+  @media only screen and (min-width: ${breakpoints.tablet}) {
+    .navbar {
+      padding-left: 5em;
+      padding-right: 5em;
+    
+      .navbar-brand {
+        
+      }
+    }  
+  }
+`
 
 /**
  * Main site top navbar
@@ -88,86 +113,92 @@ class TopNavBar extends React.Component {
     const { currentUser, history } = this.props
 
     return (
-      <div style={{ background: '#343a40' }}>
-        <Navbar
-          bg='dark'
-          variant='dark'
-          style={{
-            margin: '0 auto',
-            paddingLeft: '5em',
-            paddingRight: '5em',
-            maxWidth: '92em'
-          }}
-        >
-          <Navbar.Brand
+      <ResponsivenessWrapper>
+        <div style={{ background: '#343a40' }}>
+          <Navbar
+            bg='dark'
+            variant='dark'
+            expand='lg'
             style={{
               display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer'
+              margin: '0 auto',
+              maxWidth: '92em'
             }}
-            onClick={() => history.push('/')}
           >
-            <img src={logo} style={{ height: '2.5em' }} alt=''/>
-
-            <span
+            <Navbar.Brand
               style={{
-                marginLeft: '0.5em',
-                color: '#fec114',
-                fontFamily: 'arial'
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer'
               }}
+              onClick={() => history.push('/')}
             >
-              NPSF YACHT CLUB
-            </span>
-          </Navbar.Brand>
-          <Nav className='mr-auto'>
-            <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
+              <img src={logo} style={{ height: '2.5em' }} alt=''/>
 
-            <Nav.Link href='https://ca-logos.printavo.com/merch/npsfyc' target='_blank'>
-              Apparel
-            </Nav.Link>
+              <span
+                style={{
+                  marginLeft: '0.5em',
+                  color: '#fec114',
+                  fontFamily: 'arial'
+                }}
+              >
+                NPSF YACHT CLUB
+              </span>
+            </Navbar.Brand>
 
-            {/* TODO: unhide this later when contact us page is ready */}
-            {/*<Nav.Link href='#pricing'>Contact Us</Nav.Link>*/}
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className='mr-auto'>
+                <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
 
-            <SocialMediaBar margin='0 0 0 1em' />
-          </Nav>
+                <Nav.Link href='https://ca-logos.printavo.com/merch/npsfyc' target='_blank'>
+                  Apparel
+                </Nav.Link>
 
-          <Nav>
-            {!currentUser.id ?
-              <LoginBtn
-                onLogin={(res) => this.handleLoginSuccess(res)}
-                onFailure={(res) => this.handleLoginFailure(res)}
-              />
-              :
-              <Dropdown alignRight>
-                <Dropdown.Toggle variant='dark' id='dropdown-basic'>
-                  <img
-                    src={currentUser.imageUrl}
-                    style={{ height: '3em', marginRight: '1em' }}
-                    alt=''
+                {/* TODO: unhide this later when contact us page is ready */}
+                {/*<Nav.Link href='#pricing'>Contact Us</Nav.Link>*/}
+
+                <SocialMediaBar margin='0 0 0 1em' />
+              </Nav>
+
+              <Nav>
+                {!currentUser.id ?
+                  <LoginBtn
+                    onLogin={(res) => this.handleLoginSuccess(res)}
+                    onFailure={(res) => this.handleLoginFailure(res)}
                   />
-                </Dropdown.Toggle>
+                  :
+                  <Dropdown alignRight>
+                    <Dropdown.Toggle variant='dark' id='dropdown-basic'>
+                      <img
+                        src={currentUser.imageUrl}
+                        style={{ height: '3em', marginRight: '1em' }}
+                        alt=''
+                      />
+                    </Dropdown.Toggle>
 
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => history.push('/profile')}>
-                      Profile
-                  </Dropdown.Item>
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={() => history.push('/profile')}>
+                          Profile
+                      </Dropdown.Item>
 
-                  {!!currentUser.isApproved &&
-                    <Dropdown.Item onClick={() => history.push('/rentals')}>Sailboat Rentals</Dropdown.Item>
-                  }
+                      {!!currentUser.isApproved &&
+                        <Dropdown.Item onClick={() => history.push('/rentals')}>Sailboat Rentals</Dropdown.Item>
+                      }
 
-                  {!!currentUser.isAdmin &&
-                    <Dropdown.Item onClick={() => history.push('/admin-panel')}>Admin Panel</Dropdown.Item>
-                  }
+                      {!!currentUser.isAdmin &&
+                        <Dropdown.Item onClick={() => history.push('/admin-panel')}>Admin Panel</Dropdown.Item>
+                      }
 
-                  <Dropdown.Item><LogoutBtn onLogoutClick={this.handleLogout.bind(this)} /></Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            }
-          </Nav>
-        </Navbar>
-      </div>
+                      <Dropdown.Item><LogoutBtn onLogoutClick={this.handleLogout.bind(this)} /></Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                }
+              </Nav>
+            </Navbar.Collapse>
+          </Navbar>
+        </div>
+      </ResponsivenessWrapper>
     )
   }
 }
