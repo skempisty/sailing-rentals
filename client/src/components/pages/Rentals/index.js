@@ -96,7 +96,7 @@ class Rentals extends React.Component {
                 <h3 style={{ color: 'white' }}>Upcoming</h3>
 
                 <Card>
-                  <Table style={{ margin: '0' }}>
+                  <Table responsive style={{ margin: '0' }}>
                     <thead>
                     <tr>
                       <th>Start</th>

@@ -81,7 +81,7 @@ class RentalRow extends React.Component {
           onHide={() => this.setState({ showSailorModal: false })}
         />
 
-        <tr>
+        <tr style={{ whiteSpace: 'nowrap' }}>
           {showSailor &&
             <td>
               <Button

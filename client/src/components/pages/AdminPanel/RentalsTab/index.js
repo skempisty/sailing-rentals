@@ -19,7 +19,7 @@ class RentalsTab extends React.Component {
         <h3 style={{ color: 'white' }}>Upcoming</h3>
 
         <Card>
-          <Table>
+          <Table responsive>
             <thead><tr>
               <th>Sailor</th>
               <th>Start</th>
@@ -48,7 +48,7 @@ class RentalsTab extends React.Component {
             <h3 style={{ color: 'white', marginTop: '0.5em' }}>Past</h3>
 
             <Card>
-              <Table>
+              <Table responsive>
                 <thead>
                   <tr>
                     <th>Sailor</th>

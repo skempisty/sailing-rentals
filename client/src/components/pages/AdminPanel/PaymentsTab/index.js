@@ -13,7 +13,7 @@ class PaymentsTab extends React.Component {
         <h3 style={{ color: 'white' }}>All Payments</h3>
 
         <Card>
-          <Table>
+          <Table responsive>
             <thead><tr>
               <th>Sailor</th>
               <th>Rental</th>

@@ -35,7 +35,7 @@ class BoatsTab extends React.Component {
         </Button>
 
         <Card style={{ maxWidth: '40em' }}>
-          <Table>
+          <Table responsive>
             <thead><tr>
               <th>Boat Name</th>
               <th>Model</th>

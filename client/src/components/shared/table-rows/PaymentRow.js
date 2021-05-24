@@ -61,7 +61,7 @@ class PaymentRow extends React.Component {
           onHide={() => this.setState({ showPaymentInfoModal: false })}
         />
 
-        <tr>
+        <tr style={{ whiteSpace: 'nowrap' }}>
           <td>
             <Button
               variant='link'

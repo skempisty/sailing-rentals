@@ -41,7 +41,7 @@ class UserRow extends React.Component {
           onHide={() => this.setState({ showDeleteUserModal: false })}
         />
 
-        <tr>
+        <tr style={{ whiteSpace: 'nowrap' }}>
           <td>
             <img
               src={user.imageUrl}
