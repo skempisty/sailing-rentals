@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { Nav, Navbar, Dropdown } from 'react-bootstrap'
 import { withRouter } from 'react-router'
@@ -11,6 +12,7 @@ import setLoginJwt from '../utils/setLoginJwt'
 import loginOrCreateUser from '../api/loginOrCreateUser'
 import getUsers from '../api/getUsers'
 import getMyRentals from '../api/getMyRentals'
+import { breakpoints } from '../config'
 
 import logo from '../images/logo.png'
 
@@ -21,8 +23,6 @@ import {
   clearCurrentUser,
   toggleLoading
 } from '../store/session'
-import styled from "styled-components";
-import {breakpoints} from "../config";
 
 const ResponsivenessWrapper = styled.div`
   .navbar {
@@ -146,8 +146,8 @@ class TopNavBar extends React.Component {
               </span>
             </Navbar.Brand>
 
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
+            <Navbar.Toggle aria-controls='basic-navbar-nav' />
+            <Navbar.Collapse id='basic-navbar-nav'>
               <Nav className='mr-auto'>
                 <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
 
