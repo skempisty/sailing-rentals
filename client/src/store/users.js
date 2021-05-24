@@ -11,6 +11,7 @@ const userSlice = createSlice({
 
       state.users = users
     },
+    // DEPRECATED
     updateUserById: (state, action) => {
       const { id, toUpdate } = action.payload
 
@@ -20,10 +21,12 @@ const userSlice = createSlice({
       if (toUpdate.affiliation !== null) state.users[toChangeUserIndex].affiliation = toUpdate.affiliation
       if (toUpdate.isApproved !== null) state.users[toChangeUserIndex].isApproved = toUpdate.isApproved ? 1 : 0
     },
-    removeUser: (state, action) => {
-      const { id } = action.payload
+    editUser: (state, action) => {
+      const { updatedUser } = action.payload
 
-      state.users = state.users.filter(users => users.id !== id)
+      const userIndex = state.users.findIndex(user => user.id === updatedUser.id)
+
+      state.users[userIndex] = updatedUser
     }
   }
 })
@@ -31,7 +34,7 @@ const userSlice = createSlice({
 export const {
   initUsers,
   updateUserById,
-  removeUser
-} = userSlice.actions;
+  editUser
+} = userSlice.actions
 
-export default userSlice.reducer;
+export default userSlice.reducer

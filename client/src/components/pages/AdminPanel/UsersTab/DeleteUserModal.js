@@ -7,16 +7,16 @@ import { Button, Form, Modal } from 'react-bootstrap'
 import deleteUser from '../../../../api/deleteUser'
 import buildUserFullName from '../../../../utils/buildUserFullName'
 
-import { removeUser } from '../../../../store/users'
+import { editUser } from '../../../../store/users'
 
 class DeleteUserModal extends React.Component {
   async handleConfirmDelete() {
-    const { user, removeUser } = this.props
+    const { user, editUser } = this.props
 
     try {
-      await deleteUser(user.id)
+      const deletedUser = await deleteUser(user.id)
 
-      removeUser({ id: user.id })
+      editUser({ updatedUser: deletedUser })
     } catch (error) {
       alert(`Error deleting user: ${error}`)
     }
@@ -62,7 +62,7 @@ class DeleteUserModal extends React.Component {
 }
 
 const mapDispatchToProps = {
-  removeUser
+  editUser
 }
 
 export default connect(

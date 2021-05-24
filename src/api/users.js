@@ -61,5 +61,9 @@ exports.approveUser = async (id) => {
 }
 
 exports.deleteUser = async (id) => {
-  return await db.query(`UPDATE ${db.name}.users SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+  await db.query(`UPDATE ${db.name}.users SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+
+  const [ user ] = await db.query(`SELECT * FROM ${db.name}.users WHERE id = ?`, [id])
+
+  return user
 }
