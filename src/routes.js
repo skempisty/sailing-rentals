@@ -140,9 +140,9 @@ router.delete('/users/:id', async (req, res) => {
   const isDeletingSelf = Number(userId) === Number(id)
 
   if (isAdmin && !isDeletingSelf) {
-    await api.users.deleteUser(id)
+    const deletedUser = await api.users.deleteUser(id)
 
-    res.send('ok')
+    res.send(deletedUser)
   } else {
     if (isDeletingSelf) {
       res.status(400).send('You cannot delete yourself')

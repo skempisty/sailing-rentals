@@ -53,7 +53,7 @@ exports.updateUser = async (id, updateFields, isAdmin = false) => {
 }
 
 exports.getUserList = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.users WHERE deletedAt = "0000-00-00 00:00:00" ORDER BY users.isAdmin DESC`)
+  return await db.query(`SELECT * FROM ${db.name}.users ORDER BY users.isAdmin DESC`)
 }
 
 exports.approveUser = async (id) => {
@@ -61,5 +61,9 @@ exports.approveUser = async (id) => {
 }
 
 exports.deleteUser = async (id) => {
-  return await db.query(`UPDATE ${db.name}.users SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+  await db.query(`UPDATE ${db.name}.users SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+
+  const [ user ] = await db.query(`SELECT * FROM ${db.name}.users WHERE id = ?`, [id])
+
+  return user
 }

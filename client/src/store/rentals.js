@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
-import Rental from '../models/Rental';
+import Rental from '../models/Rental'
 
 const rentalSlice = createSlice({
   name: 'rentals',
@@ -29,21 +29,14 @@ const rentalSlice = createSlice({
 
       state.myRentals[myRentalsIndex] = updatedRental
       state.allRentals[allRentalsIndex] = updatedRental
-    },
-    removeRental: (state, action) => {
-      const { id } = action.payload
-
-      state.myRentals = state.myRentals.filter(rental => rental.id !== id)
-      state.allRentals = state.allRentals.filter(rental => rental.id !== id)
     }
   }
-});
+})
 
 export const {
   initRentals,
   addNewRental,
-  editRental,
-  removeRental
-} = rentalSlice.actions;
+  editRental
+} = rentalSlice.actions
 
-export default rentalSlice.reducer;
+export default rentalSlice.reducer

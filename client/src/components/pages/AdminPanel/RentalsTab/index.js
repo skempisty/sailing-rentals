@@ -6,6 +6,7 @@ import { Card, Table } from 'react-bootstrap'
 import RentalRow from '../../../shared/table-rows/RentalRow'
 
 import splitUpcomingAndPastRentals from '../../../../utils/splitUpcomingAndPastRentals'
+import isNotDeleted from '../../../../utils/isNotDeleted'
 
 class RentalsTab extends React.Component {
   render() {
@@ -30,7 +31,7 @@ class RentalsTab extends React.Component {
             </tr></thead>
 
             <tbody>
-              {upcomingRentals.map((rental, index) =>
+              {upcomingRentals.filter(isNotDeleted).map((rental, index) =>
                 <RentalRow
                   key={`rental-row-${rental.id}-${index}`}
                   rental={rental}
@@ -44,7 +45,7 @@ class RentalsTab extends React.Component {
 
         {pastRentals.length > 0 &&
           <React.Fragment>
-            <h3 style={{color: 'white', marginTop: '0.5em'}}>Past</h3>
+            <h3 style={{ color: 'white', marginTop: '0.5em' }}>Past</h3>
 
             <Card>
               <Table>
@@ -60,7 +61,7 @@ class RentalsTab extends React.Component {
                 </thead>
 
                 <tbody>
-                  {pastRentals.map((rental, index) =>
+                  {pastRentals.filter(isNotDeleted).map((rental, index) =>
                     <RentalRow
                       key={`rental-row-${rental.id}-${index}`}
                       rental={rental}

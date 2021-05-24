@@ -5,7 +5,8 @@ export default class Boat {
     model,
     perHourRentalCost,
     description,
-    imageUrl
+    imageUrl,
+    deletedAt
   }) {
     this.id = id
     this.name = name
@@ -13,5 +14,6 @@ export default class Boat {
     this.perHourRentalCost = perHourRentalCost
     this.description = description
     this.imageUrl = imageUrl
+    this.deletedAt = deletedAt
   }
 }

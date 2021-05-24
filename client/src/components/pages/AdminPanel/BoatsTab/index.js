@@ -5,7 +5,9 @@ import { Card, Button, Table } from 'react-bootstrap'
 
 import AddBoatModal from './AddBoatModal'
 
-import BoatRow from "./BoatRow";
+import BoatRow from './BoatRow'
+
+import isNotDeleted from '../../../../utils/isNotDeleted'
 
 class BoatsTab extends React.Component {
   constructor(props) {
@@ -42,7 +44,7 @@ class BoatsTab extends React.Component {
             </tr></thead>
 
             <tbody>
-              {boats.map((boat, index) =>
+              {boats.filter(isNotDeleted).map((boat, index) =>
                 <BoatRow
                   key={`boat-row-${boat.id}-${index}`}
                   boat={boat}

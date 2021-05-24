@@ -1,7 +1,7 @@
 const db = require('../connectDb')
 
 exports.getBoats = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.boats WHERE deletedAt = "0000-00-00 00:00:00"`)
+  return await db.query(`SELECT * FROM ${db.name}.boats`)
 }
 
 exports.createBoat = async (createdBy, boatObj) => {
@@ -58,6 +58,15 @@ exports.updateBoat = async (id, updateFields) => {
   return boat
 }
 
+/**
+ * Mark a boat as deleted and return that boat
+ * @param {string} id the boat's id
+ * @returns {Promise<Boat>}
+ */
 exports.deleteBoat = async (id) => {
-  return await db.query(`UPDATE ${db.name}.boats SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+  await db.query(`UPDATE ${db.name}.boats SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+
+  const [ boat ] = await db.query(`SELECT * FROM ${db.name}.boats WHERE id = ?`, [id])
+
+  return boat
 }

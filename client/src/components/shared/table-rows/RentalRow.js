@@ -18,7 +18,7 @@ import deleteRental from '../../../api/deleteRental'
 
 import getUserById from '../../../store/orm/users/getUserById'
 import getBoatById from '../../../store/orm/boats/getBoatById'
-import { editRental, removeRental } from '../../../store/rentals'
+import { editRental } from '../../../store/rentals'
 
 class RentalRow extends React.Component {
   constructor(props) {
@@ -44,12 +44,12 @@ class RentalRow extends React.Component {
   }
 
   async handleRentalDelete() {
-    const { rental, removeRental } = this.props
+    const { rental, editRental } = this.props
 
     try {
-      await deleteRental(rental.id)
+      const deletedRental = await deleteRental(rental.id)
 
-      removeRental({ id: rental.id })
+      editRental({ id: rental.id, updatedRental: deletedRental })
     } catch (error) {
       alert('Error cancelling rental')
     }
@@ -134,8 +134,7 @@ RentalRow.propTypes = {
 }
 
 const mapDispatchToProps = {
-  editRental,
-  removeRental
+  editRental
 }
 
 export default connect(

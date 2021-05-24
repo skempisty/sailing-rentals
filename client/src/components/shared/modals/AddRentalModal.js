@@ -16,6 +16,7 @@ import Rental from '../../../models/Rental'
 import Payment from '../../../models/Payment';
 import getBoatById from '../../../store/orm/boats/getBoatById'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
+import isNotDeleted from '../../../utils/isNotDeleted'
 import { paypalAccountClientId } from '../../../config'
 
 const localizer = momentLocalizer(moment)
@@ -174,7 +175,7 @@ class AddRentalModal extends React.Component {
 
     const selectionDateString = JSON.stringify(selectionDate)
 
-    const blockingRental =  myRentals.find(rental => {
+    const blockingRental =  myRentals.filter(isNotDeleted).find(rental => {
       return selectionDateString === JSON.stringify({
         day: moment(rental.end).date(),
         month: moment(rental.end).month(),
@@ -199,7 +200,7 @@ class AddRentalModal extends React.Component {
     if (!selectedBoatId) return []
 
     // rental start/end times must be Date objects for React Big Calendar
-    const rentalsWithDateFormatting = allRentals.map(rental => {
+    const rentalsWithDateFormatting = allRentals.filter(isNotDeleted).map(rental => {
       return new Rental({
         ...rental,
         start: new Date(rental.start),
@@ -280,7 +281,7 @@ class AddRentalModal extends React.Component {
       myRentals = myRentals.filter(rental => rental.id !== editRental.id)
     }
 
-    return myRentals.some(rental => {
+    return myRentals.filter(isNotDeleted).some(rental => {
       return selectionDateString === JSON.stringify({
         day: moment(rental.end).date(),
         month: moment(rental.end).month(),
@@ -438,7 +439,7 @@ class AddRentalModal extends React.Component {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                      {boats.map((boat, index) =>
+                      {boats.filter(isNotDeleted).map((boat, index) =>
                         <Dropdown.Item
                           key={`boat-select-${boat.id}-${index}`}
                           onSelect={() => this.handleBoatSelect(boat.id)}

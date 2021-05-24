@@ -22,11 +22,6 @@ const boatSlice = createSlice({
       const boatIndex = state.boats.findIndex(boat => boat.id === updatedBoat.id)
 
       state.boats[boatIndex] = updatedBoat
-    },
-    removeBoat: (state, action) => {
-      const { id } = action.payload
-
-      state.boats = state.boats.filter(boats => boats.id !== id)
     }
   }
 })
@@ -34,8 +29,7 @@ const boatSlice = createSlice({
 export const {
   initBoats,
   addBoat,
-  editBoat,
-  removeBoat
+  editBoat
 } = boatSlice.actions
 
 export default boatSlice.reducer

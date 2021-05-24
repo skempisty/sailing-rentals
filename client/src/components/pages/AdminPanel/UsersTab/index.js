@@ -1,13 +1,15 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from 'react'
+import { connect } from 'react-redux'
 
-import { Card, Table } from 'react-bootstrap';
+import { Card, Table } from 'react-bootstrap'
 
-import UserRow from './UserRow';
+import UserRow from './UserRow'
+
+import isNotDeleted from '../../../../utils/isNotDeleted'
 
 class UsersTab extends React.Component {
   render() {
-    const { users } = this.props;
+    const { users } = this.props
 
     return (
       <Card style={{ maxWidth: '40em' }}>
@@ -19,7 +21,7 @@ class UsersTab extends React.Component {
           </tr></thead>
 
           <tbody>
-            {users.map((user, index) =>
+            {users.filter(isNotDeleted).map((user, index) =>
               <UserRow
                 key={`user-row-${user.id}-${index}`}
                 user={user}
@@ -33,12 +35,12 @@ class UsersTab extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { users } = state.users;
+  const { users } = state.users
 
-  return { users };
-};
+  return { users }
+}
 
 export default connect(
   mapStateToProps,
   null
-)(UsersTab);
+)(UsersTab)
