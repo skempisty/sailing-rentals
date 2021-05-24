@@ -29,19 +29,26 @@ const ResponsivenessWrapper = styled.div`
     padding-left: 2em;
     padding-right: 2em;
   
-    .navbar-brand {
-      
+    .desktop-nav {
+      display: none;
+    }
+    
+    .mobile-nav {
+      display: flex;
     }
   }
-  
 
-  @media only screen and (min-width: ${breakpoints.tablet}) {
+  @media only screen and (min-width: ${breakpoints.headerExpand}) {
     .navbar {
       padding-left: 5em;
       padding-right: 5em;
     
-      .navbar-brand {
-        
+      .desktop-nav {
+        display: flex;
+      }
+      
+      .mobile-nav {
+        display: none;
       }
     }  
   }
@@ -148,7 +155,42 @@ class TopNavBar extends React.Component {
 
             <Navbar.Toggle aria-controls='basic-navbar-nav' />
             <Navbar.Collapse id='basic-navbar-nav'>
-              <Nav className='mr-auto'>
+              <Nav className='mr-auto mobile-nav' style={{ textAlign: 'right' }}>
+                <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
+
+                <Nav.Link href='https://ca-logos.printavo.com/merch/npsfyc' target='_blank'>
+                  Apparel
+                </Nav.Link>
+
+                {!!currentUser.id ?
+                  <React.Fragment>
+                    <Nav.Link onClick={() => history.push('/profile')}>
+                      Profile
+                    </Nav.Link>
+
+                    {!!currentUser.isApproved &&
+                      <Nav.Link onClick={() => history.push('/rentals')}>Sailboat Rentals</Nav.Link>
+                    }
+
+                    {!!currentUser.isAdmin &&
+                      <Nav.Link onClick={() => history.push('/admin-panel')}>Admin Panel</Nav.Link>
+                    }
+
+                    <Nav.Link>
+                      <LogoutBtn onLogoutClick={this.handleLogout.bind(this)} />
+                    </Nav.Link>
+                  </React.Fragment>
+                  :
+                  <Nav.Link>
+                    <LoginBtn
+                      onLogin={(res) => this.handleLoginSuccess(res)}
+                      onFailure={(res) => this.handleLoginFailure(res)}
+                    />
+                  </Nav.Link>
+                }
+              </Nav>
+
+              <Nav className='mr-auto desktop-nav'>
                 <Nav.Link onClick={() => history.push('/')}>Home</Nav.Link>
 
                 <Nav.Link href='https://ca-logos.printavo.com/merch/npsfyc' target='_blank'>
@@ -161,7 +203,7 @@ class TopNavBar extends React.Component {
                 <SocialMediaBar margin='0 0 0 1em' />
               </Nav>
 
-              <Nav>
+              <Nav className='desktop-nav'>
                 {!currentUser.id ?
                   <LoginBtn
                     onLogin={(res) => this.handleLoginSuccess(res)}
@@ -179,7 +221,7 @@ class TopNavBar extends React.Component {
 
                     <Dropdown.Menu>
                       <Dropdown.Item onClick={() => history.push('/profile')}>
-                          Profile
+                        Profile
                       </Dropdown.Item>
 
                       {!!currentUser.isApproved &&
