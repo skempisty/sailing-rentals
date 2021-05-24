@@ -73,7 +73,11 @@ exports.updateRental = async (id, updateFields) => {
 }
 
 exports.deleteRental = async (id) => {
-  return await db.query(`UPDATE ${db.name}.rentals SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+  await db.query(`UPDATE ${db.name}.rentals SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+
+  const [ rental ] = await db.query(`SELECT * FROM ${db.name}.rentals WHERE id = ?`, [id])
+
+  return rental
 }
 
 /**

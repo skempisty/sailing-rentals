@@ -11,6 +11,7 @@ import RentalRow from '../../shared/table-rows/RentalRow'
 
 import createRental from '../../../api/createRental'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
+import isNotDeleted from '../../../utils/isNotDeleted'
 
 import { addNewRental } from '../../../store/rentals'
 import { addNewPayment } from '../../../store/payments'
@@ -88,7 +89,7 @@ class Rentals extends React.Component {
           </Button>
         </div>
 
-        {myRentals.length > 0 ?
+        {myRentals.filter(isNotDeleted).length > 0 ?
           <React.Fragment>
             {upcomingRentals.length > 0 &&
               <React.Fragment>
@@ -108,7 +109,7 @@ class Rentals extends React.Component {
                     </thead>
 
                     <tbody>
-                      {upcomingRentals.map((rental, index) =>
+                      {upcomingRentals.filter(isNotDeleted).map((rental, index) =>
                         <RentalRow
                           options
                           key={`rental-row-${rental.id}-${index}`}
@@ -121,7 +122,7 @@ class Rentals extends React.Component {
               </React.Fragment>
             }
 
-            {pastRentals.length > 0 &&
+            {pastRentals.filter(isNotDeleted).length > 0 &&
               <React.Fragment>
                 <h3 style={{ color: 'white', marginTop: '0.5em' }}>Past</h3>
 
@@ -138,7 +139,7 @@ class Rentals extends React.Component {
                     </thead>
 
                     <tbody>
-                      {pastRentals.map((rental, index) =>
+                      {pastRentals.filter(isNotDeleted).map((rental, index) =>
                         <RentalRow
                           key={`rental-row-${rental.id}-${index}`}
                           rental={rental}
