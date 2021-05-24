@@ -28,6 +28,16 @@ const ResponsivenessWrapper = styled.div`
   .navbar {
     padding-left: 2em;
     padding-right: 2em;
+    
+    .navbar-brand {
+      img {
+        height: 1.5em;
+      }
+      
+      span {
+        font-size: 0.75em;
+      }
+    }
   
     .desktop-nav {
       display: none;
@@ -42,6 +52,16 @@ const ResponsivenessWrapper = styled.div`
     .navbar {
       padding-left: 5em;
       padding-right: 5em;
+      
+      .navbar-brand {
+        img {
+          height: 2.5em;
+        }
+        
+        span {
+          font-size: 1em;
+        }
+      }
     
       .desktop-nav {
         display: flex;
@@ -141,7 +161,7 @@ class TopNavBar extends React.Component {
               }}
               onClick={() => history.push('/')}
             >
-              <img src={logo} style={{ height: '2.5em' }} alt=''/>
+              <img src={logo} alt=''/>
 
               <span
                 style={{
