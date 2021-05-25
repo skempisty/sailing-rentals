@@ -118,7 +118,7 @@ class TopNavBar extends React.Component {
   }
 
   handleLoginFailure(res) {
-    console.log('res', res)
+    alert(`Error logging in with Google: ${res}`)
   }
 
   handleLogout() {
