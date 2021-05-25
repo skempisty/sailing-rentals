@@ -302,10 +302,10 @@ class AddRentalModal extends React.Component {
 
     if (editRental) {
       // the saved time slot of the editing rental doesn't count for this validation
-      allRentals = allRentals.filter(rental => rental.id !== editRental.id)
+      allRentals = allRentals.filter(isNotDeleted).filter(rental => rental.id !== editRental.id)
     }
 
-    return allRentals.some((rental) => {
+    return allRentals.filter(isNotDeleted).some((rental) => {
       const rentalStart = moment(rental.start)
       const rentalEnd = moment(rental.end)
 
