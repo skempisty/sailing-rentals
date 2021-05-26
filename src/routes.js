@@ -369,16 +369,44 @@ router.post('/rentals', async (req, res) => {
   const { authorization: jwtToken } = req.headers
   const { rental: rentalPostBody, payment: paymentPostBody } = req.body
 
+  const { paypalAuthorizationId: authorizationId, orderId } = paymentPostBody
+
+  if (!authorizationId) {
+    res.status(400).send('Create rental failed. No paypal authorization ID received.')
+    return
+  }
+
   const { userId: creatorId } = await decodeJwt(jwtToken);
 
   try {
+    /*
+     * Verify order information
+     */
+    const order = await api.paypal.getPaypalOrderByOrderId(orderId)
+
+    // Validate the transaction details are as expected
+    if (order.result.purchase_units[0].amount.value !== paymentPostBody.amount) {
+      return res.send(400)
+    }
+
+    /*
+     * Insert rental and payment w auth Id into DB
+     */
+    // TODO: maybe combining these 2 insert queries will be a good idea. Speed up and atomize?
     const rental = await api.rentals.createRental(creatorId, rentalPostBody)
     // payments belong to a rental - so rental must be created first
     const payment = await api.payments.createPayment(creatorId, rental.id, paymentPostBody)
 
+    /*
+     * Actually capture the payment using the auth Id
+     */
+    const captureId = await api.paypal.capturePaymentWithAuthorizationId(authorizationId)
+
+    await api.payments.updateCaptureId(payment.id, captureId)
+
     res.send({ rental, payment })
   } catch (error) {
-    // TODO: extract this catch response behavior. It should be the same every time
+    // TODO: extract this catch response behavior to middleware like in broadcasts. It should be the same every time
     switch (error.name) {
       case 'ValidationError':
         res.status(422).send(error.message)

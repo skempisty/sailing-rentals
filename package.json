@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.14.0",
+    "@paypal/checkout-server-sdk": "^1.0.2",
     "@reduxjs/toolkit": "^1.5.0",
     "@types/sortablejs": "^1.10.6",
     "aws-sdk": "^2.863.0",
@@ -62,7 +63,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/skempisty/horsies-crawler.git"
+    "url": "git://github.com/skempisty/sailing-rentals.git"
   },
   "devDependencies": {
     "nodemon": "^1.19.2"

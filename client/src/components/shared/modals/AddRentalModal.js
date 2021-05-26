@@ -534,10 +534,18 @@ class AddRentalModal extends React.Component {
             <PayPalButton
               amount={this.selectedBoatRentalPrice}
               shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
-              onSuccess={(details) => {
-                const { id: orderId, payer, purchase_units } = details
-                const payee = purchase_units[0].payee
-                const capture = purchase_units[0].payments.captures[0]
+              onApprove={async (data, actions) => {
+                // Authorize the transaction
+                const authorization = await actions.order.authorize()
+
+                // Get the authorization id
+                const authorizationId = authorization.purchase_units[0]
+                  .payments.authorizations[0].id
+
+                const { payer, purchase_units } = authorization
+                const { amount, payee } = purchase_units[0]
+
+                const { orderID, payerID,  } = data
 
                 const newRental = new Rental({
                   id: null,
@@ -551,10 +559,10 @@ class AddRentalModal extends React.Component {
 
                 const paymentObj = new Payment({
                   paidBy: currentUser.id,
-                  orderId,
-                  amount: capture.amount.value,
-                  currency: capture.amount.currency_code,
-                  payerId: payer.payer_id,
+                  orderId: orderID,
+                  amount: amount.value,
+                  currency: amount.currency_code,
+                  payerId: payerID,
                   payerCountryCode: payer.address.country_code,
                   payerPostalCode: payer.address.postal_code || '',
                   payerEmailAddress: payer.email_address || '',
@@ -563,7 +571,7 @@ class AddRentalModal extends React.Component {
                   payerSurname: payer.name.surname,
                   payeeEmail: payee.email_address,
                   payeeMerchantId: payee.merchant_id,
-                  paypalCaptureId: capture.id,
+                  paypalAuthorizationId: authorizationId
                 })
 
                 onRentalAdd(newRental, paymentObj)
@@ -576,7 +584,8 @@ class AddRentalModal extends React.Component {
               }}
               options={{
                 clientId: paypalAccountClientId, // 'PRODUCTION_CLIENT_ID'
-                disableFunding: 'paylater'
+                disableFunding: 'paylater',
+                intent: 'authorize'
               }}
               onButtonReady={() => that.setState({ paypalButtonReady: true })}
               onShippingChange={() => { return '' }} // Just having this prop forces all payment forms to render in popups instead of inline
