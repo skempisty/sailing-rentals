@@ -7,8 +7,6 @@ exports.getCarouselSlides = async () => {
 exports.createCarouselSlide = async (createdBy, imageUrl) => {
   const [ result ] = await db.query(`SELECT COUNT(*) AS rowCount FROM ${db.name}.carousel_slides`)
 
-  console.log('rowCount', result.rowCount)
-
   const newSlide = [ createdBy, imageUrl, result.rowCount ]
 
   await db.query(`INSERT INTO ${db.name}.carousel_slides (createdBy, imageUrl, slideOrder) VALUES (?, ?, ?)`, newSlide)

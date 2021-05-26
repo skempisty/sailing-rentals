@@ -115,6 +115,7 @@
 
     'payeeEmail VARCHAR(255),' +
     'payeeMerchantId VARCHAR(255),' +
+    'paypalAuthorizationId VARCHAR(255) NOT NULL,' +
     'paypalCaptureId VARCHAR(255),' +
 
     'rentalId INT NOT NULL,' +
