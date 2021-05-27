@@ -296,6 +296,7 @@ class AddRentalModal extends React.Component {
    */
   selectionOverlapsOtherRental(rentalSelection) {
     let { allRentals, editRental } = this.props
+    const { selectedBoatId } = this.state
 
     const selectionStart = moment(rentalSelection.start)
     const selectionEnd = moment(rentalSelection.end)
@@ -305,7 +306,9 @@ class AddRentalModal extends React.Component {
       allRentals = allRentals.filter(isNotDeleted).filter(rental => rental.id !== editRental.id)
     }
 
-    return allRentals.filter(isNotDeleted).some((rental) => {
+    const rentalsToCompare = allRentals.filter(isNotDeleted).filter(rental => rental.boatId === selectedBoatId)
+
+    return rentalsToCompare.some((rental) => {
       const rentalStart = moment(rental.start)
       const rentalEnd = moment(rental.end)
 
