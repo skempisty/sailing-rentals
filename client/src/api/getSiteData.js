@@ -1,6 +1,8 @@
 import Constants from '../utils/constants'
 
-export default async function getBoats() {
+import fetchAndCheckStatus from '../utils/fetchAndCheckStatus'
+
+export default async function getSiteData() {
   const url = `${Constants.baseUrl}/api/site_data`
 
   const getOptions = {
@@ -11,7 +13,5 @@ export default async function getBoats() {
     }
   }
 
-  const siteDataRes = await fetch(url, getOptions)
-
-  return await siteDataRes.json()
+  return fetchAndCheckStatus(url, [200], getOptions)
 }

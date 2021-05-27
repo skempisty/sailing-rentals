@@ -90,8 +90,8 @@
     'FOREIGN KEY (boatId) REFERENCES boats(id),' +
     'FOREIGN KEY (rentedBy) REFERENCES users(id),' +
     'crewCount INT,' +
-    'start TIMESTAMP NOT NULL,' +
-    'end TIMESTAMP NOT NULL,' +
+    'start TIMESTAMP NOT NULL ON UPDATE NONE,' +
+    'end TIMESTAMP NOT NULL ON UPDATE NONE,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'deletedAt TIMESTAMP' +
