@@ -9,15 +9,15 @@ import LogoutBtn from './LogoutBtn'
 import SocialMediaBar from './shared/SocialMediaBar'
 
 import setLoginJwt from '../utils/setLoginJwt'
-import loginOrCreateUser from '../api/loginOrCreateUser'
-import getUsers from '../api/getUsers'
-import getMyRentals from '../api/getMyRentals'
+import getLoggedInData from '../api/getLoggedInData'
+
 import { breakpoints } from '../config'
 
 import logo from '../images/logo.png'
 
 import { initUsers } from '../store/users'
 import { initRentals } from '../store/rentals'
+import { initPayments } from '../store/payments'
 import {
   assignCurrentUser,
   clearCurrentUser,
@@ -82,6 +82,7 @@ class TopNavBar extends React.Component {
     const {
       initUsers,
       initRentals,
+      initPayments,
       assignCurrentUser,
       toggleLoading,
       history
@@ -90,26 +91,28 @@ class TopNavBar extends React.Component {
     toggleLoading(true)
 
     try {
-      const { user, jwt } = await loginOrCreateUser(tokenId)
+      const {
+        currentUser,
+        users,
+        myRentals,
+        allRentals,
+        myPayments,
+        allPayments,
+        jwt
+      } = await getLoggedInData(tokenId)
+
+      // TODO replace with one redux action and thunk
+      assignCurrentUser({ user: currentUser })
+      initUsers({ users })
+      initRentals({ myRentals, allRentals })
+      initPayments({ myPayments, allPayments })
 
       setLoginJwt(jwt)
-
-      assignCurrentUser({ user })
-
-      const myRentals = await getMyRentals()
-
-      initRentals({ myRentals })
-
-      if (user.isAdmin) {
-        const users = await getUsers()
-
-        initUsers({ users })
-      }
 
       toggleLoading(false)
 
       // put user on profile page to complete profile
-      if (!user.isApproved) {
+      if (!currentUser.isApproved) {
         history.push('/profile')
       }
     } catch (error) {
@@ -117,17 +120,19 @@ class TopNavBar extends React.Component {
     }
   }
 
-  handleLoginFailure(res) {
-    alert(`Error logging in with Google: ${res}`)
+  handleLoginFailure() {
+    console.log('manually closed Google login popup')
   }
 
   handleLogout() {
-    const { clearCurrentUser, history, initRentals, initUsers } = this.props
+    const { clearCurrentUser, history, initUsers, initRentals, initPayments } = this.props
 
-    // clear admin data
+    /*
+     * All data in redux should be wiped that requires a logged in user
+     */
     initUsers({ users: [] })
-    // clear personal data
-    initRentals({ myRentals: [] })
+    initRentals({ myRentals: [], allRentals: [] })
+    initPayments({ myPayments: [], allPayments: [] })
 
     history.push('/')
 
@@ -275,6 +280,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   initUsers,
   initRentals,
+  initPayments,
   assignCurrentUser,
   clearCurrentUser,
   toggleLoading

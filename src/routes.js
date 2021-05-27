@@ -23,6 +23,109 @@ router.get('/health', async (req, res) => {
   res.send(`ok ${process.env.BASE_URL}`)
 })
 
+/**
+ * Initialize site data. Data returned should always be all the user will need to load the site
+ */
+router.get('/site_data', async (req, res) => {
+  const { authorization: authHeader } = req.headers
+
+  let currentUser = null
+  let updatedJwt = null
+  let users = []
+  let myRentals = []
+  let myPayments = []
+  let allPayments = []
+  let allRentals = []
+
+  const hasJwtToken = 'null' !== authHeader.split(' ')[1]
+
+  // user is logged in
+  if (hasJwtToken) {
+    const { userId, isAdmin } = await decodeJwt(authHeader)
+
+    // get personal data
+    currentUser = await api.users.getUserById(userId)
+    myRentals = await api.rentals.getMyRentals(userId)
+    myPayments = await api.payments.getMyPayments(userId)
+
+    // cant rent without logging in
+    allRentals = await api.rentals.getAllRentals()
+
+    // get updated jwt for initialization
+    updatedJwt = getNewLoginJwt(currentUser)
+
+    // user is an admin
+    if (isAdmin) {
+      users = await api.users.getUserList()
+      allPayments = await api.payments.getAllPayments()
+    }
+  }
+
+  const boats = await api.boats.getBoats()
+  const posts = await api.posts.getPosts()
+  const carouselSlides = await api.carouselSlides.getCarouselSlides()
+
+  res.send({
+    currentUser,
+    users,
+    boats,
+    carouselSlides,
+    posts,
+    myRentals,
+    allRentals,
+    myPayments,
+    allPayments,
+    updatedJwt
+  })
+})
+
+/**
+ * Login or create a user using a google token id. Get back all information for the logged in user
+ */
+router.post('/logged_in_data', async (req, res) => {
+  const { googleTokenId } = req.body
+
+  const googleUser = await googleTokenIdToUser(googleTokenId)
+
+  if (googleUser) { // Check if google login is authenticated
+    let currentUser = await api.users.getUserByGoogleId(googleUser.sub) // .sub is users google id
+
+    if (!currentUser) {
+      currentUser = await api.users.createUser(googleUser)
+    }
+
+    const jwt = getNewLoginJwt(currentUser)
+
+    let users = []
+    let allPayments = []
+
+    // get personal data
+    const myRentals = await api.rentals.getMyRentals(currentUser.id)
+    const myPayments = await api.payments.getMyPayments(currentUser.id)
+
+    // cant rent without logging in
+    const allRentals = await api.rentals.getAllRentals()
+
+    // user is an admin
+    if (currentUser.isAdmin) {
+      users = await api.users.getUserList()
+      allPayments = await api.payments.getAllPayments()
+    }
+
+    res.send({
+      currentUser,
+      users,
+      myRentals,
+      allRentals,
+      myPayments,
+      allPayments,
+      jwt
+    })
+  } else {
+    res.status(401).send('Unauthorized Google login token')
+  }
+})
+
 /*******************************************************************************
  * Image Upload
  */
@@ -50,53 +153,6 @@ router.post('/images', upload.any(), async (req, res) => {
 /*******************************************************************************
  * USERS
  */
-
-/**
- * Log a user in using a google token id
- */
-router.post('/users/login', async (req, res) => {
-  const { googleTokenId } = req.body
-
-  const googleUser = await googleTokenIdToUser(googleTokenId)
-
-  if (googleUser) { // Check if google login is authenticated
-    let user = await api.users.getUserByGoogleId(googleUser.sub) // .sub is users google id
-
-    if (!user) {
-      user = await api.users.createUser(googleUser)
-    }
-
-    const freshJwt = getNewLoginJwt(user)
-
-    // return the user and a jwt
-    res.send({ user, jwt: freshJwt });
-  } else {
-    res.status(401).send('Unauthorized Google login token')
-  }
-})
-
-/**
- * Get the logged in User using jwt token on session storage
- */
-router.get('/users/logged_in', async (req, res) => {
-  const { authorization: jwtToken } = req.headers
-
-  const { userId } = await decodeJwt(jwtToken)
-
-  if (userId) {
-    const user = await api.users.getUserById(userId)
-
-    /*
-     * JWT decoded earlier - can assume this is the rightful user.
-     * Issue a new token here in case user details have changed
-     */
-    const updatedJwt = getNewLoginJwt(user)
-
-    res.send({ user, updatedJwt })
-  } else {
-    res.status(401).send('Error accessing logged in user')
-  }
-})
 
 /*** ADMIN ONLY */
 router.get('/users', async (req, res) => {
