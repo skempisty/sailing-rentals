@@ -25,7 +25,7 @@ class PaymentsTab extends React.Component {
             <tbody>
               {allPayments.map((payment, index) =>
                 <PaymentRow
-                  key={`rental-row-${payment.id}-${index}`}
+                  key={`payment-row-${payment.id}-${index}`}
                   payment={payment}
                 />
               )}
