@@ -10,6 +10,7 @@ const secret = process.env.JWT_SECRET
 const pathFilter = function(req) {
   const excludedPaths = [
     '/api/health',
+    '/api/site_data',
     '/api/users/login',
     '/api/carousel_slides', // TODO: need to lock down all but GET endpoint
     '/api/posts', // TODO: need to lock down all but GET endpoint

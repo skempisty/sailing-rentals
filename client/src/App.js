@@ -13,15 +13,7 @@ import AdminPanel from './components/pages/AdminPanel'
 import Rentals from './components/pages/Rentals'
 
 import setLoginJwt from './utils/setLoginJwt'
-import getLoggedInUser from './api/getLoggedInUser'
-import getCarouselSlides from './api/getCarouselSlides'
-import getPosts from './api/getPosts'
-import getUsers from './api/getUsers'
-import getBoats from './api/getBoats'
-import getMyRentals from './api/getMyRentals'
-import getAllRentals from './api/getAllRentals'
-import getMyPayments from './api/getMyPayments'
-import getAllPayments from './api/getAllPayments'
+import getSiteData from './api/getSiteData'
 
 import { toggleLoading, initSession } from './store/session'
 import { initUsers } from './store/users'
@@ -38,37 +30,19 @@ class App extends React.Component {
   async componentDidMount() {
     const { toggleLoading } = this.props
 
-    const existingJwt = sessionStorage.getItem('jwt')
-
     try {
-      let currentUser = null
-      let users = []
-      let myRentals = []
-      let myPayments = []
-      let allPayments = []
-
-      if (existingJwt) {
-        const { user: loggedInUser, updatedJwt } = await getLoggedInUser()
-
-        currentUser = loggedInUser
-        setLoginJwt(updatedJwt)
-
-        // Personal data
-        myRentals = await getMyRentals()
-        myPayments = await getMyPayments()
-
-        // Admin data
-        if (loggedInUser.isAdmin) {
-          users = await getUsers()
-          allPayments = await getAllPayments()
-        }
-      }
-
-      // Always load data
-      const posts = await getPosts()
-      const boats = await getBoats()
-      const allRentals = await getAllRentals()
-      const carouselSlides = await getCarouselSlides()
+      const {
+        currentUser,
+        users,
+        myRentals,
+        allRentals,
+        myPayments,
+        allPayments,
+        posts,
+        boats,
+        carouselSlides,
+        updatedJwt
+      } = await getSiteData()
 
       this.initializeData({
         currentUser,
@@ -81,6 +55,8 @@ class App extends React.Component {
         myPayments,
         allPayments
       })
+
+      setLoginJwt(updatedJwt)
 
       toggleLoading({ newToggleState: false })
     } catch (error) {

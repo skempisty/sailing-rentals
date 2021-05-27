@@ -24,6 +24,62 @@ router.get('/health', async (req, res) => {
 })
 
 /*******************************************************************************
+ * Initialize site data
+ */
+router.get('/site_data', async (req, res) => {
+  const { authorization: authHeader } = req.headers
+
+  let currentUser = null
+  let updatedJwt = null
+  let users = []
+  let myRentals = []
+  let myPayments = []
+  let allPayments = []
+  let allRentals = []
+
+  const hasJwtToken = 'null' !== authHeader.split(' ')[1]
+
+  // user is logged in
+  if (hasJwtToken) {
+    const { userId, isAdmin } = await decodeJwt(authHeader)
+
+    // get personal data
+    currentUser = await api.users.getUserById(userId)
+    myRentals = await api.rentals.getMyRentals()
+    myPayments = await api.payments.getMyPayments()
+
+    // cant rent without logging in
+    allRentals = await api.rentals.getAllRentals()
+
+    // get updated jwt for initialization
+    updatedJwt = getNewLoginJwt(currentUser)
+
+    // user is an admin
+    if (isAdmin) {
+      users = await api.users.getUserList()
+      allPayments = await api.payments.getAllPayments()
+    }
+  }
+
+  const boats = await api.boats.getBoats()
+  const posts = await api.posts.getPosts()
+  const carouselSlides = await api.carouselSlides.getCarouselSlides()
+
+  res.send({
+    currentUser,
+    users,
+    boats,
+    carouselSlides,
+    posts,
+    myRentals,
+    allRentals,
+    myPayments,
+    allPayments,
+    updatedJwt
+  })
+})
+
+/*******************************************************************************
  * Image Upload
  */
 

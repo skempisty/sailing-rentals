@@ -18,6 +18,7 @@ import logo from '../images/logo.png'
 
 import { initUsers } from '../store/users'
 import { initRentals } from '../store/rentals'
+import { initPayments } from '../store/payments'
 import {
   assignCurrentUser,
   clearCurrentUser,
@@ -117,17 +118,19 @@ class TopNavBar extends React.Component {
     }
   }
 
-  handleLoginFailure(res) {
-    alert(`Error logging in with Google: ${res}`)
+  handleLoginFailure() {
+    console.log('manually closed Google login popup')
   }
 
   handleLogout() {
-    const { clearCurrentUser, history, initRentals, initUsers } = this.props
+    const { clearCurrentUser, history, initUsers, initRentals, initPayments } = this.props
 
-    // clear admin data
+    /*
+     * All data in redux should be wiped that requires a logged in user
+     */
     initUsers({ users: [] })
-    // clear personal data
-    initRentals({ myRentals: [] })
+    initRentals({ myRentals: [], allRentals: [] })
+    initPayments({ myPayments: [], allPayments: [] })
 
     history.push('/')
 
@@ -275,6 +278,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   initUsers,
   initRentals,
+  initPayments,
   assignCurrentUser,
   clearCurrentUser,
   toggleLoading
