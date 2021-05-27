@@ -474,7 +474,7 @@ router.post('/rentals', async (req, res) => {
 })
 
 router.put('/rentals/:id', async (req, res) => {
-  const { id } = req.params
+  const { id: rentalId } = req.params
   const { authorization: jwtToken } = req.headers
   const updateFields = req.body
 
@@ -483,7 +483,7 @@ router.put('/rentals/:id', async (req, res) => {
   // only allow this action if the logged in user matches the id, or token belongs to an admin
   if (isAdmin || String(updateFields.rentedBy) === String(userId)) {
     try {
-      const updatedRental = await api.rentals.updateRental(id, updateFields, isAdmin)
+      const updatedRental = await api.rentals.updateRental(updateFields, rentalId, userId)
 
       res.send(updatedRental)
     } catch (error) {

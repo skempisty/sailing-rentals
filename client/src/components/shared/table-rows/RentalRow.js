@@ -35,9 +35,9 @@ class RentalRow extends React.Component {
     const { rental, editRental } = this.props
 
     try {
-      await updateRental(rental.id, updatedRental)
+      const newRental = await updateRental(rental.id, updatedRental)
 
-      editRental({ id: rental.id, updatedRental })
+      editRental({ id: rental.id, updatedRental: newRental })
     } catch (error) {
       alert('Error updating rental')
     }

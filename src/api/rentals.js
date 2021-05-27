@@ -18,16 +18,16 @@ exports.getRental = async (id) => {
   return rental
 }
 
-exports.createRental = async (createdBy, newRentalObj) => {
+exports.createRental = async (rentedBy, newRentalObj) => {
   const { boatId, start, end, crewCount } = newRentalObj
 
-  const validation = await validateRental(newRentalObj)
+  const validation = await validateRental(newRentalObj, rentedBy)
 
   if (validation.error) {
     throw new ValidationError(validation.error.message)
   }
 
-  const newRental = [ createdBy, boatId, start, end, crewCount ]
+  const newRental = [ rentedBy, boatId, start, end, crewCount ]
 
   await db.query(`INSERT INTO ${db.name}.rentals (rentedBy, boatId, start, end, crewCount) VALUES (?, ?, ?, ?, ?)`, newRental)
 
@@ -36,12 +36,12 @@ exports.createRental = async (createdBy, newRentalObj) => {
   return rental
 }
 
-exports.updateRental = async (id, updateFields) => {
+exports.updateRental = async (updateFields, rentalId, rentedBy) => {
   const { crewCount, start, end  } = updateFields
 
-  const rentalObj = { id, ...updateFields }
+  const rentalObj = { id: rentalId, ...updateFields }
 
-  const validation = await validateRental(rentalObj)
+  const validation = await validateRental(rentalObj, rentedBy)
 
   if (validation.error) {
     throw new ValidationError(validation.error.message)
@@ -65,11 +65,15 @@ exports.updateRental = async (id, updateFields) => {
     sqlArgs.push(end)
   }
 
-  sqlArgs.push(id)
+  sqlArgs.push(rentedBy)
 
   const sql = `UPDATE ${db.name}.rentals SET ${updateSql.join(', ')} WHERE id = ?`
 
-  return await db.query(sql, sqlArgs)
+  await db.query(sql, sqlArgs)
+
+  const [ rental ] = await db.query(`SELECT * FROM ${db.name}.rentals WHERE id = ?`, [rentalId])
+
+  return rental
 }
 
 exports.deleteRental = async (id) => {
@@ -82,15 +86,16 @@ exports.deleteRental = async (id) => {
 
 /**
  * Runs a series of validations on incoming rental object
- * @param rentalObj
+ * @param rentalObj the proposed new rental object
+ * @param {string} rentedBy user id of the renter
  * @returns {Promise<{}>} validation object
  */
-async function validateRental(rentalObj) {
+async function validateRental(rentalObj, rentedBy) {
   const validation = {}
 
   // TODO: maybe better to just pull all existing rentals and work with it so we only have to do one query
   const emptyTimeSlotValidated = await validateEmptyTimeSlot(rentalObj)
-  const noTwoRentalsInOneDayValidated = await validateNoTwoRentalsInOneDay(rentalObj)
+  const noTwoRentalsInOneDayValidated = await validateNoTwoRentalsInOneDay(rentalObj, rentedBy)
 
   if (!emptyTimeSlotValidated) {
     validation.error = {
@@ -124,7 +129,7 @@ async function validateEmptyTimeSlot(rentalObj) {
   return !conflictingRentals.length
 }
 
-async function validateNoTwoRentalsInOneDay(rentalObj) {
+async function validateNoTwoRentalsInOneDay(rentalObj, rentedBy) {
   const { id, start } = rentalObj
 
   // id is only non-null when editing a rental
@@ -137,11 +142,12 @@ async function validateNoTwoRentalsInOneDay(rentalObj) {
   const query = [
     `SELECT * FROM ${db.name}.rentals`,
     `WHERE deletedAt = "0000-00-00 00:00:00"`, // only non-deleted rentals considered
+    `AND rentedBy = ?`, // same user
     `AND id != ?`, // it's ok to overwrite on top of the rental being updated
-    `AND start BETWEEN ? AND ?` // is on the same day
+    `AND (start >= ? AND start <= ?)` // is on the same day
   ]
 
-  const conflictingRentals = await db.query(query.join(' '), [ rentalId, dayBegin, dayEnd ])
+  const conflictingRentals = await db.query(query.join(' '), [ rentedBy, rentalId, dayBegin, dayEnd ])
 
   return !conflictingRentals.length
 }
