@@ -30,8 +30,6 @@ class App extends React.Component {
   async componentDidMount() {
     const { toggleLoading } = this.props
 
-    console.log("STEPHEN TEST")
-
     try {
       const {
         currentUser,

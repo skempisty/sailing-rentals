@@ -75,11 +75,13 @@ class RentalRow extends React.Component {
           onHide={() => this.setState({ showDeleteRentalModal: false })}
         />
 
-        <UserInfoModal
-          user={getUserById(rental.rentedBy)}
-          show={showSailorModal}
-          onHide={() => this.setState({ showSailorModal: false })}
-        />
+        {showSailor &&
+          <UserInfoModal
+            user={getUserById(rental.rentedBy)}
+            show={showSailorModal}
+            onHide={() => this.setState({ showSailorModal: false })}
+          />
+        }
 
         <tr style={{ whiteSpace: 'nowrap' }}>
           {showSailor &&

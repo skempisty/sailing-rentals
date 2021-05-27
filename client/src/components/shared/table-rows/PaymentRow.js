@@ -38,7 +38,7 @@ class PaymentRow extends React.Component {
   }
 
   render() {
-    const { payment } = this.props
+    const { payment, showSailor } = this.props
     const { showUserInfoModal, showRentalInfoModal, showPaymentInfoModal } = this.state
 
     return (
@@ -55,22 +55,26 @@ class PaymentRow extends React.Component {
           onHide={() => this.setState({ showRentalInfoModal: false })}
         />
 
-        <PaymentInfoModal
-          payment={payment}
-          show={showPaymentInfoModal}
-          onHide={() => this.setState({ showPaymentInfoModal: false })}
-        />
+        {showSailor &&
+          <PaymentInfoModal
+            payment={payment}
+            show={showPaymentInfoModal}
+            onHide={() => this.setState({ showPaymentInfoModal: false })}
+          />
+        }
 
         <tr style={{ whiteSpace: 'nowrap' }}>
-          <td>
-            <Button
-              variant='link'
-              onClick={() => this.setState({ showUserInfoModal: true })}
-              style={{ padding: '0' }}
-            >
-              {getUserById(payment.paidBy).email}
-            </Button>
-          </td>
+          {showSailor &&
+            <td>
+              <Button
+                variant='link'
+                onClick={() => this.setState({showUserInfoModal: true})}
+                style={{padding: '0'}}
+              >
+                {getUserById(payment.paidBy).email}
+              </Button>
+            </td>
+          }
 
           <td>
             <Button
@@ -102,7 +106,8 @@ class PaymentRow extends React.Component {
 }
 
 PaymentRow.propTypes = {
-  payment: PropTypes.object.isRequired
+  payment: PropTypes.object.isRequired,
+  showSailor: PropTypes.bool
 }
 
 export default connect(

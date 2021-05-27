@@ -27,6 +27,7 @@ class PaymentsTab extends React.Component {
                 <PaymentRow
                   key={`payment-row-${payment.id}-${index}`}
                   payment={payment}
+                  showSailor
                 />
               )}
             </tbody>
