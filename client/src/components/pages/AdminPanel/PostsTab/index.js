@@ -7,6 +7,8 @@ import { FaPlusCircle } from 'react-icons/fa'
 import AddPostModal from './AddPostModal'
 import PostAdminView from './PostAdminView'
 
+import isNotDeleted from '../../../../utils/isNotDeleted'
+
 class PostsTab extends React.Component {
   constructor(props) {
     super(props)
@@ -51,10 +53,11 @@ class PostsTab extends React.Component {
           <div
             style={{
               display: 'flex',
+              alignItems: 'flex-start',
               flexWrap: 'wrap'
             }}
           >
-            {posts.map((post, index) =>
+            {posts.filter(isNotDeleted).map((post, index) =>
               <PostAdminView
                 key={`post-${post.id}-${index}`}
                 post={post}
