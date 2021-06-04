@@ -56,6 +56,14 @@ class SiteSettingsTab extends React.Component {
 
     return (
       <div style={{ color: 'white' }}>
+        <Alert variant='warning'>
+          <div><b>No Validation Warning!</b></div>
+
+          <div>Please follow any input instructions on each individual setting. Improper setting values can 'break' the site.</div>
+
+          <div style={{ textDecoration: 'underline' }}>Don't touch if you don't know what you're doing!</div>
+        </Alert>
+
         <div
           style={{
             display: 'flex',
@@ -85,17 +93,18 @@ class SiteSettingsTab extends React.Component {
           </div>
         </div>
 
-        <Alert variant='warning'>
-          <div><b>No Validation Warning!</b></div>
-
-          <div>Please follow any input instructions on each individual setting. Improper setting values could 'break' the site.</div>
-
-          <div style={{ textDecoration: 'underline' }}>Don't touch if you don't know what you're doing</div>
-        </Alert>
-
         <Form>
           <Form.Group>
             <Form.Label><b>Allowed Rental Interval</b></Form.Label>
+
+            <Alert variant='info' style={{ maxWidth: '17em' }}>
+              <ul style={{ marginBottom: '0', paddingLeft: '0.5em' }}>
+                <li>Whole numbers</li>
+                <li>Both greater than zero</li>
+                <li>Min less than or equal to Max</li>
+              </ul>
+            </Alert>
+
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Form.Control
                 type='number'
