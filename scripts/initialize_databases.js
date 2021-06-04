@@ -127,7 +127,7 @@
     ');'
   )
 
-  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.site_settings (` +
+  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.settings (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'name VARCHAR(255) NOT NULL,' +
     'value VARCHAR(255) NOT NULL,' +
@@ -140,18 +140,20 @@
    * Insert Dummy data
    */
   await db.query(`INSERT INTO ${db.name}.users (id, googleId, firstName, lastName, email, phone, affiliation, imageUrl, isAdmin) VALUES
-    (null, '0', 'Frodo', 'Baggins', 'one.ring@gmail.com', 2406456689, 'Fellowship of the Ring', 'https://loremflickr.com/50/50/frodo', '1'),
-    (null, '1', 'Samwise', 'Gamgee', 'mrfrodo@gmail.com', 2406456690, 'Fellowship of the Ring', 'https://loremflickr.com/50/50/samwise', '0')
-  `);
+    (null, '0', 'Frodo', 'Baggins', 'one.ring@gmail.com', '2406456689', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/frodo', '1'),
+    (null, '1', 'Samwise', 'Gamgee', 'mrfrodo@gmail.com', '2406456690', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/samwise', '0')
+  `)
 
   await db.query(`INSERT INTO ${db.name}.boats (createdBy, name, model, imageUrl, description, perHourRentalCost) VALUES
     (LAST_INSERT_ID(), 'Cloud 9', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh what a faithful old barnacle!', 10),
     (LAST_INSERT_ID(), 'Iris', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh how it doth soar!', 10)
-  `);
+  `)
 
-  await db.query(`INSERT INTO ${db.name}.site_settings (name, value) VALUES
+  await db.query(`INSERT INTO ${db.name}.settings (name, value) VALUES
+    ('min_rental_hours', '3'),
+    ('max_rental_hours', '3'),
     ('earliest_rental_time', '0700'),
     ('latest_rental_time', '2000'),
     ('paypal_payee_client_id', '')
-  `);
+  `)
 })()

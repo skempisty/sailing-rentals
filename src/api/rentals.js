@@ -65,7 +65,7 @@ exports.updateRental = async (updateFields, rentalId, rentedBy) => {
     sqlArgs.push(end)
   }
 
-  sqlArgs.push(rentedBy)
+  sqlArgs.push(rentalId)
 
   const sql = `UPDATE ${db.name}.rentals SET ${updateSql.join(', ')} WHERE id = ?`
 

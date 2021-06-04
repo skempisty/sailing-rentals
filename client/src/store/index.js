@@ -8,6 +8,7 @@ import session from './session'
 import posts from './posts'
 import carouselSlides from './carouselSlides'
 import payments from './payments'
+import settings from './settings'
 
 const reducer = combineReducers({
   session,
@@ -16,7 +17,8 @@ const reducer = combineReducers({
   rentals,
   posts,
   carouselSlides,
-  payments
+  payments,
+  settings
 })
 
 export default configureStore({

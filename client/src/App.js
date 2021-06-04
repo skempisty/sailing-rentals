@@ -22,6 +22,7 @@ import { initRentals } from './store/rentals'
 import { initPayments } from './store/payments'
 import { initPosts } from './store/posts'
 import { initCarousel } from './store/carouselSlides'
+import { initSettings } from './store/settings'
 
 /**
  * Root App component. Initialize app data here and add to Redux.
@@ -41,6 +42,7 @@ class App extends React.Component {
         posts,
         boats,
         carouselSlides,
+        settings,
         updatedJwt
       } = await getSiteData()
 
@@ -53,7 +55,8 @@ class App extends React.Component {
         myRentals,
         allRentals,
         myPayments,
-        allPayments
+        allPayments,
+        settings
       })
 
       setLoginJwt(updatedJwt)
@@ -73,7 +76,8 @@ class App extends React.Component {
     myRentals,
     allRentals,
     myPayments,
-    allPayments
+    allPayments,
+    settings
   }) {
     // call all slice init methods
     const {
@@ -83,7 +87,8 @@ class App extends React.Component {
       initRentals,
       initPayments,
       initCarousel,
-      initPosts
+      initPosts,
+      initSettings
     } = this.props
 
     initSession({ currentUser })
@@ -93,6 +98,7 @@ class App extends React.Component {
     initPayments({ myPayments, allPayments })
     initPosts({ posts })
     initCarousel({ carouselSlides })
+    initSettings({ settings })
   }
 
   render() {
@@ -136,7 +142,8 @@ const mapDispatchToProps = {
   initRentals,
   initPayments,
   initPosts,
-  initCarousel
+  initCarousel,
+  initSettings
 }
 
 export default connect(
