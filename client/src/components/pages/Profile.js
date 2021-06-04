@@ -25,14 +25,6 @@ class Profile extends React.Component {
     this.state = this.initialState;
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { showProfileUpdateSuccess } = this.state;
-
-    if (showProfileUpdateSuccess && showProfileUpdateSuccess !== prevState.showProfileUpdateSuccess) {
-      this.setState({ showProfileUpdateSuccess: false });
-    }
-  }
-
   get initialState() {
     const { currentUser } = this.props;
 
@@ -69,7 +61,7 @@ class Profile extends React.Component {
 
   async handleSaveChangesClick() {
     const { currentUser, updateCurrentUser } = this.props;
-    const { phone, affiliation } = this.state;
+    const { phone, affiliation, showProfileUpdateSuccess } = this.state;
 
     await setStateAsync({ savingProfile: true }, this);
 
@@ -82,7 +74,7 @@ class Profile extends React.Component {
 
       this.savedProfileFields = updatedFields;
 
-      this.setState({ showProfileUpdateSuccess: true });
+      this.setState({ showProfileUpdateSuccess: !showProfileUpdateSuccess });
     } catch (error) {
       alert('Error saving profile changes: ' + error);
     }
