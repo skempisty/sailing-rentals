@@ -17,7 +17,7 @@ export default class VanishingAlert extends React.Component {
   async componentDidUpdate(prevProps, prevState, snapshot) {
     const { showStart } = this.props;
 
-    if (showStart && showStart !== prevProps.showStart) {
+    if (showStart !== prevProps.showStart) {
       await setStateAsync({ timedShow: true }, this);
 
       clearTimeout(this.timer);
