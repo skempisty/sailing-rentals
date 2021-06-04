@@ -397,7 +397,13 @@ class AddRentalModal extends React.Component {
       label = 'Please select a time slot in the future'
       icon = <FaExclamationTriangle/>
     } else if (!this.selectedAllowedRentalInterval(rental)) {
-      label = `Please select a ${settings.min_rental_hours} to ${settings.max_rental_hours} hour time slot`
+
+      if (settings.min_rental_hours === settings.max_rental_hours) {
+        label = `Please select a ${settings.min_rental_hours} hour time slot`
+      } else {
+        label = `Please select a ${settings.min_rental_hours} to ${settings.max_rental_hours} hour time slot`
+      }
+
       icon = <FaExclamationTriangle/>
     } else if (editRental && !rental.id) {
       label = 'Updated time slot'
