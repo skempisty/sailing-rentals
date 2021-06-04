@@ -268,6 +268,16 @@ class AddRentalModal extends React.Component {
     )
   }
 
+  get timeIntervalDisplay() {
+    const { settings } = this.props
+
+    if (settings.min_rental_hours === settings.max_rental_hours) {
+      return settings.min_rental_hours
+    } else {
+      return `${settings.min_rental_hours} to ${settings.max_rental_hours}`
+    }
+  }
+
   rentalStartsInPast(rentalSelection) {
     if (!rentalSelection.start) return true
 
@@ -397,13 +407,7 @@ class AddRentalModal extends React.Component {
       label = 'Please select a time slot in the future'
       icon = <FaExclamationTriangle/>
     } else if (!this.selectedAllowedRentalInterval(rental)) {
-
-      if (settings.min_rental_hours === settings.max_rental_hours) {
-        label = `Please select a ${settings.min_rental_hours} hour time slot`
-      } else {
-        label = `Please select a ${settings.min_rental_hours} to ${settings.max_rental_hours} hour time slot`
-      }
-
+      label = `Please select a ${this.timeIntervalDisplay} hour time slot`
       icon = <FaExclamationTriangle/>
     } else if (editRental && !rental.id) {
       label = 'Updated time slot'
@@ -484,7 +488,7 @@ class AddRentalModal extends React.Component {
         </Modal.Body>
 
         <div style={{ padding: '0 1em' }}>
-          <Form.Label><b>Click and drag to select a {settings.min_rental_hours} to {settings.max_rental_hours} hour time slot</b> <span style={{ color: 'red' }}>*</span></Form.Label>
+          <Form.Label><b>Click and drag to select a {this.timeIntervalDisplay} hour time slot</b> <span style={{ color: 'red' }}>*</span></Form.Label>
         </div>
 
         <div style={{ position: 'relative' }}>
