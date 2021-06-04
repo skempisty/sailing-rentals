@@ -99,7 +99,7 @@ class SiteSettingsTab extends React.Component {
 
             <Alert variant='info' style={{ maxWidth: '17em' }}>
               <ul style={{ marginBottom: '0', paddingLeft: '0.5em' }}>
-                <li>Whole numbers</li>
+                <li>Use integers</li>
                 <li>Both greater than zero</li>
                 <li>Min less than or equal to Max</li>
               </ul>

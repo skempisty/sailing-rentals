@@ -135,8 +135,17 @@ class AddRentalModal extends React.Component {
     return maxTime
   }
 
-  selectedThreeHourSlot(rental) {
-    return 3 === this.getRentalDurationHours(rental)
+  selectedAllowedRentalInterval(rental) {
+    const { settings } = this.props
+
+    const { min_rental_hours, max_rental_hours } = settings
+
+    const selectedRentalInterval = this.getRentalDurationHours(rental)
+
+    return (
+      selectedRentalInterval >= min_rental_hours &&
+      selectedRentalInterval <= max_rental_hours
+    )
   }
 
   /**
@@ -250,7 +259,7 @@ class AddRentalModal extends React.Component {
         (
           !this.selectionOverlapsOtherRental(newRentalPeriod) &&
           !this.alreadyRentedThisDay(newRentalPeriod) &&
-          this.selectedThreeHourSlot(newRentalPeriod) &&
+          this.selectedAllowedRentalInterval(newRentalPeriod) &&
           !this.rentalStartsInPast(newRentalPeriod)
         )
       ) &&
@@ -336,7 +345,7 @@ class AddRentalModal extends React.Component {
       this.alreadyRentedThisDay(rental) ||
       this.selectionOverlapsOtherRental(rental) ||
       this.rentalStartsInPast(rental) ||
-      !this.selectedThreeHourSlot(rental)
+      !this.selectedAllowedRentalInterval(rental)
     ) {
       backgroundColor = 'red' // invalid time slot selection
     } else {
@@ -362,7 +371,7 @@ class AddRentalModal extends React.Component {
   }
 
   titleAccessor(rental) {
-    const { currentUser, editRental } = this.props
+    const { currentUser, editRental, settings } = this.props
     const { view } = this.state
 
     const { name: boatName } = getBoatById(rental.boatId)
@@ -387,8 +396,8 @@ class AddRentalModal extends React.Component {
     } else if (this.rentalStartsInPast(rental)) {
       label = 'Please select a time slot in the future'
       icon = <FaExclamationTriangle/>
-    } else if (!this.selectedThreeHourSlot(rental)) {
-      label = 'Please select a 3 hour time slot'
+    } else if (!this.selectedAllowedRentalInterval(rental)) {
+      label = `Please select a ${settings.min_rental_hours} to ${settings.max_rental_hours} hour time slot`
       icon = <FaExclamationTriangle/>
     } else if (editRental && !rental.id) {
       label = 'Updated time slot'
@@ -398,7 +407,7 @@ class AddRentalModal extends React.Component {
       icon = <RiSailboatFill/>
     }
 
-    const showSvgComponent = view === 'day' || this.getRentalDurationHours(rental) >= 3
+    const showSvgComponent = view === 'day' || this.getRentalDurationHours(rental) >= 3 // Can't see full svg unless duration is at least 3 hours
 
     return (
       <EventLabel
@@ -412,7 +421,7 @@ class AddRentalModal extends React.Component {
   }
 
   render() {
-    const { currentUser, show, boats, editRental, onRentalAdd } = this.props
+    const { currentUser, show, boats, editRental, onRentalAdd, settings } = this.props
     const { selectedBoatId, newRentalPeriod, crewCount, view, date, paypalButtonReady } = this.state
 
     const that = this
@@ -469,7 +478,7 @@ class AddRentalModal extends React.Component {
         </Modal.Body>
 
         <div style={{ padding: '0 1em' }}>
-          <Form.Label><b>Select 3 hour time slot</b> <span style={{ color: 'red' }}>*</span></Form.Label>
+          <Form.Label><b>Click and drag to select a {settings.min_rental_hours} to {settings.max_rental_hours} hour time slot</b> <span style={{ color: 'red' }}>*</span></Form.Label>
         </div>
 
         <div style={{ position: 'relative' }}>
@@ -618,8 +627,9 @@ const mapStateToProps = (state) => {
   const { currentUser } = state.session
   const { boats } = state.boats
   const { myRentals, allRentals } = state.rentals
+  const { settings } = state.settings
 
-  return { currentUser, boats, myRentals, allRentals }
+  return { currentUser, boats, myRentals, allRentals, settings }
 }
 
 export default connect(
