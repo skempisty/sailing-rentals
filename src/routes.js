@@ -64,6 +64,7 @@ router.get('/site_data', async (req, res) => {
   const boats = await api.boats.getBoats()
   const posts = await api.posts.getPosts()
   const carouselSlides = await api.carouselSlides.getCarouselSlides()
+  const settings = await api.settings.getSettings()
 
   res.send({
     currentUser,
@@ -75,6 +76,7 @@ router.get('/site_data', async (req, res) => {
     allRentals,
     myPayments,
     allPayments,
+    settings,
     updatedJwt
   })
 })
@@ -544,6 +546,26 @@ router.get('/payments/my', async (req, res) => {
   const myPayments = await api.payments.getMyPayments(userId);
 
   res.send(myPayments)
+})
+
+/*******************************************************************************
+ * Settings
+ */
+
+/*** ADMIN ONLY */
+router.put('/settings', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+  const updatedSettingsObj = req.body
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const updatedSettings = await api.settings.updateSettings(updatedSettingsObj)
+
+    res.send(updatedSettings)
+  } else {
+    res.status(401).send('You don\'t have permission to update settings')
+  }
 })
 
 module.exports = router
