@@ -10,7 +10,7 @@ exports.getMyPayments = async (userId) => {
     'updatedAt'
   ]
 
-  return await db.query(`SELECT ${selectFields.join(', ')} FROM ${db.name}.payments WHERE paidBy = '${userId}' ORDER BY createdAt`)
+  return await db.query(`SELECT ${selectFields.join(', ')} FROM ${db.name}.payments WHERE paidBy = '${userId}' ORDER BY createdAt DESC`)
 }
 
 exports.getAllPayments = async () => {
@@ -23,7 +23,7 @@ exports.getAllPayments = async () => {
     'updatedAt'
   ]
 
-  return await db.query(`SELECT ${selectFields.join(', ')} FROM ${db.name}.payments ORDER BY createdAt`)
+  return await db.query(`SELECT ${selectFields.join(', ')} FROM ${db.name}.payments ORDER BY createdAt DESC`)
 }
 
 exports.createPayment = async (creatorId, rentalId, paymentObj) => {

@@ -15,7 +15,7 @@ class RentalsTab extends React.Component {
     const { upcomingRentals, pastRentals } = splitUpcomingAndPastRentals(allRentals)
 
     const upcomingRentalsToShow = upcomingRentals.filter(isNotDeleted)
-    const pastRentalsToShow = pastRentals.filter(isNotDeleted)
+    const pastRentalsToShow = pastRentals.filter(isNotDeleted).reverse()
 
     return (
       <React.Fragment>

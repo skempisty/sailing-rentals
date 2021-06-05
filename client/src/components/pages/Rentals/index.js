@@ -64,7 +64,7 @@ class Rentals extends React.Component {
     const { upcomingRentals, pastRentals } = splitUpcomingAndPastRentals(myRentals)
 
     const upcomingRentalsToShow = upcomingRentals.filter(isNotDeleted)
-    const pastRentalsToShow = pastRentals.filter(isNotDeleted)
+    const pastRentalsToShow = pastRentals.filter(isNotDeleted).reverse()
 
     return (
       <ContentWrapper>
