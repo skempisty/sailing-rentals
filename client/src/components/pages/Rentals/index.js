@@ -63,6 +63,9 @@ class Rentals extends React.Component {
 
     const { upcomingRentals, pastRentals } = splitUpcomingAndPastRentals(myRentals)
 
+    const upcomingRentalsToShow = upcomingRentals.filter(isNotDeleted)
+    const pastRentalsToShow = pastRentals.filter(isNotDeleted)
+
     return (
       <ContentWrapper>
         <AddRentalModal
@@ -91,25 +94,25 @@ class Rentals extends React.Component {
 
         {myRentals.filter(isNotDeleted).length > 0 ?
           <React.Fragment>
-            {upcomingRentals.length > 0 &&
+            {!!upcomingRentalsToShow.length &&
               <React.Fragment>
                 <h3 style={{ color: 'white' }}>Upcoming</h3>
 
                 <Card>
                   <Table responsive style={{ margin: '0' }}>
                     <thead>
-                    <tr>
-                      <th>Start</th>
-                      <th>End</th>
-                      <th>Boat</th>
-                      <th>Crew</th>
-                      <th>Rented At</th>
-                      <th/>
-                    </tr>
+                      <tr>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Boat</th>
+                        <th>Crew</th>
+                        <th>Rented At</th>
+                        <th/>
+                      </tr>
                     </thead>
 
                     <tbody>
-                      {upcomingRentals.filter(isNotDeleted).map((rental, index) =>
+                      {upcomingRentalsToShow.map((rental, index) =>
                         <RentalRow
                           options
                           key={`rental-row-${rental.id}-${index}`}
@@ -122,12 +125,12 @@ class Rentals extends React.Component {
               </React.Fragment>
             }
 
-            {pastRentals.filter(isNotDeleted).length > 0 &&
+            {!!pastRentalsToShow.length &&
               <React.Fragment>
                 <h3 style={{ color: 'white', marginTop: '0.5em' }}>Past</h3>
 
                 <Card>
-                  <Table style={{ margin: '0' }}>
+                  <Table responsive style={{ margin: '0' }}>
                     <thead>
                     <tr>
                       <th>Start</th>
@@ -139,7 +142,7 @@ class Rentals extends React.Component {
                     </thead>
 
                     <tbody>
-                      {pastRentals.filter(isNotDeleted).map((rental, index) =>
+                      {pastRentalsToShow.map((rental, index) =>
                         <RentalRow
                           key={`rental-row-${rental.id}-${index}`}
                           rental={rental}

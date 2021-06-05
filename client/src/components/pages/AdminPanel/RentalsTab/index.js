@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Card, Table } from 'react-bootstrap'
+import { Card, Table, Alert } from 'react-bootstrap'
 
 import RentalRow from '../../../shared/table-rows/RentalRow'
 
@@ -14,12 +14,15 @@ class RentalsTab extends React.Component {
 
     const { upcomingRentals, pastRentals } = splitUpcomingAndPastRentals(allRentals)
 
+    const upcomingRentalsToShow = upcomingRentals.filter(isNotDeleted)
+    const pastRentalsToShow = pastRentals.filter(isNotDeleted)
+
     return (
       <React.Fragment>
         <h3 style={{ color: 'white' }}>Upcoming</h3>
 
         <Card>
-          <Table responsive>
+          <Table responsive style={{ margin: '0' }}>
             <thead><tr>
               <th>Sailor</th>
               <th>Start</th>
@@ -30,49 +33,73 @@ class RentalsTab extends React.Component {
               <th/>
             </tr></thead>
 
-            <tbody>
-              {upcomingRentals.filter(isNotDeleted).map((rental, index) =>
-                <RentalRow
-                  key={`rental-row-${rental.id}-${index}`}
-                  rental={rental}
-                  options
-                  showSailor
-                />
-              )}
-            </tbody>
+            {!!upcomingRentalsToShow.length &&
+              <tbody>
+                {upcomingRentalsToShow.map((rental, index) =>
+                  <RentalRow
+                    key={`rental-row-${rental.id}-${index}`}
+                    rental={rental}
+                    options
+                    showSailor
+                  />
+                )}
+              </tbody>
+            }
           </Table>
+
+          {!upcomingRentalsToShow.length &&
+            <Alert
+              variant='dark'
+              style={{
+                margin: '0.5em',
+                textAlign: 'center'
+              }}
+            >
+              <b>No Upcoming Rentals</b>
+            </Alert>
+          }
         </Card>
 
-        {pastRentals.length > 0 &&
-          <React.Fragment>
-            <h3 style={{ color: 'white', marginTop: '0.5em' }}>Past</h3>
+        <h3 style={{ color: 'white', marginTop: '0.5em' }}>Past</h3>
 
-            <Card>
-              <Table responsive>
-                <thead>
-                  <tr>
-                    <th>Sailor</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th>Boat</th>
-                    <th>Crew</th>
-                    <th>Rented At</th>
-                  </tr>
-                </thead>
+        <Card>
+          <Table responsive style={{ margin: '0' }}>
+            <thead>
+              <tr>
+                <th>Sailor</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Boat</th>
+                <th>Crew</th>
+                <th>Rented At</th>
+              </tr>
+            </thead>
 
-                <tbody>
-                  {pastRentals.filter(isNotDeleted).map((rental, index) =>
-                    <RentalRow
-                      key={`rental-row-${rental.id}-${index}`}
-                      rental={rental}
-                      showSailor
-                    />
-                  )}
-                </tbody>
-              </Table>
-            </Card>
-          </React.Fragment>
-        }
+            {!!pastRentalsToShow.length &&
+              <tbody>
+                {pastRentalsToShow.map((rental, index) =>
+                  <RentalRow
+                    key={`rental-row-${rental.id}-${index}`}
+                    rental={rental}
+                    showSailor
+                  />
+                )}
+              </tbody>
+            }
+          </Table>
+
+          {!pastRentalsToShow.length &&
+            <Alert
+              variant='dark'
+              style={{
+                margin: '0.5em',
+                textAlign: 'center'
+              }}
+            >
+              <b>No Past Rentals</b>
+            </Alert>
+          }
+        </Card>
       </React.Fragment>
     )
   }
