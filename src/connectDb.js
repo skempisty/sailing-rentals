@@ -20,6 +20,8 @@ module.exports = {
       charset: MYSQL_CHARSET,
       timezone: MYSQL_TIMEZONE
     })
+
+    this.name = databaseName
   },
   async query(sql, args) {
     console.log(`Sending query: ${sql}, ${args}`)
