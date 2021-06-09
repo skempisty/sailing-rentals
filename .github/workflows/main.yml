@@ -13,10 +13,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14'
-      - name: Configure MYSQL server
-        uses: shogo82148/actions-setup-mysql@v1
-        with:
-          mysql-version: '8.0'
+      - name: Start MYSQL
+        run: sudo /etc/init.d/mysql start
       - name: Install packages
         run: npm install
       - name: Run tests
