@@ -14,7 +14,7 @@ module.exports = {
   },
   async useDb(dbName) {
     // TODO: remove
-    console.log('USE DB', dbName)
+    console.log('DURING USE DB', dbName)
 
     name = dbName
   },

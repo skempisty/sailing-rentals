@@ -14,7 +14,11 @@ beforeAll(async () => {
 
   await initializeDatabase(TEST_DB_NAME)
 
+  console.log('BEFORE USE DB')
+
   await db.useDb(TEST_DB_NAME)
+
+  console.log('AFTER USE DB')
 })
 
 afterAll(async () => {
