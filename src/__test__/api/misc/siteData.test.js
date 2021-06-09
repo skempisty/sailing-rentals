@@ -14,7 +14,7 @@ beforeAll(async () => {
 
   await initializeDatabase(TEST_DB_NAME)
 
-  db.useDb(TEST_DB_NAME)
+  await db.useDb(TEST_DB_NAME)
 })
 
 afterAll(async () => {

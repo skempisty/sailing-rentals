@@ -12,10 +12,10 @@ module.exports = {
   get name() {
     return name
   },
-  useDb(dbName) {
+  async useDb(dbName) {
     // TODO: remove
     console.log('USE DB', dbName)
-    
+
     name = dbName
   },
   async connect(databaseName = '') {
