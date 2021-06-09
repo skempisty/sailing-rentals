@@ -1,4 +1,5 @@
-const express = require ('express')
+require('dotenv').config()
+const express = require('express')
 
 const api = require('./apiDispatcher')
 const decodeJwt = require('./utils/decodeJwt')
@@ -20,7 +21,7 @@ const router = express.Router()
  * Health Check
  */
 router.get('/health', async (req, res) => {
-  res.send(`ok ${process.env.BASE_URL}`)
+  res.send('ok')
 })
 
 /**

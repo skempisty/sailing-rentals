@@ -4,11 +4,16 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "server",
   "scripts": {
-    "start": "node server",
+    "start": "node scripts/start_app.js",
     "build": "cd client && npm run build",
     "dev": "concurrently \"yarn run start-watch\" \"cd client && yarn start\"",
-    "start-watch": "nodemon server",
-    "postinstall": "cd client && npm install"
+    "start-watch": "nodemon scripts/start_app.js",
+    "postinstall": "cd client && npm install",
+    "test": "jest src/__test__"
+  },
+  "jest": {
+    "verbose": true,
+    "silent": true
   },
   "author": "Stephen Kempisty",
   "license": "ISC",
@@ -66,6 +71,8 @@
     "url": "git://github.com/skempisty/sailing-rentals.git"
   },
   "devDependencies": {
-    "nodemon": "^1.19.2"
+    "jest": "^26.6.0",
+    "nodemon": "^1.19.2",
+    "supertest": "^6.1.3"
   }
 }
