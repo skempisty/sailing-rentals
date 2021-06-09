@@ -12,6 +12,8 @@ const TEST_DB_NAME = 'sailing_site_data_test'
 beforeAll(async () => {
   await db.connect()
 
+  await db.query("SET sql_mode = '';")
+
   await initializeDatabase(TEST_DB_NAME)
 
   console.log('BEFORE USE DB')
