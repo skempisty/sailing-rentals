@@ -13,6 +13,9 @@ module.exports = {
     return name
   },
   useDb(dbName) {
+    // TODO: remove
+    console.log('USE DB', dbName)
+    
     name = dbName
   },
   async connect(databaseName = '') {
