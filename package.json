@@ -13,7 +13,10 @@
   },
   "jest": {
     "verbose": true,
-    "silent": true
+    "silent": true,
+    "setupFiles": [
+      "<rootDir>/jest/setEnvVars.js"
+    ]
   },
   "author": "Stephen Kempisty",
   "license": "ISC",
