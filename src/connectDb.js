@@ -6,9 +6,10 @@ const MYSQL_CHARSET = 'UTF8MB4_UNICODE_CI'
 const MYSQL_TIMEZONE = 'Z'
 
 let pool
+let name = process.env.DATABASE_NAME
 
 module.exports = {
-  name: process.env.DATABASE_NAME,
+  name,
   async connect(databaseName = '') {
     console.log('Connecting to the DB...')
 
@@ -20,6 +21,8 @@ module.exports = {
       charset: MYSQL_CHARSET,
       timezone: MYSQL_TIMEZONE
     })
+
+    name = databaseName
   },
   async query(sql, args) {
     console.log(`Sending query: ${sql}, ${args}`)
