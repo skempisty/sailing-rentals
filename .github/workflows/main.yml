@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: '14'
       - name: Start MYSQL
-        run: sudo /etc/init.d/mysql start
+        run: sudo /etc/init.d/mysql start -h 127.0.0.1
       - name: Install packages
         run: npm install
       - name: Run tests
