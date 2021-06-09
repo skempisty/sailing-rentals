@@ -1,30 +1,23 @@
-(async () => {
-  require('dotenv').config()
-  const db = require('../src/connectDb')
+const db = require('./connectDb')
 
-  const SAILING_DB_NAME = process.env.DATABASE_NAME || 'sailing'
-
-  await db.connect()
-
-  if (process.env.NODE_ENV !== 'production') {
-    await db.query(`CREATE DATABASE IF NOT EXISTS ${SAILING_DB_NAME}`)
-  }
+const initializeDatabase = async function(dbName) {
+  await db.query(`CREATE DATABASE IF NOT EXISTS ${dbName}`)
 
   /**
    * Drop Tables
    */
-  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.carousel_slides;`)
-  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.posts;`)
-  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.payments;`)
-  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.rentals;`)
-  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.site_settings;`)
-  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.boats;`)
-  await db.query(`DROP TABLE IF EXISTS ${SAILING_DB_NAME}.users;`)
+  await db.query(`DROP TABLE IF EXISTS ${dbName}.carousel_slides;`)
+  await db.query(`DROP TABLE IF EXISTS ${dbName}.posts;`)
+  await db.query(`DROP TABLE IF EXISTS ${dbName}.payments;`)
+  await db.query(`DROP TABLE IF EXISTS ${dbName}.rentals;`)
+  await db.query(`DROP TABLE IF EXISTS ${dbName}.settings;`)
+  await db.query(`DROP TABLE IF EXISTS ${dbName}.boats;`)
+  await db.query(`DROP TABLE IF EXISTS ${dbName}.users;`)
 
   /**
    * Create Tables
    */
-  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.users (` +
+  await db.query(`CREATE TABLE ${dbName}.users (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'googleId VARCHAR(255) NOT NULL,' +
     'imageUrl VARCHAR(255),' +
@@ -41,7 +34,7 @@
     ');'
   )
 
-  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.carousel_slides (` +
+  await db.query(`CREATE TABLE ${dbName}.carousel_slides (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'createdBy INT NOT NULL,' +
     'FOREIGN KEY (createdBy) REFERENCES users(id),' +
@@ -55,7 +48,7 @@
     ');'
   )
 
-  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.posts (` +
+  await db.query(`CREATE TABLE ${dbName}.posts (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'createdBy INT NOT NULL,' +
     'FOREIGN KEY (createdBy) REFERENCES users(id),' +
@@ -68,7 +61,7 @@
     ');'
   )
 
-  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.boats (` +
+  await db.query(`CREATE TABLE ${dbName}.boats (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'createdBy INT NOT NULL,' +
     'FOREIGN KEY (createdBy) REFERENCES users(id),' +
@@ -83,7 +76,7 @@
     ');'
   )
 
-  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.rentals (` +
+  await db.query(`CREATE TABLE ${dbName}.rentals (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'boatId INT NOT NULL,' +
     'rentedBy INT NOT NULL,' +
@@ -98,7 +91,7 @@
     ');'
   )
 
-  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.payments (` +
+  await db.query(`CREATE TABLE ${dbName}.payments (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
 
     'orderId VARCHAR(255) NOT NULL,' +
@@ -127,7 +120,7 @@
     ');'
   )
 
-  await db.query(`CREATE TABLE ${SAILING_DB_NAME}.settings (` +
+  await db.query(`CREATE TABLE ${dbName}.settings (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'name VARCHAR(255) NOT NULL,' +
     'value VARCHAR(255) NOT NULL,' +
@@ -139,21 +132,23 @@
   /**
    * Insert Dummy data
    */
-  await db.query(`INSERT INTO ${db.name}.users (id, googleId, firstName, lastName, email, phone, affiliation, imageUrl, isAdmin) VALUES
+  await db.query(`INSERT INTO ${dbName}.users (id, googleId, firstName, lastName, email, phone, affiliation, imageUrl, isAdmin) VALUES
     (null, '0', 'Frodo', 'Baggins', 'one.ring@gmail.com', '2406456689', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/frodo', '1'),
     (null, '1', 'Samwise', 'Gamgee', 'mrfrodo@gmail.com', '2406456690', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/samwise', '0')
   `)
 
-  await db.query(`INSERT INTO ${db.name}.boats (createdBy, name, model, imageUrl, description, perHourRentalCost) VALUES
+  await db.query(`INSERT INTO ${dbName}.boats (createdBy, name, model, imageUrl, description, perHourRentalCost) VALUES
     (LAST_INSERT_ID(), 'Cloud 9', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh what a faithful old barnacle!', 10),
     (LAST_INSERT_ID(), 'Iris', 'Cutter22', 'https://loremflickr.com/200/400/sailboat', 'Oh how it doth soar!', 10)
   `)
 
-  await db.query(`INSERT INTO ${db.name}.settings (name, value) VALUES
+  await db.query(`INSERT INTO ${dbName}.settings (name, value) VALUES
     ('min_rental_hours', '3'),
     ('max_rental_hours', '3'),
     ('earliest_rental_time', '0700'),
     ('latest_rental_time', '2000'),
     ('paypal_payee_client_id', '')
   `)
-})()
+}
+
+module.exports = initializeDatabase
