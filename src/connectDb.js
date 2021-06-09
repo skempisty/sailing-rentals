@@ -1,6 +1,6 @@
 require('dotenv').config()
 const util = require('util')
-const mysql = require('mysql2')
+const mysql = require('mysql')
 
 const MYSQL_CHARSET = 'UTF8MB4_UNICODE_CI'
 const MYSQL_TIMEZONE = 'Z'
