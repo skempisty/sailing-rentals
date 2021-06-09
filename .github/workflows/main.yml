@@ -6,6 +6,14 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+          - 3306
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -13,8 +21,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14'
-      - name: Start MYSQL
-        run: sudo /etc/init.d/mysql start -h 127.0.0.1
       - name: Install packages
         run: npm install
       - name: Run tests
