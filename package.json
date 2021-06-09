@@ -13,7 +13,7 @@
   },
   "jest": {
     "verbose": true,
-    "silent": true,
+    "silent": false,
     "setupFiles": [
       "<rootDir>/jest/setEnvVars.js"
     ]
