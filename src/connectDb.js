@@ -9,9 +9,20 @@ let pool
 let name = process.env.DATABASE_NAME
 
 module.exports = {
-  name,
+  get name() {
+    return name
+  },
+  useDb(dbName) {
+    name = dbName
+  },
   async connect(databaseName = '') {
-    console.log('Connecting to the DB...')
+    console.log('Connecting to MySQL...')
+
+    if (databaseName.length) {
+      console.log(`Database: ${databaseName}`)
+    } else {
+      console.log('No database selected')
+    }
 
     pool = await mysql.createPool({
       host: process.env.DATABASE_HOST,
@@ -21,8 +32,6 @@ module.exports = {
       charset: MYSQL_CHARSET,
       timezone: MYSQL_TIMEZONE
     })
-
-    name = databaseName
   },
   async query(sql, args) {
     console.log(`Sending query: ${sql}, ${args}`)

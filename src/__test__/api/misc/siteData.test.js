@@ -13,6 +13,8 @@ beforeAll(async () => {
   await db.connect()
 
   await initializeDatabase(TEST_DB_NAME)
+
+  db.useDb(TEST_DB_NAME)
 })
 
 afterAll(async () => {
