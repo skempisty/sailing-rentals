@@ -30,7 +30,7 @@ it('should get non-logged in data when not logged in', async () => {
   } = res.body
 
   expect(currentUser).toBe(null)
-  expect(myRentals.length).toBe(0)
+  expect(myRentals.length).toBe(1)
   expect(allRentals.length).toBe(0)
   expect(myPayments.length).toBe(0)
   expect(allPayments.length).toBe(0)
