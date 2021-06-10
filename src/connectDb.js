@@ -1,28 +1,16 @@
 require('dotenv').config()
 const util = require('util')
-const mysql = require('mysql2')
+const mysql = require('mysql')
 
 const MYSQL_CHARSET = 'UTF8MB4_UNICODE_CI'
 const MYSQL_TIMEZONE = 'Z'
 
 let pool
-let name = process.env.DATABASE_NAME
 
 module.exports = {
-  get name() {
-    return name
-  },
-  async useDb(dbName) {
-    name = dbName
-  },
+  name: process.env.DATABASE_NAME,
   async connect(databaseName = '') {
-    console.log('Connecting to MySQL...')
-
-    if (databaseName.length) {
-      console.log(`Database: ${databaseName}`)
-    } else {
-      console.log('No database selected')
-    }
+    console.log('Connecting to the DB...')
 
     pool = await mysql.createPool({
       host: process.env.DATABASE_HOST,

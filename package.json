@@ -13,10 +13,7 @@
   },
   "jest": {
     "verbose": true,
-    "silent": true,
-    "setupFiles": [
-      "<rootDir>/jest/setEnvVars.js"
-    ]
+    "silent": true
   },
   "author": "Stephen Kempisty",
   "license": "ISC",
@@ -46,7 +43,6 @@
     "moment": "^2.29.1",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
-    "mysql2": "^2.2.5",
     "nanoid": "^3.1.22",
     "prop-types": "^15.7.2",
     "qs": "^6.10.1",
