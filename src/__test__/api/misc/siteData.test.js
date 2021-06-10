@@ -1,32 +1,19 @@
 const supertest = require('supertest')
-const app = require('../../../../server') // Link to your server file
+const app = require('../../../../server')
 
 const request = supertest(app)
-const db = require('../../../../src/connectDb')
 
-const initializeDatabase = require('../../../../src/initializeDatabase')
-const removeDatabase = require('../../utils/removeDatabase')
+const setupTestDb = require('../../utils/setupTestDb')
+const teardownTestDb = require('../../utils/teardownTestDb')
 
 const TEST_DB_NAME = 'sailing_site_data_test'
 
 beforeAll(async () => {
-  await db.connect()
-
-  await db.query("SET sql_mode = '';")
-
-  await initializeDatabase(TEST_DB_NAME)
-
-  console.log('BEFORE USE DB')
-
-  await db.useDb(TEST_DB_NAME)
-
-  console.log('AFTER USE DB')
+  await setupTestDb(TEST_DB_NAME)
 })
 
 afterAll(async () => {
-  await removeDatabase(TEST_DB_NAME)
-
-  await db.disconnect()
+  await teardownTestDb(TEST_DB_NAME)
 })
 
 it('should get non-logged in data when not logged in', async () => {

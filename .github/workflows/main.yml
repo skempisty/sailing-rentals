@@ -1,12 +1,14 @@
-name: Test
+name: Tests
 
 on: [push]
 
 jobs:
   test:
-    name: Test
+    name: API End-to-End Tests
     runs-on: ubuntu-latest
     services:
+      # Only example that worked
+      # https://mauricius.dev/run-and-debug-github-actions-locally/
       mysql:
         image: mysql:8.0
         env:

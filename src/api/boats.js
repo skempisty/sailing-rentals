@@ -1,9 +1,6 @@
 const db = require('../connectDb')
 
 exports.getBoats = async () => {
-  // TODO: remove
-  console.log('DB NAME', db.name)
-
   return await db.query(`SELECT * FROM ${db.name}.boats`)
 }
 
