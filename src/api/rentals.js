@@ -118,7 +118,7 @@ async function validateEmptyTimeSlot(rentalObj) {
 
   const query = [
       `SELECT * FROM ${db.name}.rentals`,
-      `WHERE deletedAt = "0000-00-00 00:00:00"`, // only non-deleted rentals considered
+      `WHERE deletedAt = NULL`, // only non-deleted rentals considered
       `AND id != ?`, // it's ok to overwrite on top of the rental being updated
       `AND boatId = ?`, // same boat
       `AND (start >= ? AND start <= ? OR end >= ? AND end <= ?)` // start or finish is between the start/finish of another rental
@@ -141,7 +141,7 @@ async function validateNoTwoRentalsInOneDay(rentalObj, rentedBy) {
 
   const query = [
     `SELECT * FROM ${db.name}.rentals`,
-    `WHERE deletedAt = "0000-00-00 00:00:00"`, // only non-deleted rentals considered
+    `WHERE deletedAt = NULL`, // only non-deleted rentals considered
     `AND rentedBy = ?`, // same user
     `AND id != ?`, // it's ok to overwrite on top of the rental being updated
     `AND (start >= ? AND start <= ?)` // is on the same day

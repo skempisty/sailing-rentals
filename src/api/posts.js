@@ -1,7 +1,7 @@
 const db = require('../connectDb')
 
 exports.getPosts = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.posts WHERE deletedAt = "0000-00-00 00:00:00"`)
+  return await db.query(`SELECT * FROM ${db.name}.posts WHERE deletedAt = NULL`)
 }
 
 exports.createPost = async (createdBy, postObj) => {

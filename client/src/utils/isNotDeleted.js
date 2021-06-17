@@ -4,5 +4,6 @@
  * @returns {boolean} true if resource is not deleted
  */
 export default function isNotDeleted(resource) {
-  return resource.deletedAt === '0000-00-00 00:00:00'
+  // handles deletedAt being null
+  return !resource.deletedAt
 }
