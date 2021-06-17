@@ -1,7 +1,7 @@
 const db = require('../connectDb')
 
 exports.getCarouselSlides = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.carousel_slides WHERE deletedAt = "0000-00-00 00:00:00" ORDER BY slideOrder`)
+  return await db.query(`SELECT * FROM ${db.name}.carousel_slides WHERE deletedAt = NULL ORDER BY slideOrder`)
 }
 
 exports.createCarouselSlide = async (createdBy, imageUrl) => {

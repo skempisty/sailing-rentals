@@ -1,6 +1,13 @@
 const db = require('./connectDb')
 
 const initializeDatabase = async function(dbName) {
+  /*
+   * Must blank out sql_mode before initializing test DB. Without this we cannot insert 0 values for timestamps.
+   * Does not matter locally, but it does while using the docker MySQL in github actions.
+   * https://gokhan.ozar.net/blog/how-to-fix-incorrect-datetime-value-mysql-mariadb/
+   */
+  await db.query("SET sql_mode = 'NO_ENGINE_SUBSTITUTION';")
+
   await db.query(`CREATE DATABASE IF NOT EXISTS ${dbName}`)
 
   /**
@@ -24,8 +31,8 @@ const initializeDatabase = async function(dbName) {
     'isApproved BOOLEAN DEFAULT false,' +
     'isAdmin BOOLEAN DEFAULT false,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'deletedAt TIMESTAMP,' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
+    'deletedAt TIMESTAMP NULL DEFAULT NULL,' +
     'firstName VARCHAR(255),' +
     'lastName VARCHAR(255),' +
     'email VARCHAR(255),' +
@@ -43,8 +50,8 @@ const initializeDatabase = async function(dbName) {
     'imageUrl VARCHAR(255) NOT NULL,' +
     'slideOrder INT NOT NULL,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'deletedAt TIMESTAMP' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
+    'deletedAt TIMESTAMP NULL DEFAULT NULL' +
     ');'
   )
 
@@ -56,8 +63,8 @@ const initializeDatabase = async function(dbName) {
     'body TEXT,' +
     'imageUrl VARCHAR(255),' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'deletedAt TIMESTAMP' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
+    'deletedAt TIMESTAMP NULL DEFAULT NULL' +
     ');'
   )
 
@@ -71,8 +78,8 @@ const initializeDatabase = async function(dbName) {
     'perHourRentalCost DOUBLE(10,2) NOT NULL,' +
     'imageUrl VARCHAR(255),' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'deletedAt TIMESTAMP' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
+    'deletedAt TIMESTAMP NULL DEFAULT NULL' +
     ');'
   )
 
@@ -83,11 +90,11 @@ const initializeDatabase = async function(dbName) {
     'FOREIGN KEY (boatId) REFERENCES boats(id),' +
     'FOREIGN KEY (rentedBy) REFERENCES users(id),' +
     'crewCount INT,' +
-    'start TIMESTAMP NOT NULL,' +
-    'end TIMESTAMP NOT NULL,' +
+    'start TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
+    'end TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'deletedAt TIMESTAMP' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
+    'deletedAt TIMESTAMP NULL DEFAULT NULL' +
     ');'
   )
 
@@ -116,7 +123,7 @@ const initializeDatabase = async function(dbName) {
     'FOREIGN KEY (rentalId) REFERENCES rentals(id),' +
     'FOREIGN KEY (paidBy) REFERENCES users(id),' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' +
     ');'
   )
 
@@ -125,7 +132,7 @@ const initializeDatabase = async function(dbName) {
     'name VARCHAR(255) NOT NULL,' +
     'value VARCHAR(255) NOT NULL,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' +
     ');'
   )
 
