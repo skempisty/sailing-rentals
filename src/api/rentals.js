@@ -19,7 +19,7 @@ exports.getRental = async (id) => {
 }
 
 exports.createRental = async (rentedBy, newRentalObj) => {
-  const { boatId, start, end, crewCount } = newRentalObj
+  const { boatId, start, end, crewCount, type } = newRentalObj
 
   const validation = await validateRental(newRentalObj, rentedBy)
 
@@ -27,9 +27,9 @@ exports.createRental = async (rentedBy, newRentalObj) => {
     throw new ValidationError(validation.error.message)
   }
 
-  const newRental = [ rentedBy, boatId, start, end, crewCount ]
+  const newRental = [ rentedBy, boatId, start, end, crewCount, type ]
 
-  await db.query(`INSERT INTO ${db.name}.rentals (rentedBy, boatId, start, end, crewCount) VALUES (?, ?, ?, ?, ?)`, newRental)
+  await db.query(`INSERT INTO ${db.name}.rentals (rentedBy, boatId, start, end, crewCount, type) VALUES (?, ?, ?, ?, ?, ?)`, newRental)
 
   const [ rental ] = await db.query(`SELECT * FROM ${db.name}.rentals WHERE id = LAST_INSERT_ID()`)
 

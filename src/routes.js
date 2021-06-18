@@ -476,6 +476,21 @@ router.post('/rentals', async (req, res) => {
   }
 })
 
+router.post('/rentals/nopay', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+  const { rental: rentalPostBody } = req.body
+
+  const { isAdmin, userId: creatorId } = await decodeJwt(jwtToken);
+
+  if (!isAdmin) {
+    res.status(401).send('You don\'t have permission to book this boat block out')
+  }
+
+  const rental = await api.rentals.createRental(creatorId, rentalPostBody)
+
+  res.send({ rental })
+})
+
 router.put('/rentals/:id', async (req, res) => {
   const { id: rentalId } = req.params
   const { authorization: jwtToken } = req.headers

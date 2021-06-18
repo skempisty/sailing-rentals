@@ -278,6 +278,20 @@ class AddRentalModal extends React.Component {
     }
   }
 
+  get modalTitle() {
+    const { adminBlockout, editRental } = this.props
+
+    if (editRental) {
+      return 'Edit Rental'
+    } else if (adminBlockout === 'maintenance') {
+      return 'Add Maintenance Period'
+    } else if (adminBlockout === 'course') {
+      return 'Add Course Blockout'
+    } else {
+      return 'Create Rental'
+    }
+  }
+
   rentalStartsInPast(rentalSelection) {
     if (!rentalSelection.start) return true
 
@@ -381,7 +395,7 @@ class AddRentalModal extends React.Component {
   }
 
   titleAccessor(rental) {
-    const { currentUser, editRental, settings } = this.props
+    const { currentUser, editRental } = this.props
     const { view } = this.state
 
     const { name: boatName } = getBoatById(rental.boatId)
@@ -431,7 +445,7 @@ class AddRentalModal extends React.Component {
   }
 
   render() {
-    const { currentUser, show, boats, editRental, onRentalAdd, settings } = this.props
+    const { currentUser, show, boats, editRental, onRentalAdd, adminBlockout } = this.props
     const { selectedBoatId, newRentalPeriod, crewCount, view, date, paypalButtonReady } = this.state
 
     const that = this
@@ -439,7 +453,7 @@ class AddRentalModal extends React.Component {
     return (
       <Modal show={show} onHide={this.resetAndHide.bind(this)} size='lg'>
         <Modal.Header closeButton>
-          <Modal.Title>{editRental ? 'Edit Rental' : 'Create Rental'}</Modal.Title>
+          <Modal.Title>{this.modalTitle}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -539,7 +553,7 @@ class AddRentalModal extends React.Component {
           }}
         >
           {/* Blocking overlay */}
-          {(!this.validRental || !paypalButtonReady) && !editRental &&
+          {(!this.validRental || !paypalButtonReady) && !editRental && !adminBlockout &&
             <div
               style={{
                 pointerEvents: null,
@@ -552,7 +566,7 @@ class AddRentalModal extends React.Component {
             />
           }
 
-          {!editRental ?
+          {!editRental && !adminBlockout ?
             <PayPalButton
               amount={this.selectedBoatRentalPrice}
               shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
@@ -650,6 +664,7 @@ export default connect(
 AddRentalModal.propTypes = {
   editRental: PropTypes.object,
   show: PropTypes.bool,
+  adminBlockout: PropTypes.oneOf(['maintenance', 'course']),
   onHide: PropTypes.func,
   onRentalAdd: PropTypes.func
 }
