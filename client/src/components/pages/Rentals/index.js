@@ -12,6 +12,7 @@ import RentalRow from '../../shared/table-rows/RentalRow'
 import createRental from '../../../api/createRental'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
 import isNotDeleted from '../../../utils/isNotDeleted'
+import { rentalTypes } from '../../../utils/constants'
 
 import { addNewRental } from '../../../store/rentals'
 import { addNewPayment } from '../../../store/payments'
@@ -63,8 +64,8 @@ class Rentals extends React.Component {
 
     const { upcomingRentals, pastRentals } = splitUpcomingAndPastRentals(myRentals)
 
-    const upcomingRentalsToShow = upcomingRentals.filter(isNotDeleted)
-    const pastRentalsToShow = pastRentals.filter(isNotDeleted).reverse()
+    const upcomingRentalsToShow = upcomingRentals.filter(isNotDeleted).filter(rental => rental.type === rentalTypes.STANDARD)
+    const pastRentalsToShow = pastRentals.filter(isNotDeleted).filter(rental => rental.type === rentalTypes.STANDARD).reverse()
 
     return (
       <ContentWrapper>
@@ -92,7 +93,7 @@ class Rentals extends React.Component {
           </Button>
         </div>
 
-        {myRentals.filter(isNotDeleted).length > 0 ?
+        {myRentals.filter(isNotDeleted).filter(rental => rental.type === rentalTypes.STANDARD).length > 0 ?
           <React.Fragment>
             {!!upcomingRentalsToShow.length &&
               <React.Fragment>

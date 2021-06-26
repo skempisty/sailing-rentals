@@ -67,3 +67,15 @@ exports.deleteUser = async (id) => {
 
   return user
 }
+
+exports.getAnAdminUser = async () => {
+  const [ user ] = await db.query(`SELECT * FROM ${db.name}.users WHERE isAdmin = 1`)
+
+  return user
+}
+
+exports.getANonAdminUser = async () => {
+  const [ user ] = await db.query(`SELECT * FROM ${db.name}.users WHERE isAdmin = 0`)
+
+  return user
+}

@@ -7,12 +7,15 @@ import RentalRow from '../../../shared/table-rows/RentalRow'
 
 import splitUpcomingAndPastRentals from '../../../../utils/splitUpcomingAndPastRentals'
 import isNotDeleted from '../../../../utils/isNotDeleted'
+import { rentalTypes } from '../../../../utils/constants'
 
 class RentalsTab extends React.Component {
   render() {
     const { allRentals } = this.props
 
-    const { upcomingRentals, pastRentals } = splitUpcomingAndPastRentals(allRentals)
+    const standardRentals = allRentals.filter(rental => rental.type === rentalTypes.STANDARD)
+
+    const { upcomingRentals, pastRentals } = splitUpcomingAndPastRentals(standardRentals)
 
     const upcomingRentalsToShow = upcomingRentals.filter(isNotDeleted)
     const pastRentalsToShow = pastRentals.filter(isNotDeleted).reverse()

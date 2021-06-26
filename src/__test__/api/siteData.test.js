@@ -1,10 +1,10 @@
 const supertest = require('supertest')
-const app = require('../../../../server')
+const app = require('../../../server')
 
 const request = supertest(app)
 
-const setupTestDb = require('../../utils/setupTestDb')
-const teardownTestDb = require('../../utils/teardownTestDb')
+const setupTestDb = require('../utils/setupTestDb')
+const teardownTestDb = require('../utils/teardownTestDb')
 
 const TEST_DB_NAME = 'sailing_site_data_test'
 

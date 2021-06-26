@@ -90,8 +90,10 @@ const initializeDatabase = async function(dbName) {
     'FOREIGN KEY (boatId) REFERENCES boats(id),' +
     'FOREIGN KEY (rentedBy) REFERENCES users(id),' +
     'crewCount INT,' +
+    "type ENUM('standard', 'maintenance') NOT NULL DEFAULT 'standard'," +
     'start TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
     'end TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
+    'reason TEXT DEFAULT NULL,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
     'deletedAt TIMESTAMP NULL DEFAULT NULL' +
@@ -139,9 +141,10 @@ const initializeDatabase = async function(dbName) {
   /**
    * Insert Dummy data
    */
-  await db.query(`INSERT INTO ${dbName}.users (id, googleId, firstName, lastName, email, phone, affiliation, imageUrl, isAdmin) VALUES
-    (null, '0', 'Frodo', 'Baggins', 'one.ring@gmail.com', '2406456689', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/frodo', '1'),
-    (null, '1', 'Samwise', 'Gamgee', 'mrfrodo@gmail.com', '2406456690', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/samwise', '0')
+  await db.query(`INSERT INTO ${dbName}.users (id, googleId, firstName, lastName, email, phone, affiliation, imageUrl, isAdmin, isApproved) VALUES
+    (null, '0', 'Eru', 'Iluvatar', 'iam.god@gmail.com', '2406456689', 'The one God', 'https://loremflickr.com/50/50/god', '1', '1'),
+    (null, '1', 'Frodo', 'Baggins', 'one.ring@gmail.com', '2406456690', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/frodo', '0', '1'),
+    (null, '2', 'Gollum', 'Unwanted', 'my.precious@gmail.com', '2406456691', 'Lava dweller', 'https://loremflickr.com/50/50/gollum', '0', '0')
   `)
 
   await db.query(`INSERT INTO ${dbName}.boats (createdBy, name, model, imageUrl, description, perHourRentalCost) VALUES

@@ -10,6 +10,7 @@ import BoatsTab from './BoatsTab'
 import RentalsTab from './RentalsTab'
 import PaymentsTab from './PaymentsTab'
 import SiteSettingsTab from './SiteSettingsTab'
+import DryDockTab from './DryDockTab'
 
 const StyledWrapper = styled.div`
   h1 {
@@ -76,6 +77,10 @@ export default class AdminPanel extends React.Component {
 
             <Tab eventKey='site_settings' title='Site Settings'>
               <SiteSettingsTab/>
+            </Tab>
+
+            <Tab eventKey='dry_dock' title='Dry Dock'>
+              <DryDockTab/>
             </Tab>
           </Tabs>
         </StyledWrapper>

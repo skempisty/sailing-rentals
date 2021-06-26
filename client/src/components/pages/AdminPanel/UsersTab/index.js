@@ -13,7 +13,7 @@ class UsersTab extends React.Component {
 
     return (
       <Card style={{ maxWidth: '40em' }}>
-        <Table responsive>
+        <Table responsive style={{ margin: '0' }}>
           <thead><tr>
             <th>Sailor</th>
             <th>Email</th>
