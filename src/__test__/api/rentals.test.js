@@ -10,6 +10,8 @@ const teardownTestDb = require('../utils/teardownTestDb')
 const getAdminJwt = require('../utils/getAdminJwt')
 const getNonAdminJwt = require('../utils/getNonAdminJwt')
 
+const { rentalTypes } = require('../../utils/constants')
+
 const TEST_DB_NAME = 'sailing_rentals_test'
 
 let adminJwt = null
@@ -67,7 +69,7 @@ describe('POST /api/rentals', function() {
     const { rental, payment } = res.body
 
     expect(rental.id).toBeTruthy()
-    expect(rental.type).toBe('standard')
+    expect(rental.type).toBe(rentalTypes.STANDARD)
     expect(payment.id).toBeTruthy()
   })
 
@@ -90,7 +92,7 @@ describe('POST /api/rentals', function() {
     const { rental, payment } = res.body
 
     expect(rental.id).toBeTruthy()
-    expect(rental.type).toBe('standard')
+    expect(rental.type).toBe(rentalTypes.STANDARD)
     expect(payment.id).toBeTruthy()
   })
 
@@ -118,7 +120,7 @@ describe('POST /api/rentals/nopay', function() {
   it('should create a new maintenance period block as an admin', async () => {
     const newMaintenanceParams = {
       id: null,
-      type: 'maintenance',
+      type: rentalTypes.MAINTENANCE,
       start: '2031-06-26T14:00:00.322Z', // set way in the future to avoid "in the past" validation
       end: '2031-06-26T17:30:00.000Z',
       reason: MAINTENANCE_REASON,
@@ -134,14 +136,14 @@ describe('POST /api/rentals/nopay', function() {
     const { rental } = res.body
 
     expect(rental.id).toBeTruthy()
-    expect(rental.type).toBe('maintenance')
+    expect(rental.type).toBe(rentalTypes.MAINTENANCE)
     expect(rental.reason).toBe(MAINTENANCE_REASON)
   })
 
   it('should return 401 status if not admin', async () => {
     const newMaintenanceParams = {
       id: null,
-      type: 'maintenance',
+      type: rentalTypes.MAINTENANCE,
       start: '2032-06-26T14:00:00.322Z', // set way in the future to avoid "in the past" validation
       end: '2032-06-26T17:30:00.000Z',
       reason: MAINTENANCE_REASON,
