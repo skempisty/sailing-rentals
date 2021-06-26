@@ -4,6 +4,8 @@ const db = require('../connectDb')
 
 const ValidationError = require('../errors/ValidationError')
 
+const { rentalTypes } = require('../utils/constants')
+
 exports.getMyRentals = async (userId) => {
   return await db.query(`SELECT * FROM ${db.name}.rentals WHERE rentedBy = '${userId}' ORDER BY start`)
 }
@@ -19,7 +21,7 @@ exports.getRental = async (id) => {
 }
 
 exports.createRental = async (rentedBy, newRentalObj) => {
-  const { boatId, start, end, crewCount, type } = newRentalObj
+  const { boatId, start, end, crewCount, type, reason } = newRentalObj
 
   const validation = await validateRental(newRentalObj, rentedBy)
 
@@ -27,9 +29,9 @@ exports.createRental = async (rentedBy, newRentalObj) => {
     throw new ValidationError(validation.error.message)
   }
 
-  const newRental = [ rentedBy, boatId, start, end, crewCount, type ]
+  const newRental = [ rentedBy, boatId, start, end, crewCount, type || rentalTypes.STANDARD, reason ]
 
-  await db.query(`INSERT INTO ${db.name}.rentals (rentedBy, boatId, start, end, crewCount, type) VALUES (?, ?, ?, ?, ?, ?)`, newRental)
+  await db.query(`INSERT INTO ${db.name}.rentals (rentedBy, boatId, start, end, crewCount, type, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`, newRental)
 
   const [ rental ] = await db.query(`SELECT * FROM ${db.name}.rentals WHERE id = LAST_INSERT_ID()`)
 
@@ -37,7 +39,7 @@ exports.createRental = async (rentedBy, newRentalObj) => {
 }
 
 exports.updateRental = async (updateFields, rentalId, rentedBy) => {
-  const { crewCount, start, end  } = updateFields
+  const { crewCount, reason, start, end  } = updateFields
 
   const rentalObj = { id: rentalId, ...updateFields }
 
@@ -53,6 +55,11 @@ exports.updateRental = async (updateFields, rentalId, rentedBy) => {
   if (crewCount !== null) {
     updateSql.push('crewCount = ?')
     sqlArgs.push(crewCount)
+  }
+
+  if (reason !== null) {
+    updateSql.push('reason = ?')
+    sqlArgs.push(reason)
   }
 
   if (start !== null) {
@@ -91,19 +98,28 @@ exports.deleteRental = async (id) => {
  * @returns {Promise<{}>} validation object
  */
 async function validateRental(rentalObj, rentedBy) {
+  const { type: rentalType } = rentalObj
+
   const validation = {}
 
-  // TODO: maybe better to just pull all existing rentals and work with it so we only have to do one query
+  if (rentalType === rentalTypes.STANDARD) {
+    const noTwoRentalsInOneDayValidated = await validateNoTwoRentalsInOneDay(rentalObj, rentedBy)
+
+    if (!noTwoRentalsInOneDayValidated) {
+      validation.error = {
+        message: 'User has already rented a boat this day'
+      }
+
+      return validation
+    }
+  }
+
+  // validations for all rental types
   const emptyTimeSlotValidated = await validateEmptyTimeSlot(rentalObj)
-  const noTwoRentalsInOneDayValidated = await validateNoTwoRentalsInOneDay(rentalObj, rentedBy)
 
   if (!emptyTimeSlotValidated) {
     validation.error = {
       message: 'Provided time slot selection conflicts with an existing rental'
-    }
-  } else if (!noTwoRentalsInOneDayValidated) {
-    validation.error = {
-      message: 'User has already rented a boat this day'
     }
   }
 
