@@ -1,8 +1,12 @@
+import { rentalTypes } from '../utils/constants'
+
 export default class Rental {
   constructor({
     id,
+    type,
     start,
     end,
+    reason,
     rentedBy,
     boatId,
     crewCount,
@@ -10,8 +14,10 @@ export default class Rental {
     deletedAt
   }) {
     this.id = id
+    this.type = type || rentalTypes.STANDARD
     this.start = start
     this.end = end
+    this.reason = reason || ''
     this.rentedBy = rentedBy
     this.boatId = boatId
     this.crewCount = crewCount
