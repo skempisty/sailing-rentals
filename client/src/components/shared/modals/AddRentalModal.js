@@ -7,7 +7,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import { PayPalButton } from 'react-paypal-button-v2'
 
 import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap'
-import { FaExclamationTriangle, FaBan } from 'react-icons/fa'
+import { FaExclamationTriangle, FaBan, FaWrench } from 'react-icons/fa'
 import { RiSailboatFill } from 'react-icons/ri'
 
 import EventLabel from '../../pages/Rentals/EventLabel'
@@ -17,6 +17,7 @@ import Payment from '../../../models/Payment';
 import getBoatById from '../../../store/orm/boats/getBoatById'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
 import isNotDeleted from '../../../utils/isNotDeleted'
+import { rentalTypes } from '../../../utils/constants'
 import { paypalAccountClientId } from '../../../config'
 
 const localizer = momentLocalizer(moment)
@@ -42,6 +43,7 @@ class AddRentalModal extends React.Component {
     return {
       selectedBoatId: editRental ? editRental.boatId : '',
       crewCount: editRental ? editRental.crewCount : 0,
+      reason: editRental ? editRental.reason || '' : '',
       view: 'month',
       date: new Date(),
       newRentalPeriod: {},
@@ -99,8 +101,8 @@ class AddRentalModal extends React.Component {
   }
 
   handleSaveChanges() {
-    const { currentUser, onRentalEdit, editRental } = this.props
-    const { newRentalPeriod, crewCount } = this.state
+    const { currentUser, onRentalEdit, editRental, onHide } = this.props
+    const { newRentalPeriod, crewCount, reason } = this.state
 
     const newRentalPeriodNotChosen = Object.keys(newRentalPeriod).length < 1
 
@@ -108,6 +110,7 @@ class AddRentalModal extends React.Component {
       id: editRental.id,
       start: newRentalPeriodNotChosen ? editRental.start : newRentalPeriod.start,
       end: newRentalPeriodNotChosen ? editRental.end : newRentalPeriod.end,
+      reason,
       boatId: newRentalPeriodNotChosen ? editRental.boatId : newRentalPeriod.boatId,
       rentedBy: currentUser.id,
       crewCount,
@@ -115,6 +118,27 @@ class AddRentalModal extends React.Component {
     })
 
     onRentalEdit(editRental.id, updatedRental)
+
+    onHide()
+  }
+
+  handleAddMaintenance() {
+    const { currentUser, onRentalAdd } = this.props
+    const { newRentalPeriod, reason } = this.state
+
+    const newRental = new Rental({
+      id: null,
+      type: rentalTypes.MAINTENANCE,
+      start: newRentalPeriod.start,
+      end: newRentalPeriod.end,
+      reason,
+      boatId: newRentalPeriod.boatId,
+      crewCount: 1,
+      rentedBy: currentUser.id,
+      createdAt: null
+    })
+
+    onRentalAdd(newRental)
 
     this.resetAndHide()
   }
@@ -240,6 +264,18 @@ class AddRentalModal extends React.Component {
     return (boat.perHourRentalCost * hoursRented).toFixed(2)
   }
 
+  get isStandardType () {
+    const { rentalType } = this.props
+
+    return rentalType === rentalTypes.STANDARD
+  }
+
+  get isMaintenanceType () {
+    const { rentalType } = this.props
+
+    return rentalType === rentalTypes.MAINTENANCE
+  }
+
   get validRental() {
     const MINIMUM_CREW_COUNT = 1
 
@@ -257,14 +293,14 @@ class AddRentalModal extends React.Component {
         )
           ||
         (
+          (this.isMaintenanceType || !this.alreadyRentedThisDay(newRentalPeriod)) &&
+          (this.isMaintenanceType || this.selectedAllowedRentalInterval(newRentalPeriod)) &&
           !this.selectionOverlapsOtherRental(newRentalPeriod) &&
-          !this.alreadyRentedThisDay(newRentalPeriod) &&
-          this.selectedAllowedRentalInterval(newRentalPeriod) &&
           !this.rentalStartsInPast(newRentalPeriod)
         )
       ) &&
       !!selectedBoatId &&
-      crewCount >= MINIMUM_CREW_COUNT
+      (this.isMaintenanceType || crewCount >= MINIMUM_CREW_COUNT)
     )
   }
 
@@ -278,15 +314,21 @@ class AddRentalModal extends React.Component {
     }
   }
 
+  get calendarInstructions() {
+    if (this.isMaintenanceType) {
+      return 'Click and drag to select a time slot'
+    } else {
+      return `Click and drag to select a ${this.timeIntervalDisplay} hour time slot`
+    }
+  }
+
   get modalTitle() {
-    const { adminBlockout, editRental } = this.props
+    const { editRental } = this.props
 
     if (editRental) {
       return 'Edit Rental'
-    } else if (adminBlockout === 'maintenance') {
+    } else if (this.isMaintenanceType) {
       return 'Add Maintenance Period'
-    } else if (adminBlockout === 'course') {
-      return 'Add Course Blockout'
     } else {
       return 'Create Rental'
     }
@@ -314,7 +356,7 @@ class AddRentalModal extends React.Component {
       myRentals = myRentals.filter(rental => rental.id !== editRental.id)
     }
 
-    return myRentals.filter(isNotDeleted).some(rental => {
+    return myRentals.filter(isNotDeleted).filter(rental => rental.type === rentalTypes.STANDARD).some(rental => {
       return selectionDateString === JSON.stringify({
         day: moment(rental.end).date(),
         month: moment(rental.end).month(),
@@ -361,15 +403,15 @@ class AddRentalModal extends React.Component {
 
     if (editRental && editRental.id === rental.id) {
       backgroundColor = 'dodgerblue' // one of the user's other rental slots
-    } else if (rental.rentedBy === currentUser.id) {
+    } else if (rental.rentedBy === currentUser.id && rental.type === rentalTypes.STANDARD) {
       backgroundColor = 'purple' // one of the user's other rental slots
     } else if (rental.id) {
       backgroundColor = 'grey' // someone else's rental slot
     } else if (
-      this.alreadyRentedThisDay(rental) ||
       this.selectionOverlapsOtherRental(rental) ||
       this.rentalStartsInPast(rental) ||
-      !this.selectedAllowedRentalInterval(rental)
+      (this.isStandardType && this.alreadyRentedThisDay(rental)) ||
+      (this.isStandardType && !this.selectedAllowedRentalInterval(rental))
     ) {
       backgroundColor = 'red' // invalid time slot selection
     } else {
@@ -395,7 +437,7 @@ class AddRentalModal extends React.Component {
   }
 
   titleAccessor(rental) {
-    const { currentUser, editRental } = this.props
+    const { currentUser, editRental, rentalType } = this.props
     const { view } = this.state
 
     const { name: boatName } = getBoatById(rental.boatId)
@@ -403,29 +445,49 @@ class AddRentalModal extends React.Component {
     let label, icon
 
     if (editRental && editRental.id === rental.id) {
-      label = 'Saved time slot'
-      icon = <RiSailboatFill/>
-    } else if (rental.rentedBy === currentUser.id) {
+      switch(rental.type) {
+        case rentalTypes.MAINTENANCE:
+          label = `Saved ${boatName} maintenance`
+          icon = <FaWrench/>
+          break
+        default: // standard
+          label = 'Saved time slot'
+          icon = <RiSailboatFill/>
+      }
+    } else if (rental.type === rentalTypes.STANDARD && rental.rentedBy === currentUser.id) {
       label = 'My rental'
       icon = <RiSailboatFill/>
-    } else if (rental.id) {
-      label = 'Unavailable'
+    } else if (rental.id && rental.type === rentalTypes.MAINTENANCE) {
+      label = `${boatName} maintenance`
+      icon = <FaWrench/>
+    } else if (rental.id && rental.type === rentalTypes.STANDARD) {
+      label = 'Rented out'
       icon = <FaBan/>
-    } else if (this.alreadyRentedThisDay(rental)) {
+    } else if (this.isStandardType && this.alreadyRentedThisDay(rental)) {
       label = `You've rented the ${this.getBlockingBoatName(rental)} for today already`
       icon = <FaExclamationTriangle/>
     } else if (this.selectionOverlapsOtherRental(rental)) {
-      label = 'Boat already rented at this time'
+      label = 'Boat unavailable at this time'
       icon = <FaExclamationTriangle/>
     } else if (this.rentalStartsInPast(rental)) {
       label = 'Please select a time slot in the future'
       icon = <FaExclamationTriangle/>
-    } else if (!this.selectedAllowedRentalInterval(rental)) {
+    } else if (this.isStandardType && !this.selectedAllowedRentalInterval(rental)) {
       label = `Please select a ${this.timeIntervalDisplay} hour time slot`
       icon = <FaExclamationTriangle/>
     } else if (editRental && !rental.id) {
-      label = 'Updated time slot'
-      icon = <RiSailboatFill/>
+      switch(rentalType) {
+        case rentalTypes.MAINTENANCE:
+          label = `Updated ${boatName} maintenance`
+          icon = <FaWrench/>
+          break
+        default: // standard
+          label = 'Updated time slot'
+          icon = <RiSailboatFill/>
+      }
+    } else if (this.isMaintenanceType) {
+      label = `${boatName} maintenance`
+      icon = <FaWrench/>
     } else {
       label = `Sailing on the ${boatName}`
       icon = <RiSailboatFill/>
@@ -445,8 +507,23 @@ class AddRentalModal extends React.Component {
   }
 
   render() {
-    const { currentUser, show, boats, editRental, onRentalAdd, adminBlockout } = this.props
-    const { selectedBoatId, newRentalPeriod, crewCount, view, date, paypalButtonReady } = this.state
+    const {
+      currentUser,
+      show,
+      boats,
+      editRental,
+      onRentalAdd
+    } = this.props
+
+    const {
+      selectedBoatId,
+      newRentalPeriod,
+      crewCount,
+      reason,
+      view,
+      date,
+      paypalButtonReady
+    } = this.state
 
     const that = this
 
@@ -489,20 +566,34 @@ class AddRentalModal extends React.Component {
               </Form.Group>
 
               <Form.Group as={Col}>
-                {/* Crew Members Select */}
-                <Form.Label><b>Crew Members</b> <span style={{ color: 'red' }}>*</span></Form.Label>
-                <Form.Control
-                  type='number'
-                  value={crewCount}
-                  onChange={(e) => this.setState({ crewCount: e.target.value })}
-                />
+                {this.isMaintenanceType ?
+                  <React.Fragment>
+                    {/* Reason input */}
+                    <Form.Label><b>Reason</b></Form.Label>
+                    <Form.Control
+                      type='text'
+                      value={reason}
+                      onChange={(e) => this.setState({ reason: e.target.value })}
+                    />
+                  </React.Fragment>
+                  :
+                  <React.Fragment>
+                    {/* Crew Members input */}
+                    <Form.Label><b>Crew Members</b> <span style={{ color: 'red' }}>*</span></Form.Label>
+                    <Form.Control
+                      type='number'
+                      value={crewCount}
+                      onChange={(e) => this.setState({ crewCount: e.target.value })}
+                    />
+                  </React.Fragment>
+                }
               </Form.Group>
             </Form.Row>
           </Form>
         </Modal.Body>
 
         <div style={{ padding: '0 1em' }}>
-          <Form.Label><b>Click and drag to select a {this.timeIntervalDisplay} hour time slot</b> <span style={{ color: 'red' }}>*</span></Form.Label>
+          <Form.Label><b>{this.calendarInstructions}</b> <span style={{ color: 'red' }}>*</span></Form.Label>
         </div>
 
         <div style={{ position: 'relative' }}>
@@ -553,7 +644,7 @@ class AddRentalModal extends React.Component {
           }}
         >
           {/* Blocking overlay */}
-          {(!this.validRental || !paypalButtonReady) && !editRental && !adminBlockout &&
+          {(!this.validRental || !paypalButtonReady) && !editRental && this.isStandardType &&
             <div
               style={{
                 pointerEvents: null,
@@ -566,7 +657,7 @@ class AddRentalModal extends React.Component {
             />
           }
 
-          {!editRental && !adminBlockout ?
+          {!editRental && this.isStandardType ?
             <PayPalButton
               amount={this.selectedBoatRentalPrice}
               shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
@@ -632,13 +723,24 @@ class AddRentalModal extends React.Component {
                 Cancel
               </Button>
 
-              <Button
-                variant='primary'
-                disabled={!this.validRental}
-                onClick={this.handleSaveChanges.bind(this)}
-              >
-                Save Changes
-              </Button>
+              {editRental ?
+                <Button
+                  variant='primary'
+                  disabled={!this.validRental}
+                  onClick={this.handleSaveChanges.bind(this)}
+                >
+                  Save Changes
+                </Button>
+                :
+                <Button
+                  variant='primary'
+                  disabled={!this.validRental}
+                  onClick={this.handleAddMaintenance.bind(this)}
+                >
+                  Add Maintenance
+                </Button>
+              }
+
             </React.Fragment>
           }
         </Modal.Footer>
@@ -664,7 +766,11 @@ export default connect(
 AddRentalModal.propTypes = {
   editRental: PropTypes.object,
   show: PropTypes.bool,
-  adminBlockout: PropTypes.oneOf(['maintenance', 'course']),
+  rentalType: PropTypes.oneOf(Object.values(rentalTypes)),
   onHide: PropTypes.func,
   onRentalAdd: PropTypes.func
+}
+
+AddRentalModal.defaultProps = {
+  rentalType: rentalTypes.STANDARD
 }

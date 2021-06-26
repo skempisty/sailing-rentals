@@ -70,3 +70,9 @@ exports.deleteBoat = async (id) => {
 
   return boat
 }
+
+exports.getABoat = async () => {
+  const [ boat ] = await db.query(`SELECT * FROM ${db.name}.boats`)
+
+  return boat
+}

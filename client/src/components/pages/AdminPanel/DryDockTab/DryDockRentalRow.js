@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
-import { Button } from 'react-bootstrap'
 import { FaEdit, FaBan } from 'react-icons/fa'
 
 import AddRentalModal from '../../../shared/modals/AddRentalModal'
@@ -14,6 +13,7 @@ import SelectMenu from '../../../shared/SelectMenu'
 
 import updateRental from '../../../../api/updateRental'
 import deleteRental from '../../../../api/deleteRental'
+import { rentalTypes } from '../../../../utils/constants'
 
 import getUserById from '../../../../store/orm/users/getUserById'
 import getBoatById from '../../../../store/orm/boats/getBoatById'
@@ -62,6 +62,7 @@ class DryDockRentalRow extends React.Component {
         <AddRentalModal
           editRental={rental}
           show={showEditRentalModal}
+          rentalType={rentalTypes.MAINTENANCE}
           onRentalEdit={this.handleRentalEdit.bind(this)}
           onHide={() => this.setState({ showEditRentalModal: false })}
         />
@@ -81,6 +82,8 @@ class DryDockRentalRow extends React.Component {
           <td>{moment(rental.end).format('MM/DD/YY LT')}</td>
 
           <td>{getUserById(rental.rentedBy).email}</td>
+
+          <td>{moment(rental.createdAt).format('MM/DD/YY LT')}</td>
 
           <td>
             <SelectMenu variant='outline-dark'>

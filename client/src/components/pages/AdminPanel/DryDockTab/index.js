@@ -1,14 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import {Card, Table, Alert, Button} from 'react-bootstrap'
+import { Card, Table, Alert, Button } from 'react-bootstrap'
+import { FaPlusCircle } from 'react-icons/fa'
 
 import DryDockRentalRow from './DryDockRentalRow'
-
-import isNotDeleted from '../../../../utils/isNotDeleted'
-import {FaPlusCircle} from 'react-icons/fa'
 import AddRentalModal from '../../../shared/modals/AddRentalModal'
+
 import createRentalBlock from '../../../../api/createRentalBlock'
+import isNotDeleted from '../../../../utils/isNotDeleted'
+import { rentalTypes } from '../../../../utils/constants'
+
+import { addNewRental } from '../../../../store/rentals'
 
 class DryDockTab extends React.Component {
   constructor(props) {
@@ -20,7 +23,7 @@ class DryDockTab extends React.Component {
   get maintenanceEvents() {
     const { allRentals } = this.props
 
-    return allRentals.filter(rental => isNotDeleted(rental) && rental.type === 'maintenance')
+    return allRentals.filter(rental => isNotDeleted(rental) && rental.type === rentalTypes.MAINTENANCE)
   }
 
   /**
@@ -52,7 +55,7 @@ class DryDockTab extends React.Component {
           show={showAddRentalModal}
           onHide={() => this.setState({ showAddRentalModal: false })}
           onRentalAdd={this.handleAddMaintenance.bind(this)}
-          adminBlockout='maintenance'
+          rentalType={rentalTypes.MAINTENANCE}
         />
 
         <div
@@ -63,7 +66,7 @@ class DryDockTab extends React.Component {
             marginBottom: '1em'
           }}
         >
-          <h1 style={{ color: 'white', margin: '0' }}>Dry Dock</h1>
+          <h3 style={{ color: 'white', margin: '0' }}>Dry Dock</h3>
 
           <Button onClick={() => this.setState({ showAddRentalModal: true })}>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -80,6 +83,7 @@ class DryDockTab extends React.Component {
               <th>Start</th>
               <th>End</th>
               <th>Maintainer</th>
+              <th>Created</th>
               <th/>
             </tr></thead>
 
@@ -118,7 +122,11 @@ const mapStateToProps = (state) => {
   return { allRentals }
 }
 
+const mapDispatchToProps = {
+  addNewRental
+}
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(DryDockTab)

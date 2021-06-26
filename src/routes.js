@@ -435,17 +435,24 @@ router.post('/rentals', async (req, res) => {
     return
   }
 
-  const { userId: creatorId } = await decodeJwt(jwtToken);
+  const { userId: creatorId, isApproved } = await decodeJwt(jwtToken);
+
+  if (!isApproved) {
+    return res.status(401).send('User not approved to make rentals')
+    return
+  }
 
   try {
-    /*
-     * Verify order information
-     */
-    const order = await api.paypal.getPaypalOrderByOrderId(orderId)
+    if (process.env.PAYPAL_CLIENT_ID !== 'sb') {
+      /*
+       * Verify order information
+       */
+      const order = await api.paypal.getPaypalOrderByOrderId(orderId)
 
-    // Validate the transaction details are as expected
-    if (order.result.purchase_units[0].amount.value !== paymentPostBody.amount) {
-      return res.send(400)
+      // Validate the transaction details are as expected
+      if (order.result.purchase_units[0].amount.value !== paymentPostBody.amount) {
+        return res.send(400)
+      }
     }
 
     /*
@@ -456,10 +463,16 @@ router.post('/rentals', async (req, res) => {
     // payments belong to a rental - so rental must be created first
     const payment = await api.payments.createPayment(creatorId, rental.id, paymentPostBody)
 
-    /*
-     * Actually capture the payment using the auth Id
-     */
-    const captureId = await api.paypal.capturePaymentWithAuthorizationId(authorizationId)
+    let captureId
+
+    if (process.env.PAYPAL_CLIENT_ID !== 'sb') {
+      /*
+       * Actually capture the payment using the auth Id
+       */
+      captureId = await api.paypal.capturePaymentWithAuthorizationId(authorizationId)
+    } else {
+      captureId = '-1'
+    }
 
     await api.payments.updateCaptureId(payment.id, captureId)
 
