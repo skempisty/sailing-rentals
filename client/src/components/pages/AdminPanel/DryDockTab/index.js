@@ -8,6 +8,7 @@ import DryDockRentalRow from './DryDockRentalRow'
 import AddRentalModal from '../../../shared/modals/AddRentalModal'
 
 import createRentalBlock from '../../../../api/createRentalBlock'
+import splitUpcomingAndPastRentals from '../../../../utils/splitUpcomingAndPastRentals'
 import isNotDeleted from '../../../../utils/isNotDeleted'
 import { rentalTypes } from '../../../../utils/constants'
 
@@ -23,7 +24,11 @@ class DryDockTab extends React.Component {
   get maintenanceEvents() {
     const { allRentals } = this.props
 
-    return allRentals.filter(rental => isNotDeleted(rental) && rental.type === rentalTypes.MAINTENANCE)
+    const MaintenanceEventsToShow = allRentals.filter(rental => isNotDeleted(rental) && rental.type === rentalTypes.MAINTENANCE)
+
+    const { upcomingRentals } = splitUpcomingAndPastRentals(MaintenanceEventsToShow)
+
+    return upcomingRentals
   }
 
   /**
