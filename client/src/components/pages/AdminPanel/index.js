@@ -75,12 +75,12 @@ export default class AdminPanel extends React.Component {
               <PaymentsTab/>
             </Tab>
 
-            <Tab eventKey='site_settings' title='Site Settings'>
-              <SiteSettingsTab/>
-            </Tab>
-
             <Tab eventKey='dry_dock' title='Dry Dock'>
               <DryDockTab/>
+            </Tab>
+
+            <Tab eventKey='site_settings' title='Site Settings'>
+              <SiteSettingsTab/>
             </Tab>
           </Tabs>
         </StyledWrapper>

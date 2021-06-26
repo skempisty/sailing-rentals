@@ -16,33 +16,44 @@ export default class EventLabel extends React.Component {
     return view === 'month'
   }
 
+  get isDayView() {
+    const { view } = this.props
+
+    return view === 'day'
+  }
+
   render() {
-    const { label, svgComponent } = this.props
+    const { label, details, svgComponent } = this.props
 
     return (
-      <div
-        onClick={this.handleEventClick.bind(this)}
-        style={{
-          display: 'flex',
-          justifyContent: this.isMonthView ? 'center' : null,
-          alignItems: 'center',
-          height: this.isMonthView ? '24px' : null
-        }}
-      >
-        {svgComponent &&
-          <span
-            style={{
-              display: this.isMonthView ? 'flex' : null,
-              justifyContent: this.isMonthView ? 'center' : null,
-              alignItems: this.isMonthView ? 'center' : null
-            }}
-          >
-            {svgComponent}
-          </span>
-        }
+      <div onClick={this.handleEventClick.bind(this)}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: this.isMonthView ? 'center' : null,
+            alignItems: 'center',
+            height: this.isMonthView ? '24px' : null
+          }}
+        >
+          {svgComponent &&
+            <span
+              style={{
+                display: this.isMonthView ? 'flex' : null,
+                justifyContent: this.isMonthView ? 'center' : null,
+                alignItems: this.isMonthView ? 'center' : null
+              }}
+            >
+              {svgComponent}
+            </span>
+          }
 
-        {label &&
-          <b style={{ marginLeft: '0.5em' }}>{label}</b>
+          {label &&
+            <b style={{ marginLeft: '0.5em' }}>{label}</b>
+          }
+        </div>
+
+        {details && this.isDayView &&
+          <div style={{ marginTop: '0.5em' }}>{details}</div>
         }
       </div>
     )

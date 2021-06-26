@@ -438,16 +438,17 @@ class AddRentalModal extends React.Component {
 
   titleAccessor(rental) {
     const { currentUser, editRental, rentalType } = this.props
-    const { view } = this.state
+    const { view, reason } = this.state
 
     const { name: boatName } = getBoatById(rental.boatId)
 
-    let label, icon
+    let label, icon, details
 
     if (editRental && editRental.id === rental.id) {
       switch(rental.type) {
         case rentalTypes.MAINTENANCE:
           label = `Saved ${boatName} maintenance`
+          details = rental.reason
           icon = <FaWrench/>
           break
         default: // standard
@@ -459,6 +460,7 @@ class AddRentalModal extends React.Component {
       icon = <RiSailboatFill/>
     } else if (rental.id && rental.type === rentalTypes.MAINTENANCE) {
       label = `${boatName} maintenance`
+      details = rental.reason
       icon = <FaWrench/>
     } else if (rental.id && rental.type === rentalTypes.STANDARD) {
       label = 'Rented out'
@@ -479,6 +481,7 @@ class AddRentalModal extends React.Component {
       switch(rentalType) {
         case rentalTypes.MAINTENANCE:
           label = `Updated ${boatName} maintenance`
+          details = reason
           icon = <FaWrench/>
           break
         default: // standard
@@ -487,6 +490,7 @@ class AddRentalModal extends React.Component {
       }
     } else if (this.isMaintenanceType) {
       label = `${boatName} maintenance`
+      details = reason
       icon = <FaWrench/>
     } else {
       label = `Sailing on the ${boatName}`
@@ -498,6 +502,7 @@ class AddRentalModal extends React.Component {
     return (
       <EventLabel
         label={view === 'day' ? label : null}
+        details={details}
         rental={rental}
         svgComponent={showSvgComponent ? icon : null}
         view={view}
@@ -569,7 +574,7 @@ class AddRentalModal extends React.Component {
                 {this.isMaintenanceType ?
                   <React.Fragment>
                     {/* Reason input */}
-                    <Form.Label><b>Reason</b></Form.Label>
+                    <Form.Label><b>Reason</b> (optional)</Form.Label>
                     <Form.Control
                       type='text'
                       value={reason}
@@ -639,7 +644,7 @@ class AddRentalModal extends React.Component {
         <Modal.Footer
           style={{
             position: 'relative',
-            justifyContent: editRental ? 'flex-end' : 'center',
+            justifyContent: editRental || this.isMaintenanceType ? 'flex-end' : 'center',
             borderTop: 'none'
           }}
         >
