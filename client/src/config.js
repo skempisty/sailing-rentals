@@ -1,5 +1,5 @@
 module.exports = {
-  paypalAccountClientId: 'Ad4inGv0DAfjIetl4uUi-iDUisHF9DeZvparmzBQNDb0lrUt64SwdARYQ-7v1UJ_32vfAY7gRSvNX5IZ',
+  paypalAccountClientId: 'ASh5saCZllmjN_XurjPpktx9CLENu-Bh35CBda0mF1qF8xv5SCHzvHW8Fp5gUiol-bxBsA5gNsvkz7oN',
   breakpoints: {
     tablet: '512px',
     desktop: '1170px',
