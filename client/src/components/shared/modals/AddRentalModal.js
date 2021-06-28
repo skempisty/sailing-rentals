@@ -45,7 +45,7 @@ class AddRentalModal extends React.Component {
       crewCount: editRental ? editRental.crewCount : 0,
       reason: editRental ? editRental.reason || '' : '',
       view: 'month',
-      date: new Date(),
+      date: editRental ? new Date(editRental.start) : new Date(),
       newRentalPeriod: {},
       paypalButtonReady: false
     }
