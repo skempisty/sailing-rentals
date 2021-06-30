@@ -16,6 +16,7 @@ import { rentalTypes } from '../../../utils/constants'
 
 import { addNewRental } from '../../../store/rentals'
 import { addNewPayment } from '../../../store/payments'
+import { setSiteState } from '../../../store/site'
 
 class Rentals extends React.Component {
   constructor(props) {
@@ -43,7 +44,9 @@ class Rentals extends React.Component {
    * @param {Payment} paymentParams object that comes from addRentalModal's Paypal integration. Not a full Payment object
    */
   async handleAddRental(rentalParams, paymentParams) {
-    const { addNewRental, addNewPayment } = this.props
+    const { addNewRental, addNewPayment, setSiteState } = this.props
+
+    setSiteState({ key: 'loadingMsg', value: 'Processing Rental' })
 
     try {
       // TODO: combine api and redux functions into a async thunk
@@ -56,6 +59,8 @@ class Rentals extends React.Component {
     } catch (error) {
       alert(`Error adding your rental: ${error.message}`)
     }
+
+    setSiteState({ key: 'loadingMsg', value: null })
   }
 
   render() {
@@ -184,7 +189,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   addNewRental,
-  addNewPayment
+  addNewPayment,
+  setSiteState
 }
 
 export default connect(

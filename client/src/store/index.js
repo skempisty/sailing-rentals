@@ -9,8 +9,10 @@ import posts from './posts'
 import carouselSlides from './carouselSlides'
 import payments from './payments'
 import settings from './settings'
+import site from './site'
 
 const reducer = combineReducers({
+  site,
   session,
   users,
   boats,
