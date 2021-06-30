@@ -1,7 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import { Spinner} from 'react-bootstrap'
+import { Spinner } from 'react-bootstrap'
 
 import logo from '../images/logo.png'
 
@@ -14,11 +15,8 @@ const LoadingMsgWrapper = styled.div`
   }
   
   @keyframes animationFrames {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
+    0% { opacity: 0; }
+    100% { opacity: 1; }
   }
 `
 
@@ -32,14 +30,17 @@ export default class LoadingPageMessage extends React.Component {
   }
 
   componentDidMount() {
+    const { appearDelay } = this.props
+
     setTimeout(() => {
       if (this.stillLoading.current) {
         this.setState({ showLoadingMsg: true })
       }
-    }, 2000)
+    }, appearDelay)
   }
 
   render() {
+    const { loadingMsg } = this.props
     const { showLoadingMsg } = this.state
 
     return (
@@ -68,7 +69,7 @@ export default class LoadingPageMessage extends React.Component {
               >
                 <img src={logo} style={{width: '12em'}} alt=''/>
 
-                <h3>Loading</h3>
+                <h3>{loadingMsg}</h3>
 
                 <Spinner
                   animation='border'
@@ -84,4 +85,14 @@ export default class LoadingPageMessage extends React.Component {
       </div>
     )
   }
+}
+
+LoadingPageMessage.propTypes = {
+  appearDelay: PropTypes.number,
+  loadingMsg: PropTypes.string
+}
+
+LoadingPageMessage.defaultProps = {
+  appearDelay: 2000,
+  loadingMsg: 'Loading'
 }

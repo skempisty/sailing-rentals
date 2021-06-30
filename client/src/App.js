@@ -15,6 +15,7 @@ import Rentals from './components/pages/Rentals'
 import setLoginJwt from './utils/setLoginJwt'
 import getSiteData from './api/getSiteData'
 
+import { setSiteState } from './store/site'
 import { toggleLoading, initSession } from './store/session'
 import { initUsers } from './store/users'
 import { initBoats } from './store/boats'
@@ -23,6 +24,8 @@ import { initPayments } from './store/payments'
 import { initPosts } from './store/posts'
 import { initCarousel } from './store/carouselSlides'
 import { initSettings } from './store/settings'
+import logo from "./images/logo.png";
+import {Spinner} from "react-bootstrap";
 
 /**
  * Root App component. Initialize app data here and add to Redux.
@@ -102,24 +105,44 @@ class App extends React.Component {
   }
 
   render() {
-    const { loading, currentUser } = this.props
+    const { loading, currentUser, loadingMsg } = this.props
 
     return (
       <React.Fragment>
         {!loading ?
-          <Router>
-            <TopNavBar/>
+          <React.Fragment>
+            {loadingMsg &&
+              <div
+                style={{
+                  display: 'flex',
+                  position: 'absolute',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  pointerEvents: null,
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  zIndex: '225' // need 225 to fully overlay Paypal buttons
+                }}
+              >
+                <LoadingPageMessage loadingMsg={loadingMsg} appearDelay={500}/>
+              </div>
+            }
 
-            <Switch>
-              <ConditionalRoute renderCondition={!!currentUser.id} exact path='/profile' component={Profile} />
-              <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isApproved === 1} exact path='/rentals' component={Rentals} />
-              <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isAdmin === 1} exact path='/admin-panel' component={AdminPanel} />
-              <Route exact path='/posts/:id' component={ShowPost} />
-              <Route component={HomePage} />
-            </Switch>
+            <Router>
+              <TopNavBar/>
 
-            <Footer/>
-          </Router>
+              <Switch>
+                <ConditionalRoute renderCondition={!!currentUser.id} exact path='/profile' component={Profile} />
+                <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isApproved === 1} exact path='/rentals' component={Rentals} />
+                <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isAdmin === 1} exact path='/admin-panel' component={AdminPanel} />
+                <Route exact path='/posts/:id' component={ShowPost} />
+                <Route component={HomePage} />
+              </Switch>
+
+              <Footer/>
+            </Router>
+          </React.Fragment>
           :
           <LoadingPageMessage/>
         }
@@ -130,11 +153,13 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   const { loading, currentUser } = state.session
+  const { loadingMsg } = state.site
 
-  return { loading, currentUser }
+  return { loading, currentUser, loadingMsg }
 }
 
 const mapDispatchToProps = {
+  setSiteState,
   toggleLoading,
   initSession,
   initUsers,

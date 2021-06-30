@@ -13,12 +13,13 @@ import { RiSailboatFill } from 'react-icons/ri'
 import EventLabel from '../../pages/Rentals/EventLabel'
 
 import Rental from '../../../models/Rental'
-import Payment from '../../../models/Payment';
+import Payment from '../../../models/Payment'
 import getBoatById from '../../../store/orm/boats/getBoatById'
 import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
 import isNotDeleted from '../../../utils/isNotDeleted'
+import usingTouchDevice from '../../../utils/usingTouchDevice'
 import { rentalTypes } from '../../../utils/constants'
-import { paypalAccountClientId } from '../../../config'
+import { paypalAccountClientId, breakpoints } from '../../../config'
 
 const localizer = momentLocalizer(moment)
 
@@ -28,11 +29,32 @@ const StyledCalendar = styled.div`
   .rbc-time-slot { min-height: 3em; }
   
   .rbc-event-content { overflow: visible }
+  
+  .rbc-toolbar {
+    span.rbc-btn-group,
+    span.rbc-toolbar-label {
+      margin-bottom: 0.5em;
+    }
+  }
+`
+
+const StyledInstructions = styled.div`
+  div.calendar-instructions {
+    text-align: center;
+  }
+  
+  @media only screen and (min-width: ${breakpoints.headerExpand}) {
+    div.calendar-instructions {
+      text-align: left;      
+    }
+  }
 `
 
 class AddRentalModal extends React.Component {
   constructor(props) {
     super(props)
+
+    this.usingTouchDevice = usingTouchDevice()
 
     this.state = this.initialState
   }
@@ -44,7 +66,7 @@ class AddRentalModal extends React.Component {
       selectedBoatId: editRental ? editRental.boatId : '',
       crewCount: editRental ? editRental.crewCount : 0,
       reason: editRental ? editRental.reason || '' : '',
-      view: 'month',
+      view: this.calendarViewTypes.MONTH,
       date: editRental ? new Date(editRental.start) : new Date(),
       newRentalPeriod: {},
       paypalButtonReady: false
@@ -63,7 +85,7 @@ class AddRentalModal extends React.Component {
     if (isSingleDateClick) {
       // drill down to clicked day on calendar
       this.setState({
-        view: 'day',
+        view: this.calendarViewTypes.DAY,
         date: new Date(clickMoment.year(), clickMoment.month(), clickMoment.date())
       })
     } else if (isDayRangeSelect) {
@@ -83,7 +105,7 @@ class AddRentalModal extends React.Component {
     const eventMoment = moment(start)
 
     this.setState({
-      view: 'day',
+      view: this.calendarViewTypes.DAY,
       date: new Date(eventMoment.year(), eventMoment.month(), eventMoment.date())
     })
   }
@@ -157,6 +179,13 @@ class AddRentalModal extends React.Component {
     maxTime.setHours(20,0,0)
 
     return maxTime
+  }
+
+  get calendarViewTypes() {
+    return {
+      MONTH: 'month',
+      DAY: 'day'
+    }
   }
 
   selectedAllowedRentalInterval(rental) {
@@ -315,10 +344,17 @@ class AddRentalModal extends React.Component {
   }
 
   get calendarInstructions() {
-    if (this.isMaintenanceType) {
-      return 'Click and drag to select a time slot'
+    const { view } = this.state
+    const { usingTouchDevice } = this
+
+    const actionVerb = usingTouchDevice ? 'Press/hold' : 'Click'
+
+    if (view === this.calendarViewTypes.MONTH) {
+      return `${actionVerb} to choose a day`
+    } else if (this.isMaintenanceType) {
+      return `${actionVerb} and drag to select a time slot`
     } else {
-      return `Click and drag to select a ${this.timeIntervalDisplay} hour time slot`
+      return `${actionVerb} and drag to select a ${this.timeIntervalDisplay} hour time slot`
     }
   }
 
@@ -427,9 +463,9 @@ class AddRentalModal extends React.Component {
     const left = `${(rental.start - minTimeDate) / (this.maxTime - this.minTime) * 100}%`
 
     const style = {
-      position: view === 'month' ? 'relative' : null,
-      left: view === 'month' ? left : null,
-      width: view === 'month' ? width : null,
+      position: view === this.calendarViewTypes.MONTH ? 'relative' : null,
+      left: view === this.calendarViewTypes.MONTH ? left : null,
+      width: view === this.calendarViewTypes.MONTH ? width : null,
       backgroundColor
     }
 
@@ -497,11 +533,11 @@ class AddRentalModal extends React.Component {
       icon = <RiSailboatFill/>
     }
 
-    const showSvgComponent = view === 'day' || this.getRentalDurationHours(rental) >= 3 // Can't see full svg unless duration is at least 3 hours
+    const showSvgComponent = view === this.calendarViewTypes.DAY || this.getRentalDurationHours(rental) >= 3 // Can't see full svg unless duration is at least 3 hours
 
     return (
       <EventLabel
-        label={view === 'day' ? label : null}
+        label={view === this.calendarViewTypes.DAY ? label : null}
         details={details}
         rental={rental}
         svgComponent={showSvgComponent ? icon : null}
@@ -597,9 +633,11 @@ class AddRentalModal extends React.Component {
           </Form>
         </Modal.Body>
 
-        <div style={{ padding: '0 1em' }}>
-          <Form.Label><b>{this.calendarInstructions}</b> <span style={{ color: 'red' }}>*</span></Form.Label>
-        </div>
+        <StyledInstructions>
+          <div className='calendar-instructions' style={{ padding: '0.5em 1em 0 1em', background: !selectedBoatId ? 'rgba(0,0,0,0.5)' : '' }}>
+            <Form.Label><b>{this.calendarInstructions}</b> <span style={{ color: 'red' }}>*</span></Form.Label>
+          </div>
+        </StyledInstructions>
 
         <div style={{ position: 'relative' }}>
           {/* Blocking overlay */}
@@ -624,12 +662,13 @@ class AddRentalModal extends React.Component {
             <Calendar
               localizer={localizer}
               style={{ height: '30em', marginTop: '1em' }}
-              views={['month', 'day']}
+              views={Object.values(this.calendarViewTypes)}
               timeslots={1}
               selectable
               view={view}
               date={date}
               events={this.rentals}
+              longPressThreshold={100}
               min={this.minTime} // set earliest time visible on calendar
               max={this.maxTime} // set latest time visible on calendar
               eventPropGetter={(e) => this.eventStyleGetter(e)}
