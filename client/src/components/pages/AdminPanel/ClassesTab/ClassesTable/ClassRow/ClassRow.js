@@ -1,19 +1,20 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import moment from 'moment'
 
 import { FaBan, FaEdit } from 'react-icons/fa'
 
-import AddClassModal from '../AddClassModal'
-import DeleteClassModal from './DeleteClassModal'
+import AddClassModal from '../../AddClassModal'
+// import DeleteClassModal from './DeleteClassModal'
 
-import getUserById from '../../../../../store/orm/users/getUserById'
+import SelectMenu from '../../../../../shared/SelectMenu'
+import SelectMenuItem from '../../../../../shared/SelectMenuItem'
 
-import User from '../../../../../domains/User'
-import Klass from '../../../../../domains/Klass'
+import User from '../../../../../../domains/User'
+import Klass from '../../../../../../domains/Klass'
+import getUserById from '../../../../../../store/orm/users/getUserById'
 
-import SelectMenu from '../../../../shared/SelectMenu'
-import SelectMenuItem from '../../../../shared/SelectMenuItem'
-import {useClasses} from "../../../../../store/classes";
+import { useClasses } from '../../../../../../store/classes'
 
 const ClassRow = ({ klass, hasActionColumn }) => {
   const [showEditClassModal, setShowEditClassModal] = useState(false)
@@ -75,6 +76,11 @@ const ClassRow = ({ klass, hasActionColumn }) => {
       </tr>
     </React.Fragment>
   )
+}
+
+ClassRow.propTypes = {
+  klass: PropTypes.object,
+  hasActionColumn: PropTypes.bool
 }
 
 export default ClassRow
