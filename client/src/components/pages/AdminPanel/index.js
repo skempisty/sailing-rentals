@@ -8,6 +8,7 @@ import CarouselTab from './CarouselTab'
 import PostsTab from './PostsTab'
 import BoatsTab from './BoatsTab'
 import RentalsTab from './RentalsTab'
+import ClassesTab from './ClassesTab'
 import PaymentsTab from './PaymentsTab'
 import SiteSettingsTab from './SiteSettingsTab'
 import DryDockTab from './DryDockTab'
@@ -43,13 +44,15 @@ export default class AdminPanel extends React.Component {
 
           <Tabs
             activeKey={activeKey}
-            onSelect={(tab) => this.setState({activeKey: tab})}
+            onSelect={(tab) => this.setState({ activeKey: tab })}
             variant='pills'
             style={{
               marginBottom: '1em',
               paddingBottom: '1em',
               borderBottom: '1px solid white'
             }}
+            mountOnEnter
+            unmountOnExit
           >
             <Tab eventKey='users' title='Users'>
               <UsersTab/>
@@ -69,6 +72,10 @@ export default class AdminPanel extends React.Component {
 
             <Tab eventKey='rentals' title='Rentals'>
               <RentalsTab/>
+            </Tab>
+
+            <Tab eventKey='classes' title='Classes'>
+              <ClassesTab/>
             </Tab>
 
             <Tab eventKey='payments' title='Payments'>
