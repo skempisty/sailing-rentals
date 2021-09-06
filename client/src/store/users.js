@@ -1,4 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+
+import { useAction } from '../utils/useAction'
+
+import getUsersThunk from './thunks/getUsersThunk'
 
 const userSlice = createSlice({
   name: 'users',
@@ -28,6 +33,11 @@ const userSlice = createSlice({
 
       state.users[userIndex] = updatedUser
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getUsersThunk.fulfilled, (state, action) => {
+      state.users = action.payload
+    })
   }
 })
 
@@ -36,5 +46,14 @@ export const {
   updateUserById,
   editUser
 } = userSlice.actions
+
+export const useUsers = () => {
+  const users = useSelector(state => state.users)
+
+  return {
+    ...users,
+    getUsersThunk: useAction(getUsersThunk)
+  }
+}
 
 export default userSlice.reducer
