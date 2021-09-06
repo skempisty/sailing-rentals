@@ -24,8 +24,8 @@ exports.createUser = async (googleUser) => {
   return user
 }
 
-exports.updateUser = async (id, updateFields, isAdmin = false) => {
-  const { phone, affiliation, isApproved } = updateFields
+exports.updateUser = async (id, updateFields, requesterIsAdmin = false) => {
+  const { phone, affiliation, isApproved, isInstructor, isAdmin } = updateFields
 
   const updateSql = []
   const sqlArgs = []
@@ -40,9 +40,19 @@ exports.updateUser = async (id, updateFields, isAdmin = false) => {
     sqlArgs.push(affiliation)
   }
 
-  if (isAdmin && isApproved !== null) {
+  if (requesterIsAdmin && isApproved !== null) {
     updateSql.push('isApproved = ?')
     sqlArgs.push(isApproved)
+  }
+
+  if (requesterIsAdmin && isInstructor !== null) {
+    updateSql.push('isInstructor = ?')
+    sqlArgs.push(isInstructor)
+  }
+
+  if (requesterIsAdmin && isAdmin !== null) {
+    updateSql.push('isAdmin = ?')
+    sqlArgs.push(isAdmin)
   }
 
   sqlArgs.push(id)
@@ -54,10 +64,6 @@ exports.updateUser = async (id, updateFields, isAdmin = false) => {
 
 exports.getUserList = async () => {
   return await db.query(`SELECT * FROM ${db.name}.users ORDER BY users.isAdmin DESC`)
-}
-
-exports.approveUser = async (id) => {
-  return await db.query(`UPDATE ${db.name}.users SET isApproved = true WHERE id = ?`, [id])
 }
 
 exports.deleteUser = async (id) => {
