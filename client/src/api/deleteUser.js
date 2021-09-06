@@ -1,5 +1,10 @@
 import Constants from '../utils/constants'
 
+/**
+ * @deprecated
+ * @param id
+ * @returns {Promise<any>}
+ */
 export default async function deleteUser(id) {
   const url = `${Constants.baseUrl}/api/users/${id}`
 

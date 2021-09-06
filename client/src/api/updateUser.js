@@ -1,5 +1,11 @@
 import Constants from '../utils/constants';
 
+/**
+ * @deprecated
+ * @param id
+ * @param updateFields
+ * @returns {Promise<any>}
+ */
 export default async function updateUser(id, updateFields) {
   const url = `${Constants.baseUrl}/api/users/${id}`;
 
