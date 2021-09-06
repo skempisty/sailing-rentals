@@ -6,7 +6,7 @@ import Switch from 'react-switch'
 import { FaInfoCircle } from 'react-icons/fa'
 import { Button, Col, Form, InputGroup, Modal } from 'react-bootstrap'
 
-import buildFullName from '../../../utils/buildUserFullName'
+import User from '../../../domains/User'
 import updateUser from '../../../api/updateUser'
 
 import { updateUserById } from '../../../store/users'
@@ -18,13 +18,17 @@ class UserInfoModal extends React.Component {
     const {
       phone,
       affiliation,
-      isApproved
+      isApproved,
+      isInstructor,
+      isAdmin
     } = props.user
 
     const incomingUserObj = {
       phone: phone || '',
       affiliation: affiliation || '',
-      isApproved: isApproved === 1
+      isApproved: isApproved === 1,
+      isInstructor: isInstructor === 1,
+      isAdmin: isAdmin === 1
     }
 
     this.savedProfileFields = incomingUserObj
@@ -32,28 +36,30 @@ class UserInfoModal extends React.Component {
   }
 
   get savedProfileFields() {
-    const { phone, affiliation, isApproved } = this
+    const { phone, affiliation, isApproved, isInstructor, isAdmin } = this
 
-    return { phone, affiliation, isApproved }
+    return { phone, affiliation, isApproved, isInstructor, isAdmin }
   }
 
-  set savedProfileFields({ phone, affiliation, isApproved }) {
+  set savedProfileFields({ phone, affiliation, isApproved, isInstructor, isAdmin }) {
     this.phone = phone
     this.affiliation = affiliation
     this.isApproved = isApproved
+    this.isInstructor = isInstructor
+    this.isAdmin = isAdmin
   }
 
   get profileNotEdited() {
-    const { phone, affiliation, isApproved } = this.state
+    const { phone, affiliation, isApproved, isInstructor, isAdmin } = this.state
 
-    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, affiliation, isApproved })
+    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, affiliation, isApproved, isInstructor, isAdmin })
   }
 
   async handleSaveEditsClick() {
     const { user, onHide, updateUserById } = this.props
-    const { phone, affiliation, isApproved } = this.state
+    const { phone, affiliation, isApproved, isInstructor, isAdmin } = this.state
 
-    const updatedFields = { phone, affiliation, isApproved }
+    const updatedFields = { phone, affiliation, isApproved, isInstructor, isAdmin }
 
     try {
       // update DB
@@ -71,7 +77,7 @@ class UserInfoModal extends React.Component {
 
   render() {
     const { user, show, onHide } = this.props
-    const { phone, affiliation, isApproved } = this.state
+    const { phone, affiliation, isApproved, isInstructor, isAdmin } = this.state
 
     return (
       <Modal show={show} onHide={onHide}>
@@ -88,7 +94,7 @@ class UserInfoModal extends React.Component {
               {/* Name */}
               <Form.Group as={Col}>
                 <Form.Label><b>Name</b></Form.Label>
-                <Form.Control value={buildFullName(user.firstName, user.lastName)} readOnly/>
+                <Form.Control value={User.buildUserFullName(user)} readOnly/>
                 <Form.Text className='text-muted'>
                   From Google
                 </Form.Text>
@@ -137,6 +143,24 @@ class UserInfoModal extends React.Component {
             <Switch
               checked={isApproved}
               onChange={() => this.setState({ isApproved: !isApproved })}
+            />
+
+            <div style={{ marginLeft: '0.5em' }}>Approved</div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Switch
+              checked={isInstructor}
+              onChange={() => this.setState({ isInstructor: !isInstructor })}
+            />
+
+            <div style={{ marginLeft: '0.5em' }}>Instructor</div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Switch
+              checked={isAdmin}
+              onChange={() => this.setState({ isAdmin: !isAdmin })}
             />
 
             <div style={{ marginLeft: '0.5em' }}>Approved</div>
