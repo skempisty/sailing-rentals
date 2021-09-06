@@ -156,8 +156,10 @@ const initializeDatabase = async function(dbName) {
   await db.query(`CREATE TABLE ${dbName}.class_meetings (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
     'classId INT NOT NULL,' +
+    'instructorId INT NOT NULL,' +
     'rentalId INT DEFAULT NULL,' +
     'FOREIGN KEY (classId) REFERENCES classes(id),' +
+    'FOREIGN KEY (instructorId) REFERENCES users(id),' +
     'FOREIGN KEY (rentalId) REFERENCES rentals(id),' +
     'name VARCHAR(255) NOT NULL,' +
     'details TEXT,' +
