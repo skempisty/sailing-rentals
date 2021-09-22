@@ -10,7 +10,24 @@ const db = require('../connectDb')
  */
 
 exports.getClasses = async () => {
-  return await db.query(`SELECT * FROM ${db.name}.classes`)
+  const classes = await db.query(`SELECT * FROM ${db.name}.classes`)
+  const classMeetings = await db.query(`SELECT * FROM ${db.name}.class_meetings`)
+
+  return classes.map(klass => {
+    const mtgsInClass = classMeetings.filter(mtg => mtg.classId === klass.id)
+
+    return {
+      ...klass,
+      classMeetings: mtgsInClass
+    }
+  })
+}
+
+exports.getClass = async (id) => {
+  const [ klass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = ?`, [id])
+  klass.classMeetings = await db.query(`SELECT * FROM ${db.name}.class_meetings WHERE classId = ?`, [id])
+
+  return klass
 }
 
 /**

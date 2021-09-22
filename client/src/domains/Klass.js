@@ -11,6 +11,13 @@ const getRegisteredCount = (classId, classRegistrations) => {
   return count
 }
 
+const getClassById = (classId, classes) => {
+  const classIndex = classes.findIndex(klass => klass.id === klass.id)
+
+  return classes[classIndex]
+}
+
 export default {
-  getRegisteredCount
+  getRegisteredCount,
+  getClassById
 }

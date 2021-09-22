@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 
 import { FaBan, FaEdit } from 'react-icons/fa'
 
-import AddClassModal from '../../AddClassModal'
-// import DeleteClassModal from './DeleteClassModal'
+import DeleteClassModal from './DeleteClassModal'
 
 import SelectMenu from '../../../../../shared/SelectMenu'
 import SelectMenuItem from '../../../../../shared/SelectMenuItem'
@@ -16,8 +16,9 @@ import getUserById from '../../../../../../store/orm/users/getUserById'
 
 import { useClasses } from '../../../../../../store/classes'
 
+
 const ClassRow = ({ klass, hasActionColumn }) => {
-  const [showEditClassModal, setShowEditClassModal] = useState(false)
+  const history = useHistory()
   const [showDeleteClassModal, setShowDeleteClassModal] = useState(false)
 
   const { classRegistrations } = useClasses()
@@ -27,17 +28,11 @@ const ClassRow = ({ klass, hasActionColumn }) => {
 
   return (
     <React.Fragment>
-      <AddClassModal
+      <DeleteClassModal
         klass={klass}
-        show={showEditClassModal}
-        onHide={() => setShowEditClassModal(false)}
+        show={showDeleteClassModal}
+        onHide={() => setShowDeleteClassModal(false)}
       />
-
-      {/*<DeleteClassModal*/}
-      {/*  klass={klass}*/}
-      {/*  show={showDeleteClassModal}*/}
-      {/*  onHide={() => setShowDeleteClassModal(false)}*/}
-      {/*/>*/}
 
       <tr style={{ whiteSpace: 'nowrap' }}>
         {/* Instructor */}
@@ -62,7 +57,7 @@ const ClassRow = ({ klass, hasActionColumn }) => {
               <SelectMenuItem
                 label='Edit Class'
                 iconComponent={<FaEdit/>}
-                callback={() => setShowEditClassModal(true)}
+                callback={() => history.push(`/classes/${klass.id}`)}
               />
 
               <SelectMenuItem

@@ -12,6 +12,22 @@ import Constants from '../utils/constants'
  * @property {Date} createdAt
  * @property {Date} updatedAt
  * @property {Date} deletedAt
+ * @property {ClassMeeting[]} classMeetings
+ */
+
+/**
+ * @typedef ClassMeeting
+ * @type {object}
+ * @property {number} id
+ * @property {number} classId
+ * @property {number} instructorId
+ * @property {number} rentalId
+ * @property {string} name
+ * @property {string} details
+ * @property {boolean} usesBoat
+ * @property {Date} createdAt
+ * @property {Date} updatedAt
+ * @property {Date} deletedAt
  */
 
 const classesApiService = () => {
@@ -29,6 +45,16 @@ const classesApiService = () => {
    */
   const getClasses = async () => {
     const url = `${Constants.baseUrl}/api/classes`
+
+    return await fetchAndCheckStatus(url)
+  }
+
+  /**
+   * @param {number} id
+   * @returns {Promise<Class>}
+   */
+  const getClass = async (id) => {
+    const url = `${Constants.baseUrl}/api/classes/${id}`
 
     return await fetchAndCheckStatus(url)
   }
@@ -124,6 +150,7 @@ const classesApiService = () => {
   return {
     // GET
     getClasses,
+    getClass,
     // POST
     createClass,
     // PUT

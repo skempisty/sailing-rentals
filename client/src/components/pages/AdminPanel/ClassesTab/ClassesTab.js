@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 
 import { Button } from 'react-bootstrap'
 import { FaPlusCircle } from 'react-icons/fa'
@@ -8,15 +9,15 @@ import Title from '../../../shared/styled-system/Title'
 import Text from '../../../shared/styled-system/Text'
 
 import LoadingPageMessage from '../../../LoadingPageMessage'
-import AddClassModal from './AddClassModal'
 import ClassesTable from './ClassesTable'
 
 import { useClasses } from '../../../../store/classes'
 import { useUsers } from '../../../../store/users'
 
 const ClassesTab = () => {
+  const history = useHistory()
+
   const [loading, setLoading] = useState(true)
-  const [showAddClassModal, setShowAddClassModal] = useState(false)
 
   const { classes, getClassesThunk } = useClasses()
   const { getUsersThunk } = useUsers()
@@ -36,11 +37,6 @@ const ClassesTab = () => {
     <React.Fragment>
       {!loading ?
         <React.Fragment>
-          <AddClassModal
-            show={showAddClassModal}
-            onHide={() => setShowAddClassModal(false)}
-          />
-
           <Flex
             justifyContent='space-between'
             alignItems='center'
@@ -48,7 +44,7 @@ const ClassesTab = () => {
           >
             <Title color='white' margin='0'>Classes</Title>
 
-            <Button onClick={() => setShowAddClassModal(true)}>
+            <Button onClick={() => history.push('/classes/-1')}>
 
               <Flex
                 justifyContent='center'

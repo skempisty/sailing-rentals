@@ -602,9 +602,19 @@ router.put('/settings', async (req, res) => {
  */
 
 router.get('/classes', async (req, res) => {
-  const classes = await api.classes.getClasses();
+  const classes = await api.classes.getClasses()
 
   res.send(classes)
+})
+
+router.get('/classes/:id', async (req, res) => {
+  const { id } = req.params
+
+  console.log('id IN ROUTE', id)
+
+  const klass = await api.classes.getClass(id)
+
+  res.send(klass)
 })
 
 /*** ADMIN ONLY */
