@@ -1,29 +1,47 @@
 const defaultClassMtgs = [
   {
     name: 'Classroom training',
-    details: 'this is the first classroom training'
+    boatId: null,
+    details: 'this is the first classroom training',
+    start: null,
+    end: null
   },
   {
     name: 'Classroom training',
-    details: 'this is the second classroom training'
+    boatId: null,
+    details: 'this is the second classroom training',
+    start: null,
+    end: null
   },
   {
     name: 'On-the-water training',
-    details: 'this is the first on the water training'
+    boatId: -1,
+    details: 'this is the first on the water training',
+    start: null,
+    end: null
   },
   {
     name: 'On-the-water training',
-    details: 'this is the second on the water training'
+    boatId: -1,
+    details: 'this is the second on the water training',
+    start: null,
+    end: null
   },
   {
     name: 'On-the-water training (check sail)',
-    details: 'this is the check sail'
+    boatId: -1,
+    details: 'this is the check sail',
+    start: null,
+    end: null
   }
 ]
 
 const freshMtg = {
   name: 'New Mtg',
-  details: 'Something should be taught here'
+  boatId: null,
+  details: 'Something should be taught here',
+  start: null,
+  end: null
 }
 
 /**
