@@ -5,6 +5,7 @@ import { Button, Modal } from 'react-bootstrap'
 
 const MultiStepModal = ({
   show,
+  large,
   title,
   backBtnText,
   nextBtnText,
@@ -40,7 +41,7 @@ const MultiStepModal = ({
   }
 
   return (
-    <Modal show={show} onHide={handleMultiStepModalHide}>
+    <Modal show={show} onHide={handleMultiStepModalHide} size={large ? 'lg' : null}>
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
@@ -70,6 +71,7 @@ const MultiStepModal = ({
 
 MultiStepModal.propTypes = {
   show: PropTypes.bool.isRequired,
+  large: PropTypes.bool,
   title: PropTypes.string.isRequired,
   backBtnText: PropTypes.string,
   nextBtnText: PropTypes.string,
@@ -79,6 +81,7 @@ MultiStepModal.propTypes = {
 }
 
 MultiStepModal.defaultProps = {
+  large: false,
   backBtnText: 'Back',
   nextBtnText: 'Continue',
   submitBtnText: 'Submit',
