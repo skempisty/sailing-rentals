@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
 
 const sessionSlice = createSlice({
   name: 'session',
@@ -34,7 +35,7 @@ const sessionSlice = createSlice({
       state.currentUser = {}
     }
   }
-});
+})
 
 export const {
   initSession,
@@ -42,6 +43,14 @@ export const {
   assignCurrentUser,
   updateCurrentUser,
   clearCurrentUser
-} = sessionSlice.actions;
+} = sessionSlice.actions
 
-export default sessionSlice.reducer;
+export const useSession = () => {
+  const session = useSelector(state => state.session)
+
+  return {
+    ...session
+  }
+}
+
+export default sessionSlice.reducer
