@@ -104,7 +104,7 @@ const AddClass = () => {
           </ContentStep>
 
           <ContentStep>
-            <CustomizeClassMtgs mtgs={meetings}/>
+            <CustomizeClassMtgs/>
           </ContentStep>
         </MultiStepContent>
       </Box>

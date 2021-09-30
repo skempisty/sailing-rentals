@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import { FaArrowsAltV, FaBan, FaEdit } from 'react-icons/fa'
 
+import Box from '../../../shared/styled-system/Box'
 import Flex from '../../../shared/styled-system/Flex'
 import SelectMenu from '../../../shared/SelectMenu'
 import SelectMenuItem from '../../../shared/SelectMenuItem'
@@ -13,51 +14,49 @@ const ClassMtg = ({ mtg, index, onDeleteClick }) => {
   const [showEditClassMtgModal, setShowEditClassMtgModal] = useState(false)
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <>
       <EditClassMtgModal
         show={showEditClassMtgModal}
         mtg={mtg}
-        index={index}
+        mtgIndex={index}
         onHide={() => setShowEditClassMtgModal(false)}
       />
 
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'stretch',
-          marginRight: '1em',
-          marginBottom: '0.5em'
-        }}
-      >
+      <Flex alignItems='center' margin='0 1em 0.5em 0'>
         <Flex
           className='handle'
-          alignItems='center'
+          alignSelf='stretch'
           padding='0 0.25em'
+          marginRight='0.5em'
           background={'#343a3f'}
           borderTopLeftRadius='5px'
           borderBottomLeftRadius='5px'
           style={{ cursor: 'pointer' }}
         >
-          <FaArrowsAltV color='white'/>
+          <Flex alignItems='center'>
+            <FaArrowsAltV color='white'/>
+          </Flex>
         </Flex>
 
         {mtg.name}
 
-        <SelectMenu variant='light'>
-          <SelectMenuItem
-            label='Edit'
-            iconComponent={<FaEdit/>}
-            callback={() => setShowEditClassMtgModal(true)}
-          />
+        <Box marginLeft='0.5em'>
+          <SelectMenu variant='light'>
+            <SelectMenuItem
+              label='Edit'
+              iconComponent={<FaEdit/>}
+              callback={() => setShowEditClassMtgModal(true)}
+            />
 
-          <SelectMenuItem
-            label='Delete'
-            iconComponent={<FaBan/>}
-            callback={() => onDeleteClick(index)}
-          />
-        </SelectMenu>
-      </div>
-    </div>
+            <SelectMenuItem
+              label='Delete'
+              iconComponent={<FaBan/>}
+              callback={() => onDeleteClick(index)}
+            />
+          </SelectMenu>
+        </Box>
+      </Flex>
+    </>
   )
 }
 

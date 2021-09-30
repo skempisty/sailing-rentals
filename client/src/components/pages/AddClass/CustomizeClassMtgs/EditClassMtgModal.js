@@ -1,40 +1,69 @@
 import React, { useState } from 'react'
 
 import { Form, Dropdown } from 'react-bootstrap'
+import Switch from 'react-switch'
 
 import Box from '../../../shared/styled-system/Box'
-
+import Flex from '../../../shared/styled-system/Flex'
 import MultiStepModal from '../../../shared/modals/MultiStepModal'
 import ModalStep from '../../../shared/modals/MultiStepModal/ModalStep'
+import RentalCalendar from '../../../shared/RentalCalendar'
 
 import User from '../../../../domains/User'
+import Event from '../../../../domains/Event'
+import Calendar from '../../../../domains/Calendar'
+import isNotDeleted from '../../../../utils/isNotDeleted'
 
 import getUserById from '../../../../store/orm/users/getUserById'
+import getBoatById from '../../../../store/orm/boats/getBoatById'
 import { useClasses } from '../../../../store/classes'
 import { useUsers } from '../../../../store/users'
+import { useBoats } from '../../../../store/boats'
+import { useRentals } from '../../../../store/rentals'
 
-const EditClassMtgModal = ({ show, mtg, index, onHide }) => {
-  const initialMtg = { ...mtg }
+const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
+  const mtgWithoutStartEnd = Event.clearStartEnd(mtg)
 
-  const [state, setState] = useState({ ...mtg })
+  const [state, setState] = useState(mtgWithoutStartEnd)
 
   const { addEditClass, updateAddEditClass } = useClasses()
   const { users } = useUsers()
+  const { boats } = useBoats()
+  const { allRentals } = useRentals()
 
   const resetAndHide = () => {
-    setState(initialMtg)
+    setState(mtgWithoutStartEnd)
 
     onHide()
+  }
+
+  const events = () => {
+    let calendarEvents = addEditClass.meetings
+
+    if (state.boatId > 0) {
+      const rentalsForBoat = allRentals.filter(rental => rental.boatId === state.boatId)
+
+      const { upcomingEvents } = Event.splitUpcomingAndPast(rentalsForBoat)
+
+      // add all rentals using the same boat
+      calendarEvents = calendarEvents.concat(upcomingEvents)
+    }
+
+    return Calendar.getEventsForCalendar(state, calendarEvents)
+  }
+
+  const handleSelectSlot = ({ start, end }) => {
+    setState({ ...state, start, end  })
   }
 
   const handleSaveClick = () => {
     const updatedMtgs = [ ...addEditClass.meetings ]
 
-    updatedMtgs[index] = state
+    updatedMtgs[mtgIndex] = state
 
     updateAddEditClass({ meetings: updatedMtgs })
 
-    onHide()
+    resetAndHide()
   }
 
   const { name, instructorId, details } = state
@@ -42,6 +71,7 @@ const EditClassMtgModal = ({ show, mtg, index, onHide }) => {
   return (
     <MultiStepModal
       show={show}
+      large
       title='Edit Class Meeting'
       submitBtnText='Save'
       onHide={resetAndHide}
@@ -88,7 +118,41 @@ const EditClassMtgModal = ({ show, mtg, index, onHide }) => {
       </ModalStep>
 
       <ModalStep>
-        step 2
+        <Flex alignItems='center' height='2em'>
+          <Form.Label style={{ margin: '0 0.5em 0 0' }}><b>Use Boat</b></Form.Label>
+
+          <Switch
+            checked={state.boatId !== null}
+            onChange={() => setState({ ...state, boatId: state.boatId !== null ? null : -1 })}
+          />
+
+          {state.boatId !== null &&
+            <Dropdown style={{ marginLeft: '0.5em' }}>
+              <Dropdown.Toggle variant='dark' id='dropdown-basic'>
+                {state.boatId > -1 ? getBoatById(state.boatId).name : 'Select a boat'}
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {boats.filter(isNotDeleted).map((boat, index) =>
+                  <Dropdown.Item
+                    key={`boat-select-${boat.id}-${index}`}
+                    onSelect={() => setState({ ...state, boatId: boat.id })}
+                  >
+                    {boat.name}
+                  </Dropdown.Item>
+                )}
+              </Dropdown.Menu>
+            </Dropdown>
+          }
+        </Flex>
+
+        <RentalCalendar
+          selectedBoatId={state.boatId}
+          events={events()}
+          editEvent={mtg}
+          rentalType='klass'
+          onSelectSlot={handleSelectSlot}
+        />
       </ModalStep>
     </MultiStepModal>
   )
