@@ -162,6 +162,8 @@ const initializeDatabase = async function(dbName) {
     'FOREIGN KEY (instructorId) REFERENCES users(id),' +
     'FOREIGN KEY (rentalId) REFERENCES rentals(id),' +
     'name VARCHAR(255) NOT NULL,' +
+    'start TIMESTAMP NOT NULL,' +
+    'end TIMESTAMP NOT NULL,' +
     'details TEXT,' +
     'usesBoat BOOLEAN DEFAULT false,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +

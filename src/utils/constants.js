@@ -5,7 +5,8 @@
 
 const rentalTypes = {
   STANDARD: 'standard',
-  MAINTENANCE: 'maintenance'
+  MAINTENANCE: 'maintenance',
+  KLASS: 'klass'
 }
 
 module.exports = {
