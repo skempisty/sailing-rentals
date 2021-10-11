@@ -11,12 +11,14 @@ import isNotDeleted from '../utils/isNotDeleted'
  * @returns {Object[]}
  */
 const getEventsForCalendar = (newEvent, events) => {
+  const newEventWithFlag = { ...newEvent, isNewEvent: true }
+
   /*
    * We want to NEVER show
    * - deleted events
    * - events without a start/end value
    */
-  const filteredEvents = [ newEvent, ...events ]
+  const filteredEvents = [ newEventWithFlag, ...events ]
     .filter(isNotDeleted)
     .filter(Event.hasStartAndEnd)
 
