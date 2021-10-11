@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 
-import { FaBan, FaExclamationTriangle, FaWrench } from 'react-icons/fa'
+import { FaBan, FaExclamationTriangle, FaWrench, FaUsers, FaUserSlash } from 'react-icons/fa'
 import { RiSailboatFill } from 'react-icons/ri'
 
 import EventLabel from './EventLabel'
@@ -28,9 +28,6 @@ export const useRentalCalendar = (props) => {
     onSelectSlot
   } = props
 
-  console.log('editEvent', editEvent)
-
-  const [newEvent, setNewEvent] = useState({})
   const [view, setView] = useState(calendarViewTypes.MONTH)
   const [calendarDate, setCalendarDate] = useState(editEvent && editEvent.start ? new Date(editEvent.start) : new Date())
 
@@ -41,8 +38,6 @@ export const useRentalCalendar = (props) => {
   /**
    * Business rule: Users are not allowed to book more than one (1) standard boat rental per day.
    * @param rentalSelection
-   * @param {Rental} myRentals
-   * @param editEvent
    * @returns {boolean} True if rental selection violates this rule
    */
   const alreadyRentedThisDay = (rentalSelection) => {
@@ -109,118 +104,6 @@ export const useRentalCalendar = (props) => {
     return getBoatById(blockingRental.boatId).name
   }
 
-  const titleAccessor = (rental) => {
-    const rentalBoat = getBoatById(rental.boatId)
-
-    const boatName = rentalBoat && rentalBoat.name ? rentalBoat.name : ''
-
-    let label, icon, details
-
-    if (editEvent && editEvent.id === rental.id) {
-      switch(rental.type) {
-        case Rental.rentalTypes.MAINTENANCE:
-          label = `Saved ${boatName} maintenance`
-          details = rental.reason
-          icon = <FaWrench/>
-          break
-        default: // standard
-          label = 'Saved time slot'
-          icon = <RiSailboatFill/>
-      }
-    } else if (rental.type === Rental.rentalTypes.STANDARD && rental.rentedBy === currentUser.id) {
-      label = 'My rental'
-      icon = <RiSailboatFill/>
-    } else if (rental.id && rental.type === Rental.rentalTypes.MAINTENANCE) {
-      label = `${boatName} maintenance`
-      details = rental.reason
-      icon = <FaWrench/>
-    } else if (rental.id && rental.type === Rental.rentalTypes.STANDARD) {
-      label = 'Rented out'
-      icon = <FaBan/>
-    } else if (Rental.isStandardType(rentalType) && alreadyRentedThisDay(rental)) {
-      label = `You've rented the ${getBlockingBoatName(rental)} for today already`
-      icon = <FaExclamationTriangle/>
-    } else if (selectionOverlapsOtherRental(rental)) {
-      label = 'Boat unavailable at this time'
-      icon = <FaExclamationTriangle/>
-    } else if (eventStartsInPast(rental)) {
-      label = 'Please select a time slot in the future'
-      icon = <FaExclamationTriangle/>
-    } else if (Rental.isStandardType(rentalType) && !selectedAllowedRentalInterval(rental)) {
-      label = `Please select a ${timeIntervalDisplay} hour time slot`
-      icon = <FaExclamationTriangle/>
-    } else if (editEvent && !rental.id) {
-      switch(rentalType) {
-        case Rental.rentalTypes.MAINTENANCE:
-          label = `Updated ${boatName} maintenance`
-          details = reason
-          icon = <FaWrench/>
-          break
-        default: // standard
-          label = 'Updated time slot'
-          icon = <RiSailboatFill/>
-      }
-    } else if (rentalType === Rental.rentalTypes.MAINTENANCE) {
-      label = `${boatName} maintenance`
-      details = reason
-      icon = <FaWrench/>
-    } else {
-      label = `Sailing on the ${boatName}`
-      icon = <RiSailboatFill/>
-    }
-
-    const showSvgComponent = view === calendarViewTypes.DAY || Event.getEventDurationHours(rental) >= 3 // Can't see full svg unless duration is at least 3 hours
-
-    return (
-      <EventLabel
-        label={view === calendarViewTypes.DAY ? label : null}
-        details={details}
-        rental={rental}
-        svgComponent={showSvgComponent ? icon : null}
-        view={view}
-        onMonthViewEventClick={handleMonthViewEventClick}
-      />
-    )
-  }
-
-  const eventStyleGetter = (rental) => {
-    let backgroundColor
-
-    if (editEvent && editEvent.id === rental.id) {
-      backgroundColor = 'dodgerblue' // one of the user's other rental slots
-    } else if (rental.rentedBy === currentUser.id && rental.type === Rental.rentalTypes.STANDARD) {
-      backgroundColor = 'purple' // one of the user's other rental slots
-    } else if (rental.id) {
-      backgroundColor = 'grey' // someone else's rental slot
-    } else if (
-      selectionOverlapsOtherRental(rental) ||
-      eventStartsInPast(rental) ||
-      (Rental.isStandardType(rentalType) && alreadyRentedThisDay(rental)) ||
-      (Rental.isStandardType(rentalType) && !selectedAllowedRentalInterval(rental))
-    ) {
-      backgroundColor = 'red' // invalid time slot selection
-    } else {
-      backgroundColor = 'green' // valid time slot selection
-    }
-
-    // event relative size
-    const width = `${(rental.end - rental.start) / (maxTime() - minTime()) * 100}%`
-
-    // positioning
-    const minTimeDate = minTime().setFullYear(rental.start.getFullYear(), rental.start.getMonth(), rental.start.getDate())
-
-    const left = `${(rental.start - minTimeDate) / (maxTime() - minTime()) * 100}%`
-
-    const style = {
-      position: view === calendarViewTypes.MONTH ? 'relative' : null,
-      left: view === calendarViewTypes.MONTH ? left : null,
-      width: view === calendarViewTypes.MONTH ? width : null,
-      backgroundColor
-    }
-
-    return { style }
-  }
-
   const eventStartsInPast = (event) => {
     if (!event.start) return true
 
@@ -231,9 +114,9 @@ export const useRentalCalendar = (props) => {
    * Determines if the selected time slot
    * overlaps an existing rental on the same boat
    */
-  const selectionOverlapsOtherRental = () => {
-    const eventStart = moment(newEvent.start)
-    const eventEnd = moment(newEvent.end)
+  const selectionOverlapsOtherRental = (event) => {
+    const eventStart = moment(event.start)
+    const eventEnd = moment(event.end)
 
     let eventsCopy = [ ...events ]
 
@@ -297,13 +180,186 @@ export const useRentalCalendar = (props) => {
     }
   }
 
+  const getEventBackgroundColor = (event) => {
+    switch (rentalType) {
+      case Rental.rentalTypes.STANDARD:
+        if (editEvent && editEvent.id === event.id) {
+          return 'dodgerblue' // one of the user's other rental slots
+        } else if (event.rentedBy === currentUser.id && event.type === Rental.rentalTypes.STANDARD) {
+          return 'purple' // one of the user's other rental slots
+        } else if (event.id) {
+          return 'grey' // someone else's rental slot
+        } else if (
+          selectionOverlapsOtherRental(event) ||
+          eventStartsInPast(event) ||
+          (alreadyRentedThisDay(event)) ||
+          (selectedAllowedRentalInterval(event))
+        ) {
+          return 'red' // invalid time slot selection
+        } else {
+          return 'green' // valid time slot selection
+        }
+      case Rental.rentalTypes.MAINTENANCE:
+        if (editEvent && editEvent.id === event.id) {
+          return 'dodgerblue' // one of the user's other rental slots
+        } else if (event.rentedBy === currentUser.id && event.type === Rental.rentalTypes.STANDARD) {
+          return 'purple' // one of the user's other rental slots
+        } else if (event.id) {
+          return 'grey' // someone else's rental slot
+        } else if (
+          selectionOverlapsOtherRental(event) ||
+          eventStartsInPast(event)
+        ) {
+          return 'red' // invalid time slot selection
+        } else {
+          return 'green' // valid time slot selection
+        }
+      case Rental.rentalTypes.KLASS:
+        if (!event.isNewEvent && editEvent && editEvent.id === event.id) {
+          return 'dodgerblue' // this is the class meeting being edited on this Calendar
+        } else if (!event.isNewEvent && event.classId === editEvent.classId) {
+          return 'purple'  // these are the other meetings in the class
+        } else if (!event.isNewEvent && event.id) {
+          return 'grey'
+        } else if (
+          selectionOverlapsOtherRental(event) ||
+          eventStartsInPast(event)
+        ) {
+          return 'red' // invalid meeting time slot selection
+        } else {
+          return 'green' // valid meeting time slot selection
+        }
+      default:
+        return 'red'
+    }
+  }
+
+  const eventStyleGetter = (rental) => {
+    const backgroundColor = getEventBackgroundColor(rental)
+
+    // event relative size
+    const width = `${(rental.end - rental.start) / (maxTime() - minTime()) * 100}%`
+
+    // positioning
+    const minTimeDate = minTime().setFullYear(rental.start.getFullYear(), rental.start.getMonth(), rental.start.getDate())
+
+    const left = `${(rental.start - minTimeDate) / (maxTime() - minTime()) * 100}%`
+
+    const style = {
+      position: view === calendarViewTypes.MONTH ? 'relative' : null,
+      left: view === calendarViewTypes.MONTH ? left : null,
+      width: view === calendarViewTypes.MONTH ? width : null,
+      backgroundColor
+    }
+
+    return { style }
+  }
+
+  const titleAccessor = (event) => {
+    const rentalBoat = getBoatById(event.boatId)
+    const boatName = rentalBoat && rentalBoat.name ? rentalBoat.name : ''
+
+    let label, icon, details
+
+    // Can't see full svg on calendar unless duration is at least 3 hours
+    const showSvgComponent = view === calendarViewTypes.DAY || Event.getEventDurationHours(event) >= 3
+
+    switch (rentalType) {
+      case Rental.rentalTypes.STANDARD:
+        if (editEvent && editEvent.id === event.id) {
+          label = 'Saved time slot'
+          icon = <RiSailboatFill/>
+        } else if (event.type === Rental.rentalTypes.STANDARD && event.rentedBy === currentUser.id) {
+          label = 'My rental'
+          icon = <RiSailboatFill/>
+        } else if (event.id && event.type === Rental.rentalTypes.MAINTENANCE) {
+          label = `${boatName} maintenance`
+          details = event.reason
+          icon = <FaWrench/>
+        } else if (event.id && event.type === Rental.rentalTypes.STANDARD) {
+          label = 'Rented out'
+          icon = <FaBan/>
+        } else if (Rental.isStandardType(rentalType) && alreadyRentedThisDay(event)) {
+          label = `You've rented the ${getBlockingBoatName(event)} for today already`
+          icon = <FaExclamationTriangle/>
+        } else if (selectionOverlapsOtherRental(event)) {
+          label = 'Boat unavailable at this time'
+          icon = <FaExclamationTriangle/>
+        } else if (eventStartsInPast(event)) {
+          label = 'Please select a time slot in the future'
+          icon = <FaExclamationTriangle/>
+        } else if (Rental.isStandardType(rentalType) && !selectedAllowedRentalInterval(event)) {
+          label = `Please select a ${timeIntervalDisplay} hour time slot`
+          icon = <FaExclamationTriangle/>
+        } else if (editEvent && !event.id) {
+          label = 'Updated time slot'
+          icon = <RiSailboatFill/>
+        } else {
+          label = `Sailing on the ${boatName}`
+          icon = <RiSailboatFill/>
+        }
+
+        break
+      case Rental.rentalTypes.MAINTENANCE:
+        if (editEvent && editEvent.id === event.id) {
+          label = `Saved ${boatName} maintenance`
+          details = event.reason
+          icon = <FaWrench/>
+        } else if (editEvent && !event.id) {
+          label = `Updated ${boatName} maintenance`
+          details = reason
+          icon = <FaWrench/>
+        } else {
+          label = `${boatName} maintenance`
+          details = reason
+          icon = <FaWrench/>
+        }
+
+        break
+      case Rental.rentalTypes.KLASS:
+        if (!event.isNewEvent && editEvent && editEvent.id === event.id) {
+          // this is the class meeting being edited on this Calendar
+          label = `Saved Meeting Time`
+          icon = <FaWrench/>
+        } else if (!event.isNewEvent && event.classId === editEvent.classId) {
+          label = `Saved Meeting Time`
+          icon = <FaWrench/>
+        } else if (!event.isNewEvent && event.id) {
+          label = `Saved Meeting Time`
+          icon = <FaWrench/>
+        } else if (
+          selectionOverlapsOtherRental(event) ||
+          eventStartsInPast(event)
+        ) {
+          label = `Invalid Meeting Time`
+          icon = <FaUserSlash/>
+        } else {
+          label = `New Meeting Time`
+          icon = <FaUsers/>
+        }
+
+        break
+      default:
+    }
+
+    return (
+      <EventLabel
+        label={view === calendarViewTypes.DAY ? label : null}
+        details={details}
+        rental={event}
+        svgComponent={showSvgComponent ? icon : null}
+        view={view}
+        onMonthViewEventClick={handleMonthViewEventClick}
+      />
+    )
+  }
+
   return {
     calendarViewTypes,
     titleAccessor,
     eventStyleGetter,
     view, setView,
     calendarDate, setCalendarDate,
-    newEvent, setNewEvent,
     minTime, maxTime,
     handleSelectSlot
   }

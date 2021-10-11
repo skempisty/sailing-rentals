@@ -38,8 +38,6 @@ const RentalCalendar = (props) => {
     handleSelectSlot
   } = useRentalCalendar(props)
 
-  console.log('events', events)
-
   return (
     <StyledCalendar>
       <Calendar
