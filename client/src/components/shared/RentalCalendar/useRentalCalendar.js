@@ -320,13 +320,30 @@ export const useRentalCalendar = (props) => {
         if (!event.isNewEvent && editEvent && editEvent.id === event.id) {
           // this is the class meeting being edited on this Calendar
           label = `Saved Meeting Time`
-          icon = <FaWrench/>
+          details = event.name
+          icon = <FaUsers/>
         } else if (!event.isNewEvent && event.classId === editEvent.classId) {
-          label = `Saved Meeting Time`
-          icon = <FaWrench/>
+          label = 'Meeting In This Class'
+          details = event.name
+          icon = <FaUsers/>
         } else if (!event.isNewEvent && event.id) {
-          label = `Saved Meeting Time`
-          icon = <FaWrench/>
+          label = `${boatName} Reserved`
+
+          switch (event.type) {
+            case Rental.rentalTypes.STANDARD:
+              details = `Rented by: ${event.rentedBy}`
+              icon = <RiSailboatFill/>
+              break
+            case Rental.rentalTypes.MAINTENANCE:
+              details = event.reason
+              icon = <FaWrench/>
+              break
+            /*
+             * You won't find a KLASS type event that should
+             * be displayed with GREY condition on KLASS rentalType
+             */
+            default:
+          }
         } else if (
           selectionOverlapsOtherRental(event) ||
           eventStartsInPast(event)
@@ -335,6 +352,7 @@ export const useRentalCalendar = (props) => {
           icon = <FaUserSlash/>
         } else {
           label = `New Meeting Time`
+          details = event.name
           icon = <FaUsers/>
         }
 

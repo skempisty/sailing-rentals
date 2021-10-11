@@ -5,7 +5,7 @@ const randomClassId = uuidv4()
 const defaultClassMtgs = [
   {
     id: uuidv4(),
-    name: 'Classroom training',
+    name: 'Classroom training 1',
     classId: randomClassId,
     boatId: null,
     details: 'this is the first classroom training',
@@ -14,7 +14,7 @@ const defaultClassMtgs = [
   },
   {
     id: uuidv4(),
-    name: 'Classroom training',
+    name: 'Classroom training 2',
     classId: randomClassId,
     boatId: null,
     details: 'this is the second classroom training',
@@ -23,7 +23,7 @@ const defaultClassMtgs = [
   },
   {
     id: uuidv4(),
-    name: 'On-the-water training',
+    name: 'On-the-water training 1',
     classId: randomClassId,
     boatId: -1,
     details: 'this is the first on the water training',
@@ -32,7 +32,7 @@ const defaultClassMtgs = [
   },
   {
     id: uuidv4(),
-    name: 'On-the-water training',
+    name: 'On-the-water training 2',
     classId: randomClassId,
     boatId: -1,
     details: 'this is the second on the water training',
@@ -41,7 +41,7 @@ const defaultClassMtgs = [
   },
   {
     id: uuidv4(),
-    name: 'On-the-water training (check sail)',
+    name: 'Check Sail',
     classId: randomClassId,
     boatId: -1,
     details: 'this is the check sail',
