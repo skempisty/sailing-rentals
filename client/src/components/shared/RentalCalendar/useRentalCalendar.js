@@ -318,15 +318,25 @@ export const useRentalCalendar = (props) => {
         break
       case Rental.rentalTypes.KLASS:
         if (!event.isNewEvent && editEvent && editEvent.id === event.id) {
+          /**
+           * Blue
+           */
           // this is the class meeting being edited on this Calendar
-          label = `Saved Meeting Time`
+          label = selectedBoatId ? `Saved Meeting Time Aboard ${boatName}` : 'New Meeting Time'
           details = event.name
-          icon = <FaUsers/>
+          icon = selectedBoatId ? <RiSailboatFill/> : <FaUsers/>
         } else if (!event.isNewEvent && event.classId === editEvent.classId) {
+          /**
+           * Purple
+           */
           label = 'Meeting In This Class'
+          label = selectedBoatId ? `Meeting In This Class Aboard ${boatName}` : 'Meeting In This Class'
           details = event.name
-          icon = <FaUsers/>
+          icon = selectedBoatId ? <RiSailboatFill/> : <FaUsers/>
         } else if (!event.isNewEvent && event.id) {
+          /**
+           * Grey
+           */
           label = `${boatName} Reserved`
 
           switch (event.type) {
@@ -348,12 +358,18 @@ export const useRentalCalendar = (props) => {
           selectionOverlapsOtherRental(event) ||
           eventStartsInPast(event)
         ) {
+          /**
+           * Red
+           */
           label = `Invalid Meeting Time`
           icon = <FaUserSlash/>
         } else {
-          label = `New Meeting Time`
+          /**
+           * Green
+           */
+          label = selectedBoatId ? `New Meeting Time Aboard ${boatName}` : 'New Meeting Time'
           details = event.name
-          icon = <FaUsers/>
+          icon = selectedBoatId ? <RiSailboatFill/> : <FaUsers/>
         }
 
         break

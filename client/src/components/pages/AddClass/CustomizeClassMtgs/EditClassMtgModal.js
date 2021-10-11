@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Form, Dropdown } from 'react-bootstrap'
 import Switch from 'react-switch'
@@ -22,20 +22,16 @@ import { useBoats } from '../../../../store/boats'
 import { useRentals } from '../../../../store/rentals'
 
 const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
-  const mtgWithoutStartEnd = Event.clearStartEnd(mtg)
+  const [state, setState] = useState({})
 
-  const [state, setState] = useState(mtgWithoutStartEnd)
+  useEffect(() => {
+    setState(Event.clearStartEnd(mtg))
+  }, [mtg])
 
   const { addEditClass, updateAddEditClass } = useClasses()
   const { users } = useUsers()
   const { boats } = useBoats()
   const { allRentals } = useRentals()
-
-  const resetAndHide = () => {
-    setState(mtgWithoutStartEnd)
-
-    onHide()
-  }
 
   const events = () => {
     let calendarEvents = addEditClass.meetings
@@ -63,7 +59,7 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
 
     updateAddEditClass({ meetings: updatedMtgs })
 
-    resetAndHide()
+    onHide()
   }
 
   const { name, instructorId, details } = state
@@ -74,7 +70,7 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
       large
       title='Edit Class Meeting'
       submitBtnText='Save'
-      onHide={resetAndHide}
+      onHide={onHide}
       onSubmit={handleSaveClick}
     >
       <ModalStep>
