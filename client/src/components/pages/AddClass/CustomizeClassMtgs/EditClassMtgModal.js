@@ -48,6 +48,27 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
     return Calendar.getEventsForCalendar(state, calendarEvents)
   }
 
+  const handleUseBoatSwitchClick = () => {
+    /*
+     * Null means NOT using boat
+     * -1 means using boat but one isn't chosen
+     */
+    const newBoatId = state.boatId !== null ? null : -1
+
+    /*
+     * Determine if we should clear mtg time slot.
+     * It may conflict with an existing rental for the boat you want.
+     */
+    const isEnablingUseBoat = newBoatId === -1
+
+    setState({
+      ...state,
+      boatId: newBoatId,
+      start: isEnablingUseBoat ? null : state.start,
+      end: isEnablingUseBoat ? null : state.end
+    })
+  }
+
   const handleSelectSlot = ({ start, end }) => {
     setState({ ...state, start, end  })
   }
@@ -119,7 +140,7 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
 
           <Switch
             checked={state.boatId !== null}
-            onChange={() => setState({ ...state, boatId: state.boatId !== null ? null : -1 })}
+            onChange={handleUseBoatSwitchClick}
           />
 
           {state.boatId !== null &&

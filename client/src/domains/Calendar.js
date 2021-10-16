@@ -16,7 +16,7 @@ const getEventsForCalendar = (newEvent, events) => {
   /*
    * We want to NEVER show
    * - deleted events
-   * - events without a start/end value
+   * - events without a start AND end value
    */
   const filteredEvents = [ newEventWithFlag, ...events ]
     .filter(isNotDeleted)
