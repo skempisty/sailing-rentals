@@ -52,12 +52,12 @@ const ClassMtg = ({ mtg, index, onDeleteClick }) => {
         </Flex>
 
         <Card margin='0'>
-          <Flex flexDirection='column' padding='0.25em 0.75em' color='black'>
-            <Flex alignItems='center'>
+          <Flex flexDirection='column' padding='0.5em 0.75em' color='black'>
+            <Flex justifyContent='space-between' alignItems='center'>
               <Text fontWeight='bold'>{mtg.name}</Text>
 
               <Box marginLeft='0.5em'>
-                <SelectMenu variant='light'>
+                <SelectMenu variant='outline-dark'>
                   <SelectMenuItem
                     label='Edit'
                     iconComponent={<FaEdit/>}

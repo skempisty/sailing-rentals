@@ -147,6 +147,8 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
           events={events()}
           editEvent={mtg}
           rentalType='klass'
+          disabled={state.boatId === -1}
+          disabledMsg='Select Boat First'
           onSelectSlot={handleSelectSlot}
         />
       </ModalStep>

@@ -8,6 +8,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import { rentalTypes } from '../../../utils/constants'
 
 import useRentalCalendar from './useRentalCalendar'
+import Box from "../styled-system/Box";
 
 const StyledCalendar = styled.div`
   .rbc-calendar { padding: 0 1em 1em 1em; }
@@ -27,7 +28,7 @@ const StyledCalendar = styled.div`
 const localizer = momentLocalizer(moment)
 
 const RentalCalendar = (props) => {
-  const { events } = props
+  const { events, disabled, disabledMsg } = props
 
   const {
     view, setView,
@@ -39,26 +40,46 @@ const RentalCalendar = (props) => {
   } = useRentalCalendar(props)
 
   return (
-    <StyledCalendar>
-      <Calendar
-        localizer={localizer}
-        style={{ height: '30em', marginTop: '1em' }}
-        views={Object.values(calendarViewTypes)}
-        timeslots={1}
-        selectable
-        view={view}
-        date={calendarDate}
-        events={events}
-        longPressThreshold={100}
-        min={minTime()} // set earliest time visible on calendar
-        max={maxTime()} // set latest time visible on calendar
-        eventPropGetter={(e) => eventStyleGetter(e)}
-        titleAccessor={(e) => titleAccessor(e)}
-        onView={(view) => setView(view)} // fires when one of the view buttons is pressed
-        onNavigate={(newDate) => setCalendarDate(newDate)}
-        onSelectSlot={handleSelectSlot}
-      />
-    </StyledCalendar>
+    <Box position='relative' paddingTop='1em'>
+      {/* Blocking overlay */}
+      {disabled &&
+        <div style={{
+          display: 'flex',
+          pointerEvents: null,
+          position: 'absolute',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: '100%',
+          color: 'white',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          zIndex: '5' // need 5 to fully overlay Calendar
+        }}>
+          {disabledMsg}
+        </div>
+      }
+
+      <StyledCalendar>
+        <Calendar
+          localizer={localizer}
+          style={{ height: '30em', marginTop: '1em' }}
+          views={Object.values(calendarViewTypes)}
+          timeslots={1}
+          selectable
+          view={view}
+          date={calendarDate}
+          events={events}
+          longPressThreshold={100}
+          min={minTime()} // set earliest time visible on calendar
+          max={maxTime()} // set latest time visible on calendar
+          eventPropGetter={(e) => eventStyleGetter(e)}
+          titleAccessor={(e) => titleAccessor(e)}
+          onView={(view) => setView(view)} // fires when one of the view buttons is pressed
+          onNavigate={(newDate) => setCalendarDate(newDate)}
+          onSelectSlot={handleSelectSlot}
+        />
+      </StyledCalendar>
+    </Box>
   )
 }
 
@@ -68,7 +89,9 @@ RentalCalendar.propTypes = {
   selectedBoatId: PropTypes.number,
   editEvent: PropTypes.object,
   reason: PropTypes.string,
-  onSelectSlot: PropTypes.func.isRequired
+  onSelectSlot: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  disabledMsg: PropTypes.string
 }
 
 RentalCalendar.defaultProps = {
