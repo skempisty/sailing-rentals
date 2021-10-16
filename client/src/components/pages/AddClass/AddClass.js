@@ -24,6 +24,7 @@ const AddClass = () => {
   const {
     addEditClass,
     updateAddEditClass,
+    createClassThunk,
     getClassThunk
   } = useClasses()
 
@@ -41,15 +42,9 @@ const AddClass = () => {
 
   const handleClassSubmit = () => {
     if (View.isNewClass(classId)) {
-      console.log('Create Class!')
-
-      // TODO
-      // createClassThunk()
+      createClassThunk(addEditClass)
     } else {
-      console.log(`Edit Class ${classId}!`)
-
-      // TODO
-      // updateClassThunk()
+      // updateClassThunk(addEditClass)
     }
   }
 

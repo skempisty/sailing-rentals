@@ -17,7 +17,33 @@ const getClassById = (classId, classes) => {
   return classes[classIndex]
 }
 
+const validate = (classObj) => {
+  const {
+    capacity,
+    price,
+    meetings
+  } = classObj
+
+  // validate class meetings
+  const meetingsAreValid = meetings.every(mtg => {
+    const { instructorId, boatId, start, end } = mtg
+
+    return (
+      instructorId > -1 &&
+      boatId !== -1 && // indicates a boat is used in this mtg, but no boat was chosen
+      start !== null && end !== null
+    )
+  })
+
+  return (
+    capacity > 0 &&
+    price >= 0 &&
+    meetingsAreValid
+  )
+}
+
 export default {
   getRegisteredCount,
-  getClassById
+  getClassById,
+  validate
 }

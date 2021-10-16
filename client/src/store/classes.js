@@ -15,7 +15,8 @@ const classSlice = createSlice({
   initialState: {
     classes: [],
     classRegistrations: [],
-    addEditClass: new Klass()
+    addEditClass: new Klass(),
+    addEditValidationErrorMsg: null
   },
   reducers: {
     updateAddEditClass: (state, action) => {
@@ -36,6 +37,11 @@ const classSlice = createSlice({
     })
     builder.addCase(createClassThunk.fulfilled, (state, action) => {
       const newClass = action.payload
+
+      if (newClass.error) {
+        state.addEditValidationErrorMsg = newClass.error
+        return
+      }
 
       state.classes.push(newClass)
     })
