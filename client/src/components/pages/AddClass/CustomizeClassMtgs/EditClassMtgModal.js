@@ -69,6 +69,10 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
     })
   }
 
+  const handleBoatSelect = (selectedBoatId) => {
+    setState({ ...state, boatId: selectedBoatId, start: null, end: null })
+  }
+
   const handleSelectSlot = ({ start, end }) => {
     setState({ ...state, start, end  })
   }
@@ -153,7 +157,7 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
                 {boats.filter(isNotDeleted).map((boat, index) =>
                   <Dropdown.Item
                     key={`boat-select-${boat.id}-${index}`}
-                    onSelect={() => setState({ ...state, boatId: boat.id })}
+                    onSelect={() => handleBoatSelect(boat.id)}
                   >
                     {boat.name}
                   </Dropdown.Item>
