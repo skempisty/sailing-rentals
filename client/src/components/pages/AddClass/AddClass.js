@@ -46,11 +46,13 @@ const AddClass = () => {
     } else {
       // updateClassThunk(addEditClass)
     }
+
+    history.push('/admin-panel#classes')
   }
 
   const pageTitle = View.isNewClass(classId) ? 'Add Class' : 'Edit Class'
 
-  const { capacity, price, details, meetings } = addEditClass
+  const { capacity, price, details } = addEditClass
 
   return (
     <ContentWrapper>
