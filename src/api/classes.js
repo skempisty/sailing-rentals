@@ -1,5 +1,12 @@
 const db = require('../connectDb')
 
+const rentalsApi = require('../api/rentals')
+
+const Rental = require('../models/Rental')
+
+const getInsertSqlPlaceholders = require('../utils/getInsertSqlPlaceholders')
+const { rentalTypes } = require('../utils/constants')
+
 /**
  * ░██████╗░███████╗████████╗
  * ██╔════╝░██╔════╝╚══██╔══╝
@@ -39,16 +46,47 @@ exports.getClass = async (id) => {
  * ╚═╝░░░░░░╚════╝░╚═════╝░░░░╚═╝░░░
  */
 
-exports.createClass = async (classObj) => {
-  const { instructorId, details, capacity, price } = classObj
+exports.createClass = async (classObj, creatorId) => {
+  const { details, capacity, price, meetings } = classObj
 
-  const newClass = [ instructorId, details, capacity, price ]
+  // create the class
+  const newClass = [ details, capacity, price ]
 
-  await db.query(`INSERT INTO ${db.name}.classes (instructorId, details, capacity, price) VALUES (?, ?, ?, ?)`, newClass)
+  await db.query(`INSERT INTO ${db.name}.classes (details, capacity, price) VALUES (?, ?, ?)`, newClass)
 
-  const [ klass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = LAST_INSERT_ID()`)
+  const [ createdClass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = LAST_INSERT_ID()`)
 
-  return klass
+  // create the boat rentals for the "useBoat" meetings
+  const useBoatMtgs = meetings.filter(mtg => mtg.boatId)
+
+  if (useBoatMtgs.length) {
+    const meetingRentals = useBoatMtgs.map(mtg => new Rental({
+      type: rentalTypes.KLASS,
+      boatId: mtg.boatId,
+      rentedBy: creatorId,
+      crewCount: capacity,
+      start: mtg.start,
+      end: mtg.end,
+      reason: 'Sailing Instruction'
+    }))
+
+    await rentalsApi.createRentals(meetingRentals)
+  }
+
+  // create the meetings for the class
+  const newMeetingsData = meetings.map(mtg => {
+    const { name, instructorId, details, start, end } = mtg
+
+    return [ name, createdClass.id, instructorId, details, start, end ]
+  })
+
+  await db.query(`
+    INSERT INTO ${db.name}.class_meetings
+    (name, classId, instructorId, details, start, end)
+    VALUES ${getInsertSqlPlaceholders(newMeetingsData)}
+  `, newMeetingsData.flat())
+
+  return createdClass
 }
 
 /**
