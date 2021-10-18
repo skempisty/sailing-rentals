@@ -1,3 +1,4 @@
+// TODO: combine and run this migration on production
 (async () => {
   require('dotenv').config()
   const db = require('../src/connectDb')
