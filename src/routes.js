@@ -622,10 +622,10 @@ router.post('/classes', async (req, res) => {
   const { authorization: jwtToken } = req.headers
   const klass = req.body
 
-  const { isAdmin } = await decodeJwt(jwtToken)
+  const { userId: creatorId, isAdmin } = await decodeJwt(jwtToken)
 
   if (isAdmin) {
-    const newClass = await api.classes.createClass(klass)
+    const newClass = await api.classes.createClass(klass, creatorId)
 
     res.send(newClass)
   } else {
