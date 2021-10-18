@@ -182,13 +182,15 @@ class UserInfoModal extends React.Component {
             </Flex>
           </Flex>
 
-          <Button
-            disabled={this.profileNotEdited}
-            style={{ width: '8.5em' }}
-            onClick={this.handleSaveEditsClick.bind(this)}
-          >
-            <span>Save Edits</span>
-          </Button>
+          <Flex alignItems='center' justifyContent='center' width='50%'>
+            <Button
+              disabled={this.profileNotEdited}
+              style={{ width: '8.5em' }}
+              onClick={this.handleSaveEditsClick.bind(this)}
+            >
+              <span>Update User</span>
+            </Button>
+          </Flex>
 
         </Modal.Footer>
       </Modal>
