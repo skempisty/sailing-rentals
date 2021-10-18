@@ -1,3 +1,9 @@
+/**
+ * @typedef {import('moment').Moment} Moment
+ */
+
+import moment from 'moment'
+
 const getRegisteredCount = (classId, classRegistrations) => {
   let count = 0
 
@@ -9,6 +15,38 @@ const getRegisteredCount = (classId, classRegistrations) => {
   })
 
   return count
+}
+
+/**
+ * Given a Klass object, determine when the earliest meeting start and latest meeting end is.
+ * @param {Klass} klass
+ * @returns {{startTime: Moment, endTime: Moment}} returns as moments not strings
+ */
+const getStartEndTimes = (klass) => {
+  const meetings = klass.classMeetings
+
+  let startTime = ''
+  let endTime = ''
+
+  for (const mtg of meetings) {
+    const mtgStart = moment(mtg.start)
+    const mtgEnd = moment(mtg.end)
+
+    // earliest meeting START is startTime
+    if (!startTime || mtgStart.isBefore(startTime)) {
+      startTime = mtgStart
+    }
+
+    // latest meeting END is endTime
+    if (!endTime || mtgEnd.isAfter(endTime)) {
+      endTime = mtgEnd
+    }
+  }
+
+  return {
+    startTime,
+    endTime
+  }
 }
 
 const getClassById = (classId, classes) => {
@@ -45,5 +83,6 @@ const validate = (classObj) => {
 export default {
   getRegisteredCount,
   getClassById,
+  getStartEndTimes,
   validate
 }
