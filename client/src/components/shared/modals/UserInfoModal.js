@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import Switch from 'react-switch'
-import { FaInfoCircle } from 'react-icons/fa'
+import { FaInfoCircle, FaApple, FaCheckCircle, FaCrown } from 'react-icons/fa'
 import { Button, Col, Form, InputGroup, Modal } from 'react-bootstrap'
+
+import Flex from '../styled-system/Flex'
 
 import User from '../../../domains/User'
 import updateUser from '../../../api/updateUser'
@@ -139,32 +141,46 @@ class UserInfoModal extends React.Component {
         </Modal.Body>
 
         <Modal.Footer style={{ justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Switch
-              checked={isApproved}
-              onChange={() => this.setState({ isApproved: !isApproved })}
-            />
+          <Flex flexDirection='column'>
+            <Flex alignItems='center' marginBottom='0.5em'>
+              <Switch
+                checked={isApproved}
+                onChange={() => this.setState({ isApproved: !isApproved })}
+              />
 
-            <div style={{ marginLeft: '0.5em' }}>Approved</div>
-          </div>
+              <Flex marginLeft='0.25em'>
+                <FaCheckCircle/>
+              </Flex>
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Switch
-              checked={isInstructor}
-              onChange={() => this.setState({ isInstructor: !isInstructor })}
-            />
+              <div style={{ marginLeft: '0.5em' }}>Approved</div>
+            </Flex>
 
-            <div style={{ marginLeft: '0.5em' }}>Instructor</div>
-          </div>
+            <Flex alignItems='center' marginBottom='0.5em'>
+              <Switch
+                checked={isInstructor}
+                onChange={() => this.setState({ isInstructor: !isInstructor })}
+              />
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Switch
-              checked={isAdmin}
-              onChange={() => this.setState({ isAdmin: !isAdmin })}
-            />
+              <Flex marginLeft='0.25em'>
+                <FaApple/>
+              </Flex>
 
-            <div style={{ marginLeft: '0.5em' }}>Approved</div>
-          </div>
+              <div style={{ marginLeft: '0.5em' }}>Instructor</div>
+            </Flex>
+
+            <Flex alignItems='center'>
+              <Switch
+                checked={isAdmin}
+                onChange={() => this.setState({ isAdmin: !isAdmin })}
+              />
+
+              <Flex marginLeft='0.25em'>
+                <FaCrown/>
+              </Flex>
+
+              <div style={{ marginLeft: '0.5em' }}>Admin</div>
+            </Flex>
+          </Flex>
 
           <Button
             disabled={this.profileNotEdited}
