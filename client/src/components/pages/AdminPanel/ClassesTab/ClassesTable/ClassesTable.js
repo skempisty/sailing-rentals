@@ -11,7 +11,7 @@ const ClassesTable = ({ classes, noDataMsg, hasActionColumn }) => {
     <Card>
       <Table responsive style={{ margin: '0' }}>
         <thead><tr>
-          <th>Instructor</th>
+          <th>ID</th>
           <th>Start</th>
           <th>End</th>
           <th>Enrolled</th>

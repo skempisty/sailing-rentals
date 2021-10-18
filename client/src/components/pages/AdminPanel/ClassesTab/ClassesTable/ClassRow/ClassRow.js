@@ -10,9 +10,7 @@ import DeleteClassModal from './DeleteClassModal'
 import SelectMenu from '../../../../../shared/SelectMenu'
 import SelectMenuItem from '../../../../../shared/SelectMenuItem'
 
-import User from '../../../../../../domains/User'
 import Klass from '../../../../../../domains/Klass'
-import getUserById from '../../../../../../store/orm/users/getUserById'
 
 import { useClasses } from '../../../../../../store/classes'
 
@@ -23,7 +21,8 @@ const ClassRow = ({ klass, hasActionColumn }) => {
 
   const { classRegistrations } = useClasses()
 
-  const instructorName = User.buildUserFullName(getUserById(klass.instructorId))
+  const { startTime, endTime } = Klass.getStartEndTimes(klass)
+
   const enrolledCount = Klass.getRegisteredCount(klass.id, classRegistrations)
 
   return (
@@ -35,14 +34,14 @@ const ClassRow = ({ klass, hasActionColumn }) => {
       />
 
       <tr style={{ whiteSpace: 'nowrap' }}>
-        {/* Instructor */}
-        <td>{instructorName}</td>
+        {/* id */}
+        <td>{klass.id}</td>
 
         {/* Start */}
-        <td>TBD</td>
+        <td>{startTime.format('hh:mm a, MMM DD, YYYY')}</td>
 
         {/* End */}
-        <td>TBD</td>
+        <td>{endTime.format('hh:mm a, MMM DD, YYYY')}</td>
 
         {/* Enrolled */}
         <td>{enrolledCount}/{klass.capacity}</td>
