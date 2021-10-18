@@ -4,6 +4,7 @@ const db = require('../connectDb')
 
 const ValidationError = require('../errors/ValidationError')
 
+const getInsertSqlPlaceholders = require('../utils/getInsertSqlPlaceholders')
 const { rentalTypes } = require('../utils/constants')
 
 exports.getMyRentals = async (userId) => {
@@ -36,6 +37,34 @@ exports.createRental = async (rentedBy, newRentalObj) => {
   const [ rental ] = await db.query(`SELECT * FROM ${db.name}.rentals WHERE id = LAST_INSERT_ID()`)
 
   return rental
+}
+
+/**
+ * Create multiple rentals simultaneously
+ * @param {Rental[]} newRentalObjs
+ * @returns {Promise<*>}
+ */
+exports.createRentals = async (newRentalObjs) => {
+  // validate rentals
+  for (const rental of newRentalObjs) {
+    const validation = await validateRental(rental, rental.rentedBy)
+
+    if (validation.error) {
+      throw new ValidationError(validation.error.message)
+    }
+  }
+
+  const newRentalsData = newRentalObjs.map(rental => {
+    const { rentedBy, boatId, start, end, crewCount, type, reason } = rental
+
+    return [ rentedBy, boatId, start, end, crewCount, type, reason ]
+  })
+
+  await db.query(`
+    INSERT INTO ${db.name}.rentals
+    (rentedBy, boatId, start, end, crewCount, type, reason)
+    VALUES ${getInsertSqlPlaceholders(newRentalsData)}
+  `, newRentalsData.flat())
 }
 
 exports.updateRental = async (updateFields, rentalId, rentedBy) => {
