@@ -45,7 +45,7 @@ const defaultClassMtgs = [
   },
   {
     id: uuidv4(),
-    name: 'Check Sail',
+    name: 'On-the-water training 3',
     classId: randomClassId,
     instructorId: -1,
     boatId: -1,
