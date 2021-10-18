@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
+
 import { Tabs, Tab } from 'react-bootstrap'
 
 import ContentWrapper from '../../shared/ContentWrapper'
@@ -27,71 +29,75 @@ const StyledWrapper = styled.div`
   }
 `
 
-export default class AdminPanel extends React.Component {
-  constructor(props) {
-    super(props)
+const AdminPanel = () => {
+  const location = useLocation()
 
-    this.state = { activeKey: 'users' }
-  }
+  const [activeKey, setActiveKey] = useState('users')
 
-  render() {
-    const { activeKey } = this.state
+  useEffect(() => {
+    const { hash } = location
 
-    return (
-      <ContentWrapper>
-        <StyledWrapper>
-          <h1>Admin Panel</h1>
+    if (hash) {
+      setActiveKey(hash.substring(1))
+    }
+  }, [])
 
-          <Tabs
-            activeKey={activeKey}
-            onSelect={(tab) => this.setState({ activeKey: tab })}
-            variant='pills'
-            style={{
-              marginBottom: '1em',
-              paddingBottom: '1em',
-              borderBottom: '1px solid white'
-            }}
-            mountOnEnter
-            unmountOnExit
-          >
-            <Tab eventKey='users' title='Users'>
-              <UsersTab/>
-            </Tab>
+  return (
+    <ContentWrapper>
+      <StyledWrapper>
+        <h1>Admin Panel</h1>
 
-            <Tab eventKey='carousel' title='Carousel'>
-              <CarouselTab/>
-            </Tab>
+        <Tabs
+          activeKey={activeKey}
+          onSelect={(tab) => setActiveKey(tab)}
+          variant='pills'
+          style={{
+            marginBottom: '1em',
+            paddingBottom: '1em',
+            borderBottom: '1px solid white'
+          }}
+          mountOnEnter
+          unmountOnExit
+        >
+          <Tab eventKey='users' title='Users'>
+            <UsersTab/>
+          </Tab>
 
-            <Tab eventKey='posts' title='Posts'>
-              <PostsTab/>
-            </Tab>
+          <Tab eventKey='carousel' title='Carousel'>
+            <CarouselTab/>
+          </Tab>
 
-            <Tab eventKey='boats' title='Boats'>
-              <BoatsTab/>
-            </Tab>
+          <Tab eventKey='posts' title='Posts'>
+            <PostsTab/>
+          </Tab>
 
-            <Tab eventKey='rentals' title='Rentals'>
-              <RentalsTab/>
-            </Tab>
+          <Tab eventKey='boats' title='Boats'>
+            <BoatsTab/>
+          </Tab>
 
-            <Tab eventKey='classes' title='Classes'>
-              <ClassesTab/>
-            </Tab>
+          <Tab eventKey='rentals' title='Rentals'>
+            <RentalsTab/>
+          </Tab>
 
-            <Tab eventKey='payments' title='Payments'>
-              <PaymentsTab/>
-            </Tab>
+          <Tab eventKey='classes' title='Classes'>
+            <ClassesTab/>
+          </Tab>
 
-            <Tab eventKey='dry_dock' title='Dry Dock'>
-              <DryDockTab/>
-            </Tab>
+          <Tab eventKey='payments' title='Payments'>
+            <PaymentsTab/>
+          </Tab>
 
-            <Tab eventKey='site_settings' title='Site Settings'>
-              <SiteSettingsTab/>
-            </Tab>
-          </Tabs>
-        </StyledWrapper>
-      </ContentWrapper>
-    )
-  }
+          <Tab eventKey='dry_dock' title='Dry Dock'>
+            <DryDockTab/>
+          </Tab>
+
+          <Tab eventKey='site_settings' title='Site Settings'>
+            <SiteSettingsTab/>
+          </Tab>
+        </Tabs>
+      </StyledWrapper>
+    </ContentWrapper>
+  )
 }
+
+export default AdminPanel
