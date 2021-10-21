@@ -54,14 +54,14 @@ const AddClass = () => {
     history.push('/admin-panel#classes')
   }
 
-  const pageTitle = View.isNewClass(classId) ? 'Add Class' : 'Edit Class'
+  const pageTitle = View.isNewClass(classId) ? 'Add Class' : `Edit Class ${classId}`
 
   const { capacity, price, details } = addEditClass
 
   return (
     <ContentWrapper>
       <StyledBreadcrumb>
-        <Breadcrumb.Item onClick={() => history.push('/admin-panel')}>Admin Panel</Breadcrumb.Item>
+        <Breadcrumb.Item onClick={() => history.push('/admin-panel#classes')}>Admin Panel</Breadcrumb.Item>
         <Breadcrumb.Item active>{pageTitle}</Breadcrumb.Item>
       </StyledBreadcrumb>
 
