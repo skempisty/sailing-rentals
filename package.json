@@ -24,6 +24,7 @@
     "@babel/core": "^7.14.0",
     "@paypal/checkout-server-sdk": "^1.0.2",
     "@reduxjs/toolkit": "^1.5.0",
+    "@tinymce/tinymce-react": "^3.13.0",
     "@types/sortablejs": "^1.10.6",
     "aws-sdk": "^2.863.0",
     "backblaze-b2": "^1.6.0",

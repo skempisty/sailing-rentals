@@ -25,7 +25,12 @@ const MultiStepContent = ({
     <>
       {childrenWithProps}
 
-      <Flex justifyContent={onFirstStep ? 'flex-end' :'space-between'}>
+      <Flex
+        justifyContent={onFirstStep ? 'flex-end' :'space-between'}
+        marginTop='1em'
+        paddingTop='1em'
+        borderTop='1px solid white'
+      >
         {!onFirstStep &&
           <Button variant='secondary' onClick={() => setStep(step - 1)}>
             {backBtnText}
