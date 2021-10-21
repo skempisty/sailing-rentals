@@ -25,14 +25,14 @@ exports.getClasses = async () => {
 
     return {
       ...klass,
-      classMeetings: mtgsInClass
+      meetings: mtgsInClass
     }
   })
 }
 
 exports.getClass = async (id) => {
   const [ klass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = ?`, [id])
-  klass.classMeetings = await db.query(`SELECT * FROM ${db.name}.class_meetings WHERE classId = ?`, [id])
+  klass.meetings = await db.query(`SELECT * FROM ${db.name}.class_meetings WHERE classId = ?`, [id])
 
   return klass
 }

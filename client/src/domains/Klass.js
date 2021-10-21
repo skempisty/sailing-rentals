@@ -23,7 +23,7 @@ const getRegisteredCount = (classId, classRegistrations) => {
  * @returns {{startTime: Moment, endTime: Moment}} returns as moments not strings
  */
 const getStartEndTimes = (klass) => {
-  const meetings = klass.classMeetings
+  const meetings = klass.meetings
 
   let startTime = ''
   let endTime = ''

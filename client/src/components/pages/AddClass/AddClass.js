@@ -34,13 +34,13 @@ const AddClass = () => {
     if (View.isNewClass(classId)) {
       updateAddEditClass({ meetings: View.defaultClassMtgs })
     } else {
-      // await getClassThunk(classId)
+      getClassThunk(classId)
     }
   }
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [classId])
 
   const handleClassSubmit = async () => {
     if (View.isNewClass(classId)) {

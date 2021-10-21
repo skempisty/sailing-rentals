@@ -12,7 +12,7 @@ import Constants from '../utils/constants'
  * @property {Date} createdAt
  * @property {Date} updatedAt
  * @property {Date} deletedAt
- * @property {ClassMeeting[]} classMeetings
+ * @property {ClassMeeting[]} meetings
  */
 
 /**
