@@ -72,25 +72,29 @@ const AddClass = () => {
           <MultiStepContent onSubmit={handleClassSubmit}>
             <ContentStep>
               <Form>
-                <Form.Group>
-                  <Form.Label><b>Class Capacity</b></Form.Label>
-                  <Form.Control
-                    type='text'
-                    value={capacity}
-                    onChange={(e) => updateAddEditClass({ capacity: e.target.value })}
-                  />
-                </Form.Group>
+                <Box maxWidth='10em'>
+                  <Form.Group>
+                    <Form.Label><b>Class Capacity</b></Form.Label>
+                    <Form.Control
+                      type='number'
+                      value={capacity}
+                      onChange={(e) => updateAddEditClass({ capacity: e.target.value })}
+                    />
+                  </Form.Group>
+                </Box>
 
-                <Form.Group>
-                  <Form.Label><b>Registration Price</b></Form.Label>
-                  <CurrencyInput
-                    className='form-control'
-                    decimalsLimit={2}
-                    prefix='$'
-                    value={price}
-                    onValueChange={(value) => updateAddEditClass({ price: value })}
-                  />
-                </Form.Group>
+                <Box maxWidth='10em'>
+                  <Form.Group>
+                    <Form.Label><b>Registration Price</b></Form.Label>
+                    <CurrencyInput
+                      className='form-control'
+                      decimalsLimit={2}
+                      prefix='$'
+                      value={price}
+                      onValueChange={(value) => updateAddEditClass({ price: value })}
+                    />
+                  </Form.Group>
+                </Box>
 
                 <Form.Group>
                   <Form.Label style={{ color: 'white' }}><b>Details</b></Form.Label>
