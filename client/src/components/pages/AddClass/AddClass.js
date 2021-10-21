@@ -17,6 +17,7 @@ import CustomizeClassMtgs from './CustomizeClassMtgs'
 import View from '../../../domains/views/AddClass'
 
 import { useClasses } from '../../../store/classes'
+import RichTextArea from "../../shared/RichTextArea";
 
 const AddClass = () => {
   const { id: classId } = useParams()
@@ -94,31 +95,10 @@ const AddClass = () => {
                 <Form.Group>
                   <Form.Label style={{ color: 'white' }}><b>Details</b></Form.Label>
 
-                  <Card style={{ padding: '0.5em' }}>
-                    <Editor
-                      value={details}
-                      apiKey='k7k4vfwhahx9lkapst52sfshfl2z36j4wmnsycw2lc30avnv'
-                      init={{
-                        placeholder: 'Optional',
-                        height: 500,
-                        menubar: false,
-                        elementpath: false,
-                        contextmenu: false,
-                        branding: false,
-                        plugins: [
-                          'advlist autolink lists link image charmap print preview anchor',
-                          'searchreplace visualblocks code fullscreen',
-                          'insertdatetime media table emoticons paste code help wordcount'
-                        ],
-                        toolbar: 'undo redo | formatselect | ' +
-                          'bold italic forecolor emoticons | alignleft aligncenter ' +
-                          'alignright alignjustify | bullist numlist outdent indent | ' +
-                          'removeformat | help',
-                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                      }}
-                      onEditorChange={(value) => updateAddEditClass({ details: value })}
-                    />
-                  </Card>
+                  <RichTextArea
+                    value={details}
+                    onChange={(newDetails) => updateAddEditClass({ details: newDetails })}
+                  />
                 </Form.Group>
               </Form>
             </ContentStep>
