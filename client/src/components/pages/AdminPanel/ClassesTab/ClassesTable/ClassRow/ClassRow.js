@@ -38,10 +38,10 @@ const ClassRow = ({ klass, hasActionColumn }) => {
         <td>{klass.id}</td>
 
         {/* Start */}
-        <td>{startTime.format('hh:mm a, MMM DD, YYYY')}</td>
+        <td>{moment.isMoment(startTime) ? startTime.format('hh:mm a, MMM DD, YYYY') : ''}</td>
 
         {/* End */}
-        <td>{endTime.format('hh:mm a, MMM DD, YYYY')}</td>
+        <td>{moment.isMoment(endTime) ? endTime.format('hh:mm a, MMM DD, YYYY') : ''}</td>
 
         {/* Enrolled */}
         <td>{enrolledCount}/{klass.capacity}</td>
