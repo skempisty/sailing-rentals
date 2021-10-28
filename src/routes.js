@@ -610,8 +610,6 @@ router.get('/classes', async (req, res) => {
 router.get('/classes/:id', async (req, res) => {
   const { id } = req.params
 
-  console.log('id IN ROUTE', id)
-
   const klass = await api.classes.getClass(id)
 
   res.send(klass)
