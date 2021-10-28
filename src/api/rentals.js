@@ -4,7 +4,6 @@ const db = require('../connectDb')
 
 const ValidationError = require('../errors/ValidationError')
 
-const getInsertSqlPlaceholders = require('../utils/getInsertSqlPlaceholders')
 const { rentalTypes } = require('../utils/constants')
 
 exports.getMyRentals = async (userId) => {
@@ -42,29 +41,39 @@ exports.createRental = async (rentedBy, newRentalObj) => {
 /**
  * Create multiple rentals simultaneously
  * @param {Rental[]} newRentalObjs
- * @returns {Promise<*>}
+ * @returns {Promise<number[]>} array of newly inserted rental ids
  */
 exports.createRentals = async (newRentalObjs) => {
   // validate rentals
-  for (const rental of newRentalObjs) {
-    const validation = await validateRental(rental, rental.rentedBy)
+  for (const newRental of newRentalObjs) {
+    const validation = await validateRental(newRental, newRental.rentedBy)
 
     if (validation.error) {
       throw new ValidationError(validation.error.message)
     }
   }
 
-  const newRentalsData = newRentalObjs.map(rental => {
-    const { rentedBy, boatId, start, end, crewCount, type, reason } = rental
+  const insertedIds = []
 
-    return [ rentedBy, boatId, start, end, crewCount, type, reason ]
-  })
+  // create rentals
+  for (const newRental of newRentalObjs) {
+    const { rentedBy, boatId, start, end, crewCount, type, reason } = newRental
 
-  await db.query(`
-    INSERT INTO ${db.name}.rentals
-    (rentedBy, boatId, start, end, crewCount, type, reason)
-    VALUES ${getInsertSqlPlaceholders(newRentalsData)}
-  `, newRentalsData.flat())
+    const insertArgs = [ rentedBy, boatId, start, end, crewCount, type, reason ]
+
+    await db.query(`
+      INSERT INTO ${db.name}.rentals
+      (rentedBy, boatId, start, end, crewCount, type, reason)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `, insertArgs)
+
+    const [ rental ] = await db.query(`SELECT * FROM ${db.name}.rentals WHERE id = LAST_INSERT_ID()`)
+
+    insertedIds.push(rental.id)
+  }
+
+  // return ids
+  return insertedIds
 }
 
 exports.updateRental = async (updateFields, rentalId, rentedBy) => {

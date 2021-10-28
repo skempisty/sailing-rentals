@@ -32,7 +32,7 @@ exports.getClasses = async () => {
 
 exports.getClass = async (id) => {
   const [ klass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = ?`, [id])
-  klass.meetings = await db.query(`SELECT * FROM ${db.name}.class_meetings WHERE classId = ?`, [id])
+  klass.meetings = await db.query(`SELECT * FROM ${db.name}.class_meetings WHERE classId = ? ORDER BY start`, [id])
 
   return klass
 }
@@ -58,6 +58,9 @@ exports.createClass = async (classObj, creatorId) => {
 
   // create the boat rentals for the "useBoat" meetings
   const useBoatMtgs = meetings.filter(mtg => mtg.boatId)
+  const noBoatMtgs = meetings.filter(mtg => !mtg.boatId)
+
+  let newBoatMeetingsData = []
 
   if (useBoatMtgs.length) {
     const meetingRentals = useBoatMtgs.map(mtg => new Rental({
@@ -70,21 +73,30 @@ exports.createClass = async (classObj, creatorId) => {
       reason: 'Sailing Instruction'
     }))
 
-    await rentalsApi.createRentals(meetingRentals)
+    const newRentalIds = await rentalsApi.createRentals(meetingRentals)
+
+    // create useBoat meetings using inserted Rental ids
+    newBoatMeetingsData = useBoatMtgs.map((mtg, index) => {
+      const { name, instructorId, details, start, end } = mtg
+
+      return [ name, createdClass.id, instructorId, newRentalIds[index], details, start, end ]
+    })
   }
 
-  // create the meetings for the class
-  const newMeetingsData = meetings.map(mtg => {
+  // create the non-boat using meetings
+  const newNoBoatMeetingsData = noBoatMtgs.map(mtg => {
     const { name, instructorId, details, start, end } = mtg
 
-    return [ name, createdClass.id, instructorId, details, start, end ]
+    return [ name, createdClass.id, instructorId, null, details, start, end ]
   })
+
+  const combinedMtgData = newBoatMeetingsData.concat(newNoBoatMeetingsData)
 
   await db.query(`
     INSERT INTO ${db.name}.class_meetings
-    (name, classId, instructorId, details, start, end)
-    VALUES ${getInsertSqlPlaceholders(newMeetingsData)}
-  `, newMeetingsData.flat())
+    (name, classId, instructorId, rentalId, details, start, end)
+    VALUES ${getInsertSqlPlaceholders(combinedMtgData)}
+  `, combinedMtgData.flat())
 
   return createdClass
 }
