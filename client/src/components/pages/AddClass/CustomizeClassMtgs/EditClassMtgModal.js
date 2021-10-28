@@ -41,8 +41,16 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
 
       const { upcomingEvents } = Event.splitUpcomingAndPast(rentalsForBoat)
 
+      /*
+       * Exclude rentals made by this class. The rentals
+       * made by this class are included as events already
+       */
+      const classRentalIds = addEditClass.meetings.map(mtg => mtg.rentalId).filter(Boolean)
+
+      const filteredEvents = upcomingEvents.filter(event => !classRentalIds.includes(event.id))
+
       // add all rentals using the same boat
-      calendarEvents = calendarEvents.concat(upcomingEvents)
+      calendarEvents = calendarEvents.concat(filteredEvents)
     }
 
     return Calendar.getEventsForCalendar(state, calendarEvents)
