@@ -322,17 +322,17 @@ export const useRentalCalendar = (props) => {
            * Blue
            */
           // this is the class meeting being edited on this Calendar
-          label = selectedBoatId ? `Saved Meeting Time Aboard ${boatName}` : 'New Meeting Time'
+          label = event.boatId ? `Saved Meeting Time Aboard ${boatName}` : 'New Meeting Time'
           details = event.name
-          icon = selectedBoatId ? <RiSailboatFill/> : <FaUsers/>
+          icon = event.boatId ? <RiSailboatFill/> : <FaUsers/>
         } else if (!event.isNewEvent && event.classId === editEvent.classId) {
           /**
            * Purple
            */
           label = 'Meeting In This Class'
-          label = selectedBoatId ? `Meeting In This Class Aboard ${boatName}` : 'Meeting In This Class'
+          label = event.boatId ? `Meeting In This Class Aboard ${boatName}` : 'Meeting In This Class'
           details = event.name
-          icon = selectedBoatId ? <RiSailboatFill/> : <FaUsers/>
+          icon = event.boatId ? <RiSailboatFill/> : <FaUsers/>
         } else if (!event.isNewEvent && event.id) {
           /**
            * Grey
@@ -367,9 +367,9 @@ export const useRentalCalendar = (props) => {
           /**
            * Green
            */
-          label = selectedBoatId ? `New Meeting Time Aboard ${boatName}` : 'New Meeting Time'
+          label = event.boatId ? `New Meeting Time Aboard ${boatName}` : 'New Meeting Time'
           details = event.name
-          icon = selectedBoatId ? <RiSailboatFill/> : <FaUsers/>
+          icon = event.boatId ? <RiSailboatFill/> : <FaUsers/>
         }
 
         break
