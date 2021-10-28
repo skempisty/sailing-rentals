@@ -10,6 +10,8 @@ import updateClassThunk from './thunks/updateClassThunk'
 
 import Klass from '../models/Klass'
 
+import AddClass from '../domains/views/AddClass'
+
 const classSlice = createSlice({
   name: 'classes',
   initialState: {
@@ -19,6 +21,9 @@ const classSlice = createSlice({
     addEditValidationErrorMsg: null
   },
   reducers: {
+    setDefaultAddEditClass: (state) => {
+      state.addEditClass = AddClass.defaultClass
+    },
     updateAddEditClass: (state, action) => {
       const updateFields = action.payload
 
@@ -56,6 +61,7 @@ const classSlice = createSlice({
 })
 
 const {
+  setDefaultAddEditClass,
   updateAddEditClass
 } = classSlice.actions
 
@@ -64,6 +70,7 @@ export const useClasses = () => {
 
   return {
     ...classes,
+    setDefaultAddEditClass: useAction(setDefaultAddEditClass),
     updateAddEditClass: useAction(updateAddEditClass),
     getClassesThunk: useAction(getClassesThunk),
     getClassThunk: useAction(getClassThunk),

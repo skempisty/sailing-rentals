@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 
-import { Breadcrumb, Card, Form } from 'react-bootstrap'
+import { Breadcrumb, Form } from 'react-bootstrap'
 import CurrencyInput from 'react-currency-input-field'
-import { Editor } from '@tinymce/tinymce-react'
 
 import Box from '../../shared/styled-system/Box'
 import Title from '../../shared/styled-system/Title'
@@ -25,6 +24,7 @@ const AddClass = () => {
 
   const {
     addEditClass,
+    setDefaultAddEditClass,
     updateAddEditClass,
     createClassThunk,
     getClassThunk
@@ -32,7 +32,7 @@ const AddClass = () => {
 
   const fetchData = async () => {
     if (View.isNewClass(classId)) {
-      updateAddEditClass({ meetings: View.defaultClassMtgs })
+      setDefaultAddEditClass()
     } else {
       getClassThunk(classId)
     }

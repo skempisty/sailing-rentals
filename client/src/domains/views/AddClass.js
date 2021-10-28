@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 
+import Klass from '../../models/Klass'
+
 const randomClassId = uuidv4()
 
 const defaultClassMtgs = [
@@ -66,6 +68,13 @@ const freshMtg = {
   end: null
 }
 
+const defaultClass = new Klass({
+  capacity: 5,
+  price: 225,
+  details: '',
+  meetings: defaultClassMtgs
+})
+
 /**
  * -1 classId indicates we're crafting a new Class.
  * @param {number|string} classId
@@ -74,6 +83,7 @@ const freshMtg = {
 const isNewClass = (classId) => Number(classId) < 0
 
 export default {
+  defaultClass,
   defaultClassMtgs,
   freshMtg,
   isNewClass
