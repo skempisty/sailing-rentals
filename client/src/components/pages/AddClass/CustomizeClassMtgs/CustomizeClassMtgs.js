@@ -18,7 +18,7 @@ const CustomizeClassMtgs = ({ isNewClass }) => {
   const { meetings: mtgs } = addEditClass
 
   const handleAddMtgClick = () => {
-    updateAddEditClass({ meetings: mtgs.concat([View.freshMtg]) })
+    updateAddEditClass({ meetings: mtgs.concat([View.getFreshClassMtg(addEditClass.id)]) })
   }
 
   const handleMtgDeleteClick = (index) => {

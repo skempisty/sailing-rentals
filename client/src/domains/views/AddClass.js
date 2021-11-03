@@ -57,17 +57,6 @@ const defaultClassMtgs = [
   }
 ]
 
-const freshMtg = {
-  id: uuidv4(),
-  name: 'New Mtg',
-  classId: randomClassId,
-  instructorId: -1,
-  boatId: null,
-  details: 'Something should be taught here',
-  start: null,
-  end: null
-}
-
 const defaultClass = new Klass({
   capacity: 5,
   price: 225,
@@ -82,9 +71,22 @@ const defaultClass = new Klass({
  */
 const isNewClass = (classId) => Number(classId) < 0
 
+const getFreshClassMtg = (classId = null) => {
+  return {
+    id: uuidv4(),
+    name: 'New Mtg',
+    classId: classId || randomClassId,
+    instructorId: -1,
+    boatId: null,
+    details: 'Something should be taught here',
+    start: null,
+    end: null
+  }
+}
+
 export default {
   defaultClass,
   defaultClassMtgs,
-  freshMtg,
-  isNewClass
+  isNewClass,
+  getFreshClassMtg
 }
