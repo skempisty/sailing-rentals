@@ -38,44 +38,6 @@ exports.createRental = async (rentedBy, newRentalObj) => {
   return rental
 }
 
-/**
- * Create multiple rentals simultaneously
- * @param {Rental[]} newRentalObjs
- * @returns {Promise<number[]>} array of newly inserted rental ids
- */
-exports.createRentals = async (newRentalObjs) => {
-  // validate rentals
-  for (const newRental of newRentalObjs) {
-    const validation = await validateRental(newRental, newRental.rentedBy)
-
-    if (validation.error) {
-      throw new ValidationError(validation.error.message)
-    }
-  }
-
-  const insertedIds = []
-
-  // create rentals
-  for (const newRental of newRentalObjs) {
-    const { rentedBy, boatId, start, end, crewCount, type, reason } = newRental
-
-    const insertArgs = [ rentedBy, boatId, start, end, crewCount, type, reason ]
-
-    await db.query(`
-      INSERT INTO ${db.name}.rentals
-      (rentedBy, boatId, start, end, crewCount, type, reason)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, insertArgs)
-
-    const [ rental ] = await db.query(`SELECT * FROM ${db.name}.rentals WHERE id = LAST_INSERT_ID()`)
-
-    insertedIds.push(rental.id)
-  }
-
-  // return ids
-  return insertedIds
-}
-
 exports.updateRental = async (updateFields, rentalId, rentedBy) => {
   const { crewCount, reason, start, end  } = updateFields
 

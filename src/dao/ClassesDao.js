@@ -1,31 +1,12 @@
-const db = require("../connectDb");
+const db = require('../connectDb')
 
-class Klass {
-  constructor({
-    id,
-    details,
-    capacity,
-    price
-  }) {
-    const hasRequiredFields = [ type, boatId, rentedBy, crewCount, start, end ].every(Boolean)
-    if (!hasRequiredFields) throw new Error('Error creating a Rental object without a required field')
-
-    this.id = id || null
-    this.type = type
-    this.boatId = boatId
-    this.rentedBy = rentedBy
-    this.crewCount = crewCount
-    this.start = start
-    this.end = end
-    this.reason = reason || ''
-  }
-
+const ClassesDao = () => {
   /**
-   *
-   * @param {Klass} classObj
+   * @param {ClassDto} classObj data for creating a class
+   * @returns {Promise<ClassDto>} the created class
    */
-  create(classObj) {
-    const { details, capacity, price, meetings } = classObj
+  const create = async (classObj) => {
+    const { details, capacity, price } = classObj
 
     // create the class
     const newClass = [ details, capacity, price ]
@@ -33,11 +14,13 @@ class Klass {
     await db.query(`INSERT INTO ${db.name}.classes (details, capacity, price) VALUES (?, ?, ?)`, newClass)
 
     const [ createdClass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = LAST_INSERT_ID()`)
+
+    return createdClass
   }
 
-  static update() {
-
+  return {
+    create
   }
 }
 
-module.exports = Klass
+module.exports = ClassesDao()

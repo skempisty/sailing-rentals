@@ -1,4 +1,4 @@
-class Rental {
+class RentalDto {
   constructor({
     id,
     type,
@@ -10,7 +10,7 @@ class Rental {
     reason
   }) {
     const hasRequiredFields = [ type, boatId, rentedBy, crewCount, start, end ].every(Boolean)
-    if (!hasRequiredFields) throw new Error('Error creating a Rental object without a required field')
+    if (!hasRequiredFields) throw new Error('Error creating a RentalDto without a required field')
 
     this.id = id || null
     this.type = type
@@ -23,4 +23,4 @@ class Rental {
   }
 }
 
-module.exports = Rental
+module.exports = RentalDto
