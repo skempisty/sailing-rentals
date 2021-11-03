@@ -10,13 +10,13 @@ import ContentWrapper from '../../shared/ContentWrapper'
 import StyledBreadcrumb from '../../shared/StyledBreadcrumb'
 import MultiStepContent from '../../shared/MultiStepContent'
 import ContentStep from '../../shared/MultiStepContent/ContentStep'
+import RichTextArea from '../../shared/RichTextArea'
 
 import CustomizeClassMtgs from './CustomizeClassMtgs'
 
 import View from '../../../domains/views/AddClass'
 
 import { useClasses } from '../../../store/classes'
-import RichTextArea from "../../shared/RichTextArea";
 
 const AddClass = () => {
   const { id: classId } = useParams()
@@ -27,6 +27,7 @@ const AddClass = () => {
     setDefaultAddEditClass,
     updateAddEditClass,
     createClassThunk,
+    updateClassThunk,
     getClassThunk
   } = useClasses()
 
@@ -48,7 +49,7 @@ const AddClass = () => {
 
       if (validationErrorMsg) return // TODO: display this msg somewhere
     } else {
-      // updateClassThunk(addEditClass)
+      updateClassThunk(addEditClass)
     }
 
     history.push('/admin-panel#classes')

@@ -4,8 +4,12 @@ import { Alert, Card, Table } from 'react-bootstrap'
 
 import ClassRow from './ClassRow'
 
+import isNotDeleted from '../../../../../utils/isNotDeleted'
+
 const ClassesTable = ({ classes, noDataMsg, hasActionColumn }) => {
-  const hasClasses = !!classes.length
+  const nonDeletedClasses = classes.filter(isNotDeleted)
+
+  const hasClasses = !!nonDeletedClasses.length
 
   return (
     <Card>
@@ -21,7 +25,7 @@ const ClassesTable = ({ classes, noDataMsg, hasActionColumn }) => {
 
         {hasClasses &&
           <tbody>
-            {classes.map((klass, index) =>
+            {nonDeletedClasses.map((klass, index) =>
               <ClassRow
                 key={`class-row-${klass.id}-${index}`}
                 klass={klass}

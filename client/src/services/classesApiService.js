@@ -133,18 +133,15 @@ const classesApiService = () => {
   const deleteClass = async (id) => {
     const url = `${Constants.baseUrl}/api/classes/${id}`
 
-    const expectedStatuses = [ 200 ]
-
     const deleteOptions = {
       method: 'DELETE',
-      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
       }
     }
 
-    return await fetchAndCheckStatus(url, expectedStatuses, deleteOptions)
+    return await fetchAndCheckStatus(url, undefined, deleteOptions)
   }
 
   return {

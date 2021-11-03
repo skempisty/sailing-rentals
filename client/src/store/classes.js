@@ -7,6 +7,7 @@ import getClassesThunk from './thunks/getClassesThunk'
 import getClassThunk from './thunks/getClassThunk'
 import createClassThunk from './thunks/createClassThunk'
 import updateClassThunk from './thunks/updateClassThunk'
+import deleteClassThunk from './thunks/deleteClassThunk'
 
 import Klass from '../models/Klass'
 
@@ -57,6 +58,11 @@ const classSlice = createSlice({
 
       state.classes[classIndex] = updatedClass
     })
+    builder.addCase(deleteClassThunk.fulfilled, (state, action) => {
+      const deletedClassId = action.meta.arg
+
+      state.classes = state.classes.filter(klass => klass.id !== deletedClassId)
+    })
   }
 })
 
@@ -75,7 +81,8 @@ export const useClasses = () => {
     getClassesThunk: useAction(getClassesThunk),
     getClassThunk: useAction(getClassThunk),
     createClassThunk: useAction(createClassThunk),
-    updateClassThunk: useAction(updateClassThunk)
+    updateClassThunk: useAction(updateClassThunk),
+    deleteClassThunk: useAction(deleteClassThunk)
   }
 }
 

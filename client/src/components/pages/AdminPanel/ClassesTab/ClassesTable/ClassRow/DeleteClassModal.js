@@ -3,9 +3,14 @@ import PropTypes from 'prop-types'
 
 import { Button, Modal } from 'react-bootstrap'
 
+import { useClasses } from '../../../../../../store/classes'
+
 const DeleteClassModal = ({ show, klass, onHide }) => {
+  const { deleteClassThunk } = useClasses()
+
   const handleDeleteConfirmClick = () => {
-    console.log('delete!')
+    deleteClassThunk(klass.id)
+    onHide()
   }
 
   return (
