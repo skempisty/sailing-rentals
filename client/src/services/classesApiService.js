@@ -107,8 +107,6 @@ const classesApiService = () => {
   const updateClass = async (id, updatedClassObj) => {
     const url = `${Constants.baseUrl}/api/classes/${id}`
 
-    const expectedStatuses = [ 200 ]
-
     const putOptions = {
       method: 'PUT',
       headers: {
@@ -118,7 +116,7 @@ const classesApiService = () => {
       body: JSON.stringify(updatedClassObj)
     };
 
-    return await fetchAndCheckStatus(url, expectedStatuses, putOptions)
+    return await fetchAndCheckStatus(url, undefined, putOptions)
   }
 
   /**
