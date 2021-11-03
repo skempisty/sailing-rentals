@@ -49,7 +49,7 @@ const AddClass = () => {
 
       if (validationErrorMsg) return // TODO: display this msg somewhere
     } else {
-      updateClassThunk(addEditClass)
+      updateClassThunk({ id: classId, classObj: addEditClass })
     }
 
     history.push('/admin-panel#classes')
@@ -112,7 +112,7 @@ const AddClass = () => {
             </ContentStep>
 
             <ContentStep>
-              <CustomizeClassMtgs/>
+              <CustomizeClassMtgs isNewClass={View.isNewClass(classId)}/>
             </ContentStep>
           </MultiStepContent>
         </Box>

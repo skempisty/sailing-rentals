@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { Form, Button } from 'react-bootstrap'
 import { ReactSortable } from 'react-sortablejs'
@@ -11,7 +12,7 @@ import View from '../../../../domains/views/AddClass'
 
 import { useClasses } from '../../../../store/classes'
 
-const CustomizeClassMtgs = () => {
+const CustomizeClassMtgs = ({ isNewClass }) => {
   const { addEditClass, updateAddEditClass } = useClasses()
 
   const { meetings: mtgs } = addEditClass
@@ -50,12 +51,18 @@ const CustomizeClassMtgs = () => {
       <Flex>
         <Button onClick={handleAddMtgClick}>+ Meeting</Button>
 
-        <Box marginLeft='0.5em'>
-          <Button onClick={() => updateAddEditClass({ meetings: View.defaultClassMtgs })}>Reset</Button>
-        </Box>
+        {isNewClass &&
+          <Box marginLeft='0.5em'>
+            <Button onClick={() => updateAddEditClass({ meetings: View.defaultClassMtgs })}>Reset</Button>
+          </Box>
+        }
       </Flex>
     </>
   )
+}
+
+CustomizeClassMtgs.propTypes = {
+  isNewClass: PropTypes.bool.isRequired
 }
 
 export default CustomizeClassMtgs
