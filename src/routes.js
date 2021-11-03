@@ -648,4 +648,20 @@ router.put('/classes/:id', async (req, res) => {
   }
 })
 
+/*** ADMIN ONLY */
+router.delete('/classes/:id', async (req, res) => {
+  const { id } = req.params
+  const { authorization: jwtToken } = req.headers
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    await api.classes.deleteClass(id)
+
+    res.send('ok')
+  } else {
+    res.status(401).send('You don\'t have permission to delete this rental')
+  }
+})
+
 module.exports = router

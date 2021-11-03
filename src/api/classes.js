@@ -1,10 +1,12 @@
 const db = require('../connectDb')
 
-const rentalsApi = require('../api/rentals')
+const RentalsDao = require('../dao/RentalsDao')
+const ClassesDao = require('../dao/ClassesDao')
+const ClassMeetingsDao = require('../dao/ClassMeetingsDao')
 
-const Rental = require('../models/Rental')
+const RentalDto = require('../dto/RentalDto')
+const ClassMeetingDto = require('../dto/ClassMeetingDto')
 
-const getInsertSqlPlaceholders = require('../utils/getInsertSqlPlaceholders')
 const { rentalTypes } = require('../utils/constants')
 
 /**
@@ -47,23 +49,18 @@ exports.getClass = async (id) => {
  */
 
 exports.createClass = async (classObj, creatorId) => {
-  const { details, capacity, price, meetings } = classObj
+  const { capacity, meetings } = classObj
 
-  // create the class
-  const newClass = [ details, capacity, price ]
-
-  await db.query(`INSERT INTO ${db.name}.classes (details, capacity, price) VALUES (?, ?, ?)`, newClass)
-
-  const [ createdClass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = LAST_INSERT_ID()`)
+  const createdClass = await ClassesDao.create(classObj)
 
   // create the boat rentals for the "useBoat" meetings
   const useBoatMtgs = meetings.filter(mtg => mtg.boatId)
   const noBoatMtgs = meetings.filter(mtg => !mtg.boatId)
 
-  let newBoatMeetingsData = []
+  let newBoatMeetings = []
 
   if (useBoatMtgs.length) {
-    const meetingRentals = useBoatMtgs.map(mtg => new Rental({
+    const meetingRentals = useBoatMtgs.map(mtg => new RentalDto({
       type: rentalTypes.KLASS,
       boatId: mtg.boatId,
       rentedBy: creatorId,
@@ -73,30 +70,42 @@ exports.createClass = async (classObj, creatorId) => {
       reason: 'Sailing Instruction'
     }))
 
-    const newRentalIds = await rentalsApi.createRentals(meetingRentals)
+    const newRentalIds = await RentalsDao.createMany(meetingRentals)
 
     // create useBoat meetings using inserted Rental ids
-    newBoatMeetingsData = useBoatMtgs.map((mtg, index) => {
+    newBoatMeetings = useBoatMtgs.map((mtg, index) => {
       const { name, instructorId, details, start, end } = mtg
 
-      return [ name, createdClass.id, instructorId, newRentalIds[index], details, start, end ]
+      return new ClassMeetingDto({
+        name,
+        classId: createdClass.id,
+        instructorId,
+        rentalId: newRentalIds[index],
+        details,
+        start,
+        end
+      })
     })
   }
 
   // create the non-boat using meetings
-  const newNoBoatMeetingsData = noBoatMtgs.map(mtg => {
+  const newNoBoatMeetings = noBoatMtgs.map(mtg => {
     const { name, instructorId, details, start, end } = mtg
 
-    return [ name, createdClass.id, instructorId, null, details, start, end ]
+    return new ClassMeetingDto({
+      name,
+      classId: createdClass.id,
+      instructorId,
+      rentalId: null,
+      details,
+      start,
+      end
+    })
   })
 
-  const combinedMtgData = newBoatMeetingsData.concat(newNoBoatMeetingsData)
+  const combinedMtgs = newBoatMeetings.concat(newNoBoatMeetings)
 
-  await db.query(`
-    INSERT INTO ${db.name}.class_meetings
-    (name, classId, instructorId, rentalId, details, start, end)
-    VALUES ${getInsertSqlPlaceholders(combinedMtgData)}
-  `, combinedMtgData.flat())
+  await ClassMeetingsDao.createMany(combinedMtgs)
 
   return createdClass
 }
@@ -147,3 +156,22 @@ exports.updateClass = async (id, updatedClassObj) => {
  * ██████╔╝███████╗███████╗███████╗░░░██║░░░███████╗
  * ╚═════╝░╚══════╝╚══════╝╚══════╝░░░╚═╝░░░╚══════╝
  */
+
+exports.deleteClass = async (id) => {
+  // delete any class_meetings associated with the class
+  await db.query(`UPDATE ${db.name}.class_meetings SET deletedAt = CURRENT_TIMESTAMP WHERE classId = ?`, [id])
+
+  const deletedClassMeetings = await db.query(`SELECT * FROM ${db.name}.class_meetings WHERE classId = ?`, [id])
+
+  const associatedRentalIds = deletedClassMeetings.map(mtg => mtg.rentalId).filter(Boolean)
+
+  if (associatedRentalIds.length) {
+    // delete any rentals associated with any of the deleted class_meetings
+    await db.query(`UPDATE ${db.name}.rentals SET deletedAt = CURRENT_TIMESTAMP WHERE id IN (?)`, [associatedRentalIds.join(', ')])
+  }
+
+  // TODO: delete any class_registrations associated with this class
+
+  // delete the class itself
+  await db.query(`UPDATE ${db.name}.classes SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+}
