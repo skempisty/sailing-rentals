@@ -4,6 +4,7 @@ class ClassMeetingDto {
     classId,
     instructorId,
     rentalId,
+    boatId,
     name,
     details,
     start,
@@ -16,6 +17,7 @@ class ClassMeetingDto {
     this.classId = classId
     this.instructorId = instructorId
     this.rentalId = rentalId || null
+    this.boatId = boatId || null
     this.name = name
     this.details = details || ''
     this.start = start

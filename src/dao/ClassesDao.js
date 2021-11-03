@@ -18,12 +18,40 @@ const ClassesDao = () => {
     return createdClass
   }
 
+  /**
+   * @param {number} id the class id that we want to update
+   * @param {ClassDto} updatedClassDto
+   * @returns {Promise<void>}
+   */
+  const update = async (id, updatedClassDto) => {
+    const { details, capacity, price } = updatedClassDto
+
+    const updateSql = []
+    const sqlArgs = []
+
+    updateSql.push('details = ?')
+    sqlArgs.push(details)
+
+    updateSql.push('capacity = ?')
+    sqlArgs.push(capacity)
+
+    updateSql.push('price = ?')
+    sqlArgs.push(price)
+
+    sqlArgs.push(id)
+
+    const sql = `UPDATE ${db.name}.classes SET ${updateSql.join(', ')} WHERE id = ?`
+
+    await db.query(sql, sqlArgs)
+  }
+
   const markDeleted = async (id) => {
     await db.query(`UPDATE ${db.name}.classes SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
   }
 
   return {
     create,
+    update,
     markDeleted
   }
 }

@@ -25,6 +25,39 @@ const ClassMeetingsDao = () => {
     `, mtgData.flat())
   }
 
+  /**
+   * @param {number} id class mtg id
+   * @param {ClassMeetingDto} updatedMtgDto
+   * @returns {Promise<void>}
+   */
+  const update = async (id, updatedMtgDto) => {
+    const { instructorId, name, details, start, end } = updatedMtgDto
+
+    const updateSql = []
+    const sqlArgs = []
+
+    updateSql.push('instructorId = ?')
+    sqlArgs.push(instructorId)
+
+    updateSql.push('name = ?')
+    sqlArgs.push(name)
+
+    updateSql.push('details = ?')
+    sqlArgs.push(details)
+
+    updateSql.push('start = ?')
+    sqlArgs.push(start)
+
+    updateSql.push('end = ?')
+    sqlArgs.push(end)
+
+    sqlArgs.push(id)
+
+    const sql = `UPDATE ${db.name}.class_meetings SET ${updateSql.join(', ')} WHERE id = ?`
+
+    await db.query(sql, sqlArgs)
+  }
+
   const markDeletedByClassId = async (id) => {
     await db.query(`UPDATE ${db.name}.class_meetings SET deletedAt = CURRENT_TIMESTAMP WHERE classId = ?`, [id])
   }
@@ -32,6 +65,7 @@ const ClassMeetingsDao = () => {
   return {
     getByClassId,
     createMany,
+    update,
     markDeletedByClassId
   }
 }

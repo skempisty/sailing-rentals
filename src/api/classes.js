@@ -5,6 +5,7 @@ const ClassesDao = require('../dao/ClassesDao')
 const ClassMeetingsDao = require('../dao/ClassMeetingsDao')
 
 const RentalDto = require('../dto/RentalDto')
+const ClassDto = require('../dto/ClassDto')
 const ClassMeetingDto = require('../dto/ClassMeetingDto')
 
 const { rentalTypes } = require('../utils/constants')
@@ -120,32 +121,22 @@ exports.createClass = async (classObj, creatorId) => {
  */
 
 exports.updateClass = async (id, updatedClassObj) => {
-  const { instructorId, details, capacity, price } = updatedClassObj
+  const updatedClassDto = new ClassDto(updatedClassObj)
 
-  const updateSql = []
-  const sqlArgs = []
+  const meetingsWithRentals = updatedClassDto.meetings.filter(mtg => mtg.rentalId)
 
-  updateSql.push('instructorId = ?')
-  sqlArgs.push(instructorId)
+  // update associated rentals to match updated class meeting start-end times/boat/crewCount/etc
+  for (const mtg of meetingsWithRentals) {
+    await RentalsDao.updateClassMeetingRental(mtg.rentalId, mtg, updatedClassDto)
+  }
 
-  updateSql.push('details = ?')
-  sqlArgs.push(details)
+  // update all class meetings
+  for (const mtg of updatedClassDto.meetings) {
+    await ClassMeetingsDao.update(mtg.id, mtg)
+  }
 
-  updateSql.push('capacity = ?')
-  sqlArgs.push(capacity)
-
-  updateSql.push('price = ?')
-  sqlArgs.push(price)
-
-  sqlArgs.push(id)
-
-  const sql = `UPDATE ${db.name}.classes SET ${updateSql.join(', ')} WHERE id = ?`
-
-  await db.query(sql, sqlArgs)
-
-  const [ klass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = ?`, [id])
-
-  return klass
+  // update class
+  await ClassesDao.update(id, updatedClassDto)
 }
 
 /**

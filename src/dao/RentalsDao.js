@@ -1,9 +1,9 @@
-const db = require("../connectDb");
+const moment = require('moment')
 
-const ValidationError = require("../errors/ValidationError");
+const db = require('../connectDb')
 
-const {rentalTypes} = require("../utils/constants");
-const moment = require("moment");
+const ValidationError = require('../errors/ValidationError')
+const { rentalTypes } = require('../utils/constants')
 
 const RentalsDao = () => {
   /**
@@ -67,6 +67,44 @@ const RentalsDao = () => {
     return insertedIds
   }
 
+  const updateClassMeetingRental = async (rentalId, updatedClassMtgDto, updatedClassDto) => {
+    const pseudoRental = {
+      ...updatedClassMtgDto,
+      id: rentalId,
+      rentalType: rentalTypes.KLASS
+    }
+
+    const validation = await validateRental(pseudoRental)
+
+    if (validation.error) {
+      throw new ValidationError(validation.error.message)
+    }
+
+    const { capacity: crewCount } = updatedClassDto
+    const { boatId, start, end } = pseudoRental
+
+    const updateSql = []
+    const sqlArgs = []
+
+    updateSql.push('crewCount = ?')
+    sqlArgs.push(crewCount)
+
+    updateSql.push('boatId = ?')
+    sqlArgs.push(boatId)
+
+    updateSql.push('start = ?')
+    sqlArgs.push(start)
+
+    updateSql.push('end = ?')
+    sqlArgs.push(end)
+
+    sqlArgs.push(rentalId)
+
+    const sql = `UPDATE ${db.name}.rentals SET ${updateSql.join(', ')} WHERE id = ?`
+
+    await db.query(sql, sqlArgs)
+  }
+
   /**
    * @param {number[]} idArray
    * @returns {Promise<void>}
@@ -78,15 +116,15 @@ const RentalsDao = () => {
   /**
    * Runs a series of validations on incoming rental object
    * @param rentalObj the proposed new rental object
-   * @param {number} rentedBy user id of the renter
+   * @param {number|null} rentedBy user id of the renter
    * @returns {Promise<{}>} validation object
    */
-  const validateRental = async (rentalObj, rentedBy) => {
+  const validateRental = async (rentalObj, rentedBy = null) => {
     const { type: rentalType } = rentalObj
 
     const validation = {}
 
-    if (rentalType === rentalTypes.STANDARD) {
+    if (rentalType === rentalTypes.STANDARD && rentedBy) {
       const noTwoRentalsInOneDayValidated = await validateNoTwoRentalsInOneDay(rentalObj, rentedBy)
 
       if (!noTwoRentalsInOneDayValidated) {
@@ -155,6 +193,7 @@ const RentalsDao = () => {
   return {
     create,
     createMany,
+    updateClassMeetingRental,
     markManyDeletedByIds
   }
 }
