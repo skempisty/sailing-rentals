@@ -70,7 +70,10 @@ const AddClass = () => {
         <Title>{pageTitle}</Title>
 
         <Box maxWidth='40em'>
-          <MultiStepContent onSubmit={handleClassSubmit}>
+          <MultiStepContent
+            submitBtnText={View.isNewClass(classId) ? 'Create Class' : 'Update Class'}
+            onSubmit={handleClassSubmit}
+          >
             <ContentStep>
               <Form>
                 <Box maxWidth='10em'>
