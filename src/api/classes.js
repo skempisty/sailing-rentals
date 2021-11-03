@@ -159,19 +159,19 @@ exports.updateClass = async (id, updatedClassObj) => {
 
 exports.deleteClass = async (id) => {
   // delete any class_meetings associated with the class
-  await db.query(`UPDATE ${db.name}.class_meetings SET deletedAt = CURRENT_TIMESTAMP WHERE classId = ?`, [id])
+  await ClassMeetingsDao.markDeletedByClassId(id)
 
-  const deletedClassMeetings = await db.query(`SELECT * FROM ${db.name}.class_meetings WHERE classId = ?`, [id])
+  const deletedClassMeetings = await ClassMeetingsDao.getByClassId(id)
 
   const associatedRentalIds = deletedClassMeetings.map(mtg => mtg.rentalId).filter(Boolean)
 
   if (associatedRentalIds.length) {
     // delete any rentals associated with any of the deleted class_meetings
-    await db.query(`UPDATE ${db.name}.rentals SET deletedAt = CURRENT_TIMESTAMP WHERE id IN (?)`, [associatedRentalIds.join(', ')])
+    await RentalsDao.markManyDeletedByIds(associatedRentalIds)
   }
 
   // TODO: delete any class_registrations associated with this class
 
   // delete the class itself
-  await db.query(`UPDATE ${db.name}.classes SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+  await ClassesDao.markDeleted(id)
 }

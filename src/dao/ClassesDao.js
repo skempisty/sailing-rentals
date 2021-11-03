@@ -18,8 +18,13 @@ const ClassesDao = () => {
     return createdClass
   }
 
+  const markDeleted = async (id) => {
+    await db.query(`UPDATE ${db.name}.classes SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
+  }
+
   return {
-    create
+    create,
+    markDeleted
   }
 }
 

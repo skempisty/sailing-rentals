@@ -67,8 +67,12 @@ const RentalsDao = () => {
     return insertedIds
   }
 
-  const update = () => {
-
+  /**
+   * @param {number[]} idArray
+   * @returns {Promise<void>}
+   */
+  const markManyDeletedByIds = async (idArray) => {
+    await db.query(`UPDATE ${db.name}.rentals SET deletedAt = CURRENT_TIMESTAMP WHERE id IN (?)`, [idArray.join(', ')])
   }
 
   /**
@@ -151,7 +155,7 @@ const RentalsDao = () => {
   return {
     create,
     createMany,
-    update
+    markManyDeletedByIds
   }
 }
 

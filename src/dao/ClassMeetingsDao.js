@@ -3,6 +3,10 @@ const db = require('../connectDb')
 const getInsertSqlPlaceholders = require('../utils/getInsertSqlPlaceholders')
 
 const ClassMeetingsDao = () => {
+  const getByClassId = async (id) => {
+    return await db.query(`SELECT * FROM ${db.name}.class_meetings WHERE classId = ?`, [id])
+  }
+
   /**
    * @param {ClassMeetingDto[]} classMtgDtos data for creating a bunch of meetings
    * @returns {Promise<void>}
@@ -21,8 +25,14 @@ const ClassMeetingsDao = () => {
     `, mtgData.flat())
   }
 
+  const markDeletedByClassId = async (id) => {
+    await db.query(`UPDATE ${db.name}.class_meetings SET deletedAt = CURRENT_TIMESTAMP WHERE classId = ?`, [id])
+  }
+
   return {
-    createMany
+    getByClassId,
+    createMany,
+    markDeletedByClassId
   }
 }
 
