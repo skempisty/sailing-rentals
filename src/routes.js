@@ -660,7 +660,7 @@ router.delete('/classes/:id', async (req, res) => {
 
     res.send('ok')
   } else {
-    res.status(401).send('You don\'t have permission to delete this rental')
+    res.status(401).send('You don\'t have permission to delete this class')
   }
 })
 
