@@ -94,7 +94,12 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
   const handleSaveClick = () => {
     const updatedMtgs = [ ...addEditClass.meetings ]
 
-    updatedMtgs[mtgIndex] = state
+    updatedMtgs[mtgIndex] = {
+      ...state,
+      // if no time slot is selected, just keep the original time slot
+      start: state.start || mtg.start,
+      end: state.end || mtg.end
+    }
 
     updateAddEditClass({ meetings: updatedMtgs })
 
