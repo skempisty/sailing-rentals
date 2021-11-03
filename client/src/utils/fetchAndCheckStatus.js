@@ -18,6 +18,17 @@ export default async function fetchAndCheckStatus (url, expectedStatuses = [ 200
 
         throw new ApiException(message, res)
     } else {
-        return res.json()
+        /*
+         * You cannot read a response stream twice.
+         * If res.json() throws an error (res body is not json)
+         * we need an identical response copy available for a "second" resCopy.text() read
+         */
+        const resCopy = res.clone()
+
+        try {
+            return await res.json();
+        } catch (e) {
+            return await resCopy.text();
+        }
     }
 }
