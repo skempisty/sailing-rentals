@@ -13,18 +13,21 @@ import ClassesTable from './ClassesTable'
 
 import { useClasses } from '../../../../store/classes'
 import { useUsers } from '../../../../store/users'
+import { useRentals } from '../../../../store/rentals'
 
 const ClassesTab = () => {
   const history = useHistory()
 
   const [loading, setLoading] = useState(true)
 
-  const { classes, getClassesThunk } = useClasses()
   const { getUsersThunk } = useUsers()
+  const { classes, getClassesThunk } = useClasses()
+  const { getAllRentalsThunk } = useRentals()
 
   const fetchData = async () => {
     await getUsersThunk()
     await getClassesThunk()
+    await getAllRentalsThunk()
 
     setLoading(false)
   }
@@ -58,7 +61,7 @@ const ClassesTab = () => {
 
           <ClassesTable
             classes={classes}
-            noDataMsg='No Upcoming Classes'
+            noDataMsg='No Classes'
             hasActionColumn
           />
         </React.Fragment>
