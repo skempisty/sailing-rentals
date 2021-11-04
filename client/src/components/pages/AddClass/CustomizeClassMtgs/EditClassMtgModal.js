@@ -24,12 +24,8 @@ import { useRentals } from '../../../../store/rentals'
 const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
   const [state, setState] = useState({})
 
-  const { getAllRentalsThunk } = useRentals()
-
   useEffect(() => {
     if (show) {
-      getAllRentalsThunk()
-
       setState(Event.clearStartEnd(mtg))
     }
   }, [show])

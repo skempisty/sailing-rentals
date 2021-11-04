@@ -17,6 +17,7 @@ import CustomizeClassMtgs from './CustomizeClassMtgs'
 import View from '../../../domains/views/AddClass'
 
 import { useClasses } from '../../../store/classes'
+import { useRentals } from '../../../store/rentals'
 
 const AddClass = () => {
   const { id: classId } = useParams()
@@ -31,12 +32,16 @@ const AddClass = () => {
     getClassThunk
   } = useClasses()
 
+  const { getAllRentalsThunk } = useRentals()
+
   const fetchData = async () => {
     if (View.isNewClass(classId)) {
       setDefaultAddEditClass()
     } else {
       getClassThunk(classId)
     }
+
+    getAllRentalsThunk()
   }
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import { useAction } from '../utils/useAction'
 import Rental from '../models/Rental'
 
 import getAllRentalsThunk from './thunks/getAllRentalsThunk'
+import removeAddEditClassMeetingThunk from './thunks/removeAddEditClassMeetingThunk'
 
 const rentalSlice = createSlice({
   name: 'rentals',
@@ -42,6 +43,14 @@ const rentalSlice = createSlice({
 
       state.allRentals = allRentals
       state.myRentals = myRentals
+    })
+    builder.addCase(removeAddEditClassMeetingThunk.fulfilled, (state, action) => {
+      const { deleteRentalId } = action.payload
+
+      // some class meetings have rentals attached to them. When the meeting goes - it should go too
+      if (deleteRentalId) {
+        state.allRentals = state.allRentals.filter(rental => rental.id !== deleteRentalId)
+      }
     })
   }
 })

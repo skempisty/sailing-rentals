@@ -8,6 +8,7 @@ import getClassThunk from './thunks/getClassThunk'
 import createClassThunk from './thunks/createClassThunk'
 import updateClassThunk from './thunks/updateClassThunk'
 import deleteClassThunk from './thunks/deleteClassThunk'
+import removeAddEditClassMeetingThunk from './thunks/removeAddEditClassMeetingThunk'
 
 import Klass from '../models/Klass'
 
@@ -63,6 +64,11 @@ const classSlice = createSlice({
 
       state.classes = state.classes.filter(klass => klass.id !== deletedClassId)
     })
+    builder.addCase(removeAddEditClassMeetingThunk.fulfilled, (state, action) => {
+      const { deleteMtgIndex } = action.payload
+
+      state.addEditClass.meetings.splice(deleteMtgIndex, 1)
+    })
   }
 })
 
@@ -82,7 +88,8 @@ export const useClasses = () => {
     getClassThunk: useAction(getClassThunk),
     createClassThunk: useAction(createClassThunk),
     updateClassThunk: useAction(updateClassThunk),
-    deleteClassThunk: useAction(deleteClassThunk)
+    deleteClassThunk: useAction(deleteClassThunk),
+    removeAddEditClassMeetingThunk: useAction(removeAddEditClassMeetingThunk)
   }
 }
 

@@ -13,7 +13,7 @@ import View from '../../../../domains/views/AddClass'
 import { useClasses } from '../../../../store/classes'
 
 const CustomizeClassMtgs = ({ isNewClass }) => {
-  const { addEditClass, updateAddEditClass } = useClasses()
+  const { addEditClass, updateAddEditClass, removeAddEditClassMeetingThunk } = useClasses()
 
   const { meetings: mtgs } = addEditClass
 
@@ -22,7 +22,7 @@ const CustomizeClassMtgs = ({ isNewClass }) => {
   }
 
   const handleMtgDeleteClick = (index) => {
-    updateAddEditClass({ meetings: mtgs.filter((_, mtgIndex) => mtgIndex !== index) })
+    removeAddEditClassMeetingThunk({ mtg: mtgs[index], index })
   }
 
   return (
