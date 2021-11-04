@@ -1,14 +1,12 @@
 const db = require('../connectDb')
 
+const ClassMeeting = require('../domains/ClassMeeting')
+
 const RentalsDao = require('../dao/RentalsDao')
 const ClassesDao = require('../dao/ClassesDao')
 const ClassMeetingsDao = require('../dao/ClassMeetingsDao')
 
-const RentalDto = require('../dto/RentalDto')
 const ClassDto = require('../dto/ClassDto')
-const ClassMeetingDto = require('../dto/ClassMeetingDto')
-
-const { rentalTypes } = require('../utils/constants')
 
 /**
  * ░██████╗░███████╗████████╗
@@ -34,8 +32,8 @@ exports.getClasses = async () => {
 }
 
 exports.getClass = async (id) => {
-  const [ klass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = ?`, [id])
-  klass.meetings = await db.query(`SELECT * FROM ${db.name}.class_meetings WHERE classId = ? ORDER BY start`, [id])
+  const klass = await ClassesDao.getById(id)
+  klass.meetings = await ClassMeetingsDao.getByClassId(id)
 
   return klass
 }
@@ -50,63 +48,11 @@ exports.getClass = async (id) => {
  */
 
 exports.createClass = async (classObj, creatorId) => {
-  const { capacity, meetings } = classObj
+  const classDto = new ClassDto(classObj)
 
-  const createdClass = await ClassesDao.create(classObj)
+  const createdClass = await ClassesDao.create(classDto)
 
-  // create the boat rentals for the "useBoat" meetings
-  const useBoatMtgs = meetings.filter(mtg => mtg.boatId)
-  const noBoatMtgs = meetings.filter(mtg => !mtg.boatId)
-
-  let newBoatMeetings = []
-
-  if (useBoatMtgs.length) {
-    const meetingRentals = useBoatMtgs.map(mtg => new RentalDto({
-      type: rentalTypes.KLASS,
-      boatId: mtg.boatId,
-      rentedBy: creatorId,
-      crewCount: capacity,
-      start: mtg.start,
-      end: mtg.end,
-      reason: 'Sailing Instruction'
-    }))
-
-    const newRentalIds = await RentalsDao.createMany(meetingRentals)
-
-    // create useBoat meetings using inserted Rental ids
-    newBoatMeetings = useBoatMtgs.map((mtg, index) => {
-      const { name, instructorId, details, start, end } = mtg
-
-      return new ClassMeetingDto({
-        name,
-        classId: createdClass.id,
-        instructorId,
-        rentalId: newRentalIds[index],
-        details,
-        start,
-        end
-      })
-    })
-  }
-
-  // create the non-boat using meetings
-  const newNoBoatMeetings = noBoatMtgs.map(mtg => {
-    const { name, instructorId, details, start, end } = mtg
-
-    return new ClassMeetingDto({
-      name,
-      classId: createdClass.id,
-      instructorId,
-      rentalId: null,
-      details,
-      start,
-      end
-    })
-  })
-
-  const combinedMtgs = newBoatMeetings.concat(newNoBoatMeetings)
-
-  await ClassMeetingsDao.createMany(combinedMtgs)
+  await ClassMeeting.createMeetingsWithAndWithoutRentals(classDto.meetings, createdClass.id, creatorId)
 
   return createdClass
 }
@@ -120,12 +66,36 @@ exports.createClass = async (classObj, creatorId) => {
  * ╚═╝░░░░░░╚═════╝░░░░╚═╝░░░
  */
 
-exports.updateClass = async (id, updatedClassObj) => {
+exports.updateClass = async (id, updatedClassObj, updaterId) => {
   const updatedClassDto = new ClassDto(updatedClassObj)
 
-  const meetingsWithRentals = updatedClassDto.meetings.filter(mtg => mtg.rentalId)
+  // get class meetings before updating
+  const currentClassMeetings = await ClassMeetingsDao.getByClassId(id)
+
+  const currentClassMtgIds = currentClassMeetings.map(currentClassMtg => currentClassMtg.id)
+  const updatedClassMtgIds = updatedClassDto.meetings.map(currentClassMtg => currentClassMtg.id)
+
+  const meetingsToAdd = updatedClassDto.meetings.filter(updatedClassMtg => {
+    return !currentClassMtgIds.includes(updatedClassMtg.id)
+  })
+
+  const meetingsToDelete = currentClassMeetings.filter(currentClassMtg => {
+    return !updatedClassMtgIds.includes(currentClassMtg.id)
+  })
+
+  // a class update may include meetings that weren't already in the class
+  if (meetingsToAdd.length) {
+    await ClassMeeting.createMeetingsWithAndWithoutRentals(meetingsToAdd, updatedClassDto, updaterId)
+  }
+
+  // a class update may not include meetings already in the class
+  if (meetingsToDelete.length) {
+    await ClassMeeting.deleteMeetingsAndTheirRentals(meetingsToDelete)
+  }
 
   // update associated rentals to match updated class meeting start-end times/boat/crewCount/etc
+  const meetingsWithRentals = updatedClassDto.meetings.filter(mtg => mtg.rentalId)
+
   for (const mtg of meetingsWithRentals) {
     await RentalsDao.updateClassMeetingRental(mtg.rentalId, mtg, updatedClassDto)
   }
@@ -149,19 +119,10 @@ exports.updateClass = async (id, updatedClassObj) => {
  */
 
 exports.deleteClass = async (id) => {
-  // delete any class_meetings associated with the class
-  await ClassMeetingsDao.markDeletedByClassId(id)
+  const meetingsToDelete = await ClassMeetingsDao.getByClassId(id)
 
-  const deletedClassMeetings = await ClassMeetingsDao.getByClassId(id)
-
-  const associatedRentalIds = deletedClassMeetings.map(mtg => mtg.rentalId).filter(Boolean)
-
-  if (associatedRentalIds.length) {
-    // delete any rentals associated with any of the deleted class_meetings
-    await RentalsDao.markManyDeletedByIds(associatedRentalIds)
-  }
-
-  // TODO: delete any class_registrations associated with this class
+  // // delete any class_meetings associated with the class
+  await ClassMeeting.deleteMeetingsAndTheirRentals(meetingsToDelete)
 
   // delete the class itself
   await ClassesDao.markDeleted(id)

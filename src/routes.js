@@ -637,10 +637,10 @@ router.put('/classes/:id', async (req, res) => {
   const id = req.params.id
   const updatedClassObj = req.body
 
-  const { isAdmin } = await decodeJwt(jwtToken)
+  const { isAdmin, userId: updaterId } = await decodeJwt(jwtToken)
 
   if (isAdmin) {
-    const updatedClass = await api.classes.updateClass(id, updatedClassObj)
+    const updatedClass = await api.classes.updateClass(id, updatedClassObj, updaterId)
 
     res.send(updatedClass)
   } else {

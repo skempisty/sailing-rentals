@@ -1,6 +1,12 @@
 const db = require('../connectDb')
 
 const ClassesDao = () => {
+  const getById = async (id) => {
+    const [ klass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = ?`, [id])
+
+    return klass
+  }
+
   /**
    * @param {ClassDto} classObj data for creating a class
    * @returns {Promise<ClassDto>} the created class
@@ -50,6 +56,7 @@ const ClassesDao = () => {
   }
 
   return {
+    getById,
     create,
     update,
     markDeleted

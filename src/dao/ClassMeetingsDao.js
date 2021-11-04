@@ -2,9 +2,11 @@ const db = require('../connectDb')
 
 const getInsertSqlPlaceholders = require('../utils/getInsertSqlPlaceholders')
 
+const CLASS_MEETINGS_TABLE = `${db.name}.class_meetings`
+
 const ClassMeetingsDao = () => {
   const getByClassId = async (id) => {
-    return await db.query(`SELECT * FROM ${db.name}.class_meetings WHERE classId = ?`, [id])
+    return await db.query(`SELECT * FROM ${CLASS_MEETINGS_TABLE} WHERE classId = ? AND deletedAt IS NULL`, [id])
   }
 
   /**
@@ -12,6 +14,8 @@ const ClassMeetingsDao = () => {
    * @returns {Promise<void>}
    */
   const createMany = async (classMtgDtos) => {
+    if (!classMtgDtos.length) return
+
     const mtgData = classMtgDtos.map(mtgDto => {
       const { name, classId, instructorId, rentalId, details, start, end  } = mtgDto
 
@@ -19,7 +23,7 @@ const ClassMeetingsDao = () => {
     })
 
     await db.query(`
-      INSERT INTO ${db.name}.class_meetings
+      INSERT INTO ${CLASS_MEETINGS_TABLE}
       (name, classId, instructorId, rentalId, details, start, end)
       VALUES ${getInsertSqlPlaceholders(mtgData)}
     `, mtgData.flat())
@@ -53,19 +57,28 @@ const ClassMeetingsDao = () => {
 
     sqlArgs.push(id)
 
-    const sql = `UPDATE ${db.name}.class_meetings SET ${updateSql.join(', ')} WHERE id = ?`
+    const sql = `UPDATE ${CLASS_MEETINGS_TABLE} SET ${updateSql.join(', ')} WHERE id = ?`
 
     await db.query(sql, sqlArgs)
   }
 
+  /**
+   * @param {number[]} idArray
+   * @returns {Promise<void>}
+   */
+  const markManyDeletedByIds = async (idArray) => {
+    await db.query(`UPDATE ${CLASS_MEETINGS_TABLE} SET deletedAt = CURRENT_TIMESTAMP WHERE id IN (?)`, [idArray.join(', ')])
+  }
+
   const markDeletedByClassId = async (id) => {
-    await db.query(`UPDATE ${db.name}.class_meetings SET deletedAt = CURRENT_TIMESTAMP WHERE classId = ?`, [id])
+    await db.query(`UPDATE ${CLASS_MEETINGS_TABLE} SET deletedAt = CURRENT_TIMESTAMP WHERE classId = ?`, [id])
   }
 
   return {
     getByClassId,
     createMany,
     update,
+    markManyDeletedByIds,
     markDeletedByClassId
   }
 }
