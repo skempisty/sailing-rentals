@@ -52,7 +52,7 @@ exports.createClass = async (classObj, creatorId) => {
 
   const createdClass = await ClassesDao.create(classDto)
 
-  await ClassMeeting.createMeetingsWithAndWithoutRentals(classDto.meetings, createdClass.id, creatorId)
+  await ClassMeeting.createMeetingsWithAndWithoutRentals(classDto.meetings, createdClass, creatorId)
 
   return createdClass
 }

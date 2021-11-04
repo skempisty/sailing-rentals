@@ -67,7 +67,14 @@ const classSlice = createSlice({
     builder.addCase(removeAddEditClassMeetingThunk.fulfilled, (state, action) => {
       const { deleteMtgIndex } = action.payload
 
-      state.addEditClass.meetings.splice(deleteMtgIndex, 1)
+      const meetingsWithoutIndex = state.addEditClass.meetings.filter((mtg, index) => {
+        return index !== deleteMtgIndex
+      })
+
+      state.addEditClass = {
+        ...state.addEditClass,
+        meetings: meetingsWithoutIndex
+      }
     })
   }
 })

@@ -32,7 +32,7 @@ const CustomizeClassMtgs = ({ isNewClass }) => {
       </Form>
 
       <ReactSortable
-        list={addEditClass.meetings}
+        list={mtgs}
         setList={(e) => updateAddEditClass({ meetings: e })}
         animation='150'
         handle='.handle'
