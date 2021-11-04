@@ -22,7 +22,7 @@ import { useBoats } from '../../../../store/boats'
 import { useRentals } from '../../../../store/rentals'
 
 const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
-  const [state, setState] = useState({})
+  const [state, setState] = useState({ name: '', details: '' })
 
   useEffect(() => {
     if (show) {
