@@ -76,6 +76,7 @@ const validate = (classObj) => {
   return (
     capacity > 0 &&
     price >= 0 &&
+    meetings.length > 0 &&
     meetingsAreValid
   )
 }
