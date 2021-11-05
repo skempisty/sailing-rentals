@@ -10,7 +10,7 @@ class ClassMeetingDto {
     start,
     end
   }) {
-    const hasRequiredFields = [ classId, instructorId, name, start, end ].every(Boolean)
+    const hasRequiredFields = [ classId, instructorId, start, end ].every(Boolean)
     if (!hasRequiredFields) throw new Error('Error creating a ClassMeetingDto without a required field')
 
     this.id = id || null
@@ -18,7 +18,7 @@ class ClassMeetingDto {
     this.instructorId = instructorId
     this.rentalId = rentalId || null
     this.boatId = boatId || null
-    this.name = name
+    this.name = name || ''
     this.details = details || ''
     this.start = start
     this.end = end
