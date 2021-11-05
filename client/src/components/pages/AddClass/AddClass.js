@@ -52,7 +52,10 @@ const AddClass = () => {
     if (View.isNewClass(classId)) {
       const { payload: { error: validationErrorMsg } } = await createClassThunk(addEditClass)
 
-      if (validationErrorMsg) return // TODO: display this msg somewhere
+      if (validationErrorMsg) {
+        alert(validationErrorMsg)
+        return
+      }
     } else {
       updateClassThunk({ id: classId, classObj: addEditClass })
     }
