@@ -53,7 +53,7 @@ export default class SocialMediaBar extends React.Component {
           />
         </a>
 
-        <a href='https://discord.gg/VtgJ4Dkf' target='_blank' rel='noopener noreferrer'>
+        <a href='https://discord.gg/xCtugDqTDa' target='_blank' rel='noopener noreferrer'>
           <FaDiscord
             className='discord'
             size='1.5em'
