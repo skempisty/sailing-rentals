@@ -53,7 +53,7 @@ describe('POST /api/rentals', function() {
   it('should create a new standard rental as an admin', async () => {
     const newRentalParams = {
       id: null,
-      type: '', // without a type given, type will be set to standard
+      type: 'standard',
       start: '2031-06-26T14:00:00.322Z', // set way in the future to avoid "in the past" validation
       end: '2031-06-26T17:30:00.000Z',
       reason: '', // standard rentals wont have a reason
