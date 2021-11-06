@@ -1,5 +1,9 @@
 import Constants from '../utils/constants';
 
+/**
+ * @deprecated
+ * @returns {Promise<any>}
+ */
 export default async function getUsers() {
   const url = `${Constants.baseUrl}/api/users`;
 

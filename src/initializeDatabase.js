@@ -29,6 +29,7 @@ const initializeDatabase = async function(dbName) {
     'googleId VARCHAR(255) NOT NULL,' +
     'imageUrl VARCHAR(255),' +
     'isApproved BOOLEAN DEFAULT false,' +
+    'isInstructor BOOLEAN DEFAULT false,' +
     'isAdmin BOOLEAN DEFAULT false,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
@@ -90,7 +91,7 @@ const initializeDatabase = async function(dbName) {
     'FOREIGN KEY (boatId) REFERENCES boats(id),' +
     'FOREIGN KEY (rentedBy) REFERENCES users(id),' +
     'crewCount INT,' +
-    "type ENUM('standard', 'maintenance') NOT NULL DEFAULT 'standard'," +
+    "type ENUM('standard', 'maintenance', 'klass') NOT NULL," +
     'start TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
     'end TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
     'reason TEXT DEFAULT NULL,' +
@@ -138,13 +139,55 @@ const initializeDatabase = async function(dbName) {
     ');'
   )
 
+  await db.query(`CREATE TABLE ${dbName}.classes (` +
+    'id INT PRIMARY KEY AUTO_INCREMENT,' +
+    'details TEXT,' +
+    'capacity INT NOT NULL,' +
+    'price DOUBLE(10,2) NOT NULL,' +
+    'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
+    'deletedAt TIMESTAMP NULL DEFAULT NULL' +
+    ');'
+  )
+
+  await db.query(`CREATE TABLE ${dbName}.class_meetings (` +
+    'id INT PRIMARY KEY AUTO_INCREMENT,' +
+    'classId INT NOT NULL,' +
+    'rentalId INT DEFAULT NULL,' +
+    'instructorId INT NOT NULL,' +
+    'FOREIGN KEY (classId) REFERENCES classes(id),' +
+    'FOREIGN KEY (rentalId) REFERENCES rentals(id),' +
+    'FOREIGN KEY (instructorId) REFERENCES users(id),' +
+    'name VARCHAR(255) NOT NULL,' +
+    'start TIMESTAMP NOT NULL,' +
+    'end TIMESTAMP NOT NULL,' +
+    'details TEXT,' +
+    'usesBoat BOOLEAN DEFAULT false,' +
+    'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
+    'deletedAt TIMESTAMP NULL DEFAULT NULL' +
+    ');'
+  )
+
+  await db.query(`CREATE TABLE ${dbName}.class_registrations (` +
+    'id INT PRIMARY KEY AUTO_INCREMENT,' +
+    'userId INT NOT NULL,' +
+    'classId INT NOT NULL,' +
+    'FOREIGN KEY (userId) REFERENCES users(id),' +
+    'FOREIGN KEY (classId) REFERENCES classes(id),' +
+    'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
+    'deletedAt TIMESTAMP NULL DEFAULT NULL' +
+    ');'
+  )
+
   /**
    * Insert Dummy data
    */
-  await db.query(`INSERT INTO ${dbName}.users (id, googleId, firstName, lastName, email, phone, affiliation, imageUrl, isAdmin, isApproved) VALUES
-    (null, '0', 'Eru', 'Iluvatar', 'iam.god@gmail.com', '2406456689', 'The one God', 'https://loremflickr.com/50/50/god', '1', '1'),
-    (null, '1', 'Frodo', 'Baggins', 'one.ring@gmail.com', '2406456690', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/frodo', '0', '1'),
-    (null, '2', 'Gollum', 'Unwanted', 'my.precious@gmail.com', '2406456691', 'Lava dweller', 'https://loremflickr.com/50/50/gollum', '0', '0')
+  await db.query(`INSERT INTO ${dbName}.users (id, googleId, firstName, lastName, email, phone, affiliation, imageUrl, isAdmin, isApproved, isInstructor) VALUES
+    (null, '0', 'Eru', 'Iluvatar', 'iam.god@gmail.com', '2406456689', 'The one God', 'https://loremflickr.com/50/50/god', '1', '1', '0'),
+    (null, '1', 'Frodo', 'Baggins', 'one.ring@gmail.com', '2406456690', 'Fellowship of the Ring', 'https://loremflickr.com/50/50/frodo', '0', '1', '1'),
+    (null, '2', 'Gollum', 'Smeagol', 'my.precious@gmail.com', '2406456691', 'Lava dweller', 'https://loremflickr.com/50/50/gollum', '0', '0', '0')
   `)
 
   await db.query(`INSERT INTO ${dbName}.boats (createdBy, name, model, imageUrl, description, perHourRentalCost) VALUES

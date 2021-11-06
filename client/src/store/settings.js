@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
 
 const settingsSlice = createSlice({
   name: 'settings',
@@ -16,6 +17,14 @@ const settingsSlice = createSlice({
 
 export const {
   initSettings
-} = settingsSlice.actions;
+} = settingsSlice.actions
+
+export const useSettings = () => {
+  const settings = useSelector(state => state.settings)
+
+  return {
+    ...settings
+  }
+}
 
 export default settingsSlice.reducer

@@ -6,11 +6,13 @@ import LoadingPageMessage from './components/LoadingPageMessage'
 import TopNavBar from './components/TopNavBar'
 import Footer from './components/Footer'
 import ConditionalRoute from './components/ConditionalRoute'
+
 import HomePage from './components/pages/HomePage/index'
 import Profile from './components/pages/Profile'
 import ShowPost from './components/pages/ShowPost'
 import AdminPanel from './components/pages/AdminPanel'
 import Rentals from './components/pages/Rentals'
+import AddClass from './components/pages/AddClass'
 
 import setLoginJwt from './utils/setLoginJwt'
 import getSiteData from './api/getSiteData'
@@ -24,8 +26,6 @@ import { initPayments } from './store/payments'
 import { initPosts } from './store/posts'
 import { initCarousel } from './store/carouselSlides'
 import { initSettings } from './store/settings'
-import logo from "./images/logo.png";
-import {Spinner} from "react-bootstrap";
 
 /**
  * Root App component. Initialize app data here and add to Redux.
@@ -136,6 +136,7 @@ class App extends React.Component {
                 <ConditionalRoute renderCondition={!!currentUser.id} exact path='/profile' component={Profile} />
                 <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isApproved === 1} exact path='/rentals' component={Rentals} />
                 <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isAdmin === 1} exact path='/admin-panel' component={AdminPanel} />
+                <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isAdmin === 1} exact path='/classes/:id' component={AddClass} />
                 <Route exact path='/posts/:id' component={ShowPost} />
                 <Route component={HomePage} />
               </Switch>

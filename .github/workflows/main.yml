@@ -1,32 +1,34 @@
-name: Tests
+# TODO: Figure out what to do with this github workflow
 
-on: [push]
-
-jobs:
-  test:
-    name: API End-to-End Tests
-    runs-on: ubuntu-latest
-    services:
-      # Only example that worked
-      # https://mauricius.dev/run-and-debug-github-actions-locally/
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_USER: username
-          MYSQL_PASSWORD: password
-          MYSQL_DATABASE: test
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-      - name: Configure Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14'
-      - name: Install packages
-        run: npm install
-      - name: Run tests
-        run: npm run test
+#name: Tests
+#
+#on: [push]
+#
+#jobs:
+#  test:
+#    name: API End-to-End Tests
+#    runs-on: ubuntu-latest
+#    services:
+#      # Only example that worked
+#      # https://mauricius.dev/run-and-debug-github-actions-locally/
+#      mysql:
+#        image: mysql:8.0
+#        env:
+#          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+#          MYSQL_USER: username
+#          MYSQL_PASSWORD: password
+#          MYSQL_DATABASE: test
+#        ports:
+#          - 3306:3306
+#        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+#    steps:
+#      - name: Checkout repo
+#        uses: actions/checkout@v2
+#      - name: Configure Node
+#        uses: actions/setup-node@v1
+#        with:
+#          node-version: '14'
+#      - name: Install packages
+#        run: npm install
+#      - name: Run tests
+#        run: npm run test

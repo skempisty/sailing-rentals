@@ -3,10 +3,12 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import Switch from 'react-switch'
-import { FaInfoCircle } from 'react-icons/fa'
+import { FaInfoCircle, FaApple, FaCheckCircle, FaCrown } from 'react-icons/fa'
 import { Button, Col, Form, InputGroup, Modal } from 'react-bootstrap'
 
-import buildFullName from '../../../utils/buildUserFullName'
+import Flex from '../styled-system/Flex'
+
+import User from '../../../domains/User'
 import updateUser from '../../../api/updateUser'
 
 import { updateUserById } from '../../../store/users'
@@ -18,13 +20,17 @@ class UserInfoModal extends React.Component {
     const {
       phone,
       affiliation,
-      isApproved
+      isApproved,
+      isInstructor,
+      isAdmin
     } = props.user
 
     const incomingUserObj = {
       phone: phone || '',
       affiliation: affiliation || '',
-      isApproved: isApproved === 1
+      isApproved: isApproved === 1,
+      isInstructor: isInstructor === 1,
+      isAdmin: isAdmin === 1
     }
 
     this.savedProfileFields = incomingUserObj
@@ -32,28 +38,30 @@ class UserInfoModal extends React.Component {
   }
 
   get savedProfileFields() {
-    const { phone, affiliation, isApproved } = this
+    const { phone, affiliation, isApproved, isInstructor, isAdmin } = this
 
-    return { phone, affiliation, isApproved }
+    return { phone, affiliation, isApproved, isInstructor, isAdmin }
   }
 
-  set savedProfileFields({ phone, affiliation, isApproved }) {
+  set savedProfileFields({ phone, affiliation, isApproved, isInstructor, isAdmin }) {
     this.phone = phone
     this.affiliation = affiliation
     this.isApproved = isApproved
+    this.isInstructor = isInstructor
+    this.isAdmin = isAdmin
   }
 
   get profileNotEdited() {
-    const { phone, affiliation, isApproved } = this.state
+    const { phone, affiliation, isApproved, isInstructor, isAdmin } = this.state
 
-    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, affiliation, isApproved })
+    return JSON.stringify(this.savedProfileFields) === JSON.stringify({ phone, affiliation, isApproved, isInstructor, isAdmin })
   }
 
   async handleSaveEditsClick() {
     const { user, onHide, updateUserById } = this.props
-    const { phone, affiliation, isApproved } = this.state
+    const { phone, affiliation, isApproved, isInstructor, isAdmin } = this.state
 
-    const updatedFields = { phone, affiliation, isApproved }
+    const updatedFields = { phone, affiliation, isApproved, isInstructor, isAdmin }
 
     try {
       // update DB
@@ -71,7 +79,7 @@ class UserInfoModal extends React.Component {
 
   render() {
     const { user, show, onHide } = this.props
-    const { phone, affiliation, isApproved } = this.state
+    const { phone, affiliation, isApproved, isInstructor, isAdmin } = this.state
 
     return (
       <Modal show={show} onHide={onHide}>
@@ -88,7 +96,7 @@ class UserInfoModal extends React.Component {
               {/* Name */}
               <Form.Group as={Col}>
                 <Form.Label><b>Name</b></Form.Label>
-                <Form.Control value={buildFullName(user.firstName, user.lastName)} readOnly/>
+                <Form.Control value={User.buildUserFullName(user)} readOnly/>
                 <Form.Text className='text-muted'>
                   From Google
                 </Form.Text>
@@ -133,22 +141,56 @@ class UserInfoModal extends React.Component {
         </Modal.Body>
 
         <Modal.Footer style={{ justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Switch
-              checked={isApproved}
-              onChange={() => this.setState({ isApproved: !isApproved })}
-            />
+          <Flex flexDirection='column'>
+            <Flex alignItems='center' marginBottom='0.5em'>
+              <Switch
+                checked={isApproved}
+                onChange={() => this.setState({ isApproved: !isApproved })}
+              />
 
-            <div style={{ marginLeft: '0.5em' }}>Approved</div>
-          </div>
+              <Flex marginLeft='0.25em'>
+                <FaCheckCircle/>
+              </Flex>
 
-          <Button
-            disabled={this.profileNotEdited}
-            style={{ width: '8.5em' }}
-            onClick={this.handleSaveEditsClick.bind(this)}
-          >
-            <span>Save Edits</span>
-          </Button>
+              <div style={{ marginLeft: '0.5em' }}>Approved</div>
+            </Flex>
+
+            <Flex alignItems='center' marginBottom='0.5em'>
+              <Switch
+                checked={isInstructor}
+                onChange={() => this.setState({ isInstructor: !isInstructor })}
+              />
+
+              <Flex marginLeft='0.25em'>
+                <FaApple/>
+              </Flex>
+
+              <div style={{ marginLeft: '0.5em' }}>Instructor</div>
+            </Flex>
+
+            <Flex alignItems='center'>
+              <Switch
+                checked={isAdmin}
+                onChange={() => this.setState({ isAdmin: !isAdmin })}
+              />
+
+              <Flex marginLeft='0.25em'>
+                <FaCrown/>
+              </Flex>
+
+              <div style={{ marginLeft: '0.5em' }}>Admin</div>
+            </Flex>
+          </Flex>
+
+          <Flex alignItems='center' justifyContent='center' width='50%'>
+            <Button
+              disabled={this.profileNotEdited}
+              style={{ width: '8.5em' }}
+              onClick={this.handleSaveEditsClick.bind(this)}
+            >
+              <span>Update User</span>
+            </Button>
+          </Flex>
 
         </Modal.Footer>
       </Modal>

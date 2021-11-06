@@ -597,4 +597,71 @@ router.put('/settings', async (req, res) => {
   }
 })
 
+/*******************************************************************************
+ * Classes
+ */
+
+router.get('/classes', async (req, res) => {
+  const classes = await api.classes.getClasses()
+
+  res.send(classes)
+})
+
+router.get('/classes/:id', async (req, res) => {
+  const { id } = req.params
+
+  const klass = await api.classes.getClass(id)
+
+  res.send(klass)
+})
+
+/*** ADMIN ONLY */
+router.post('/classes', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+  const klass = req.body
+
+  const { userId: creatorId, isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const newClass = await api.classes.createClass(klass, creatorId)
+
+    res.send(newClass)
+  } else {
+    res.status(401).send('You don\'t have permission to create this class')
+  }
+})
+
+/*** ADMIN ONLY */
+router.put('/classes/:id', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+  const id = req.params.id
+  const updatedClassObj = req.body
+
+  const { isAdmin, userId: updaterId } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const updatedClass = await api.classes.updateClass(id, updatedClassObj, updaterId)
+
+    res.send(updatedClass)
+  } else {
+    res.status(401).send('You don\'t have permission to update this class')
+  }
+})
+
+/*** ADMIN ONLY */
+router.delete('/classes/:id', async (req, res) => {
+  const { id } = req.params
+  const { authorization: jwtToken } = req.headers
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    await api.classes.deleteClass(id)
+
+    res.send('ok')
+  } else {
+    res.status(401).send('You don\'t have permission to delete this class')
+  }
+})
+
 module.exports = router

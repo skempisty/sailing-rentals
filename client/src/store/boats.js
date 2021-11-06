@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
 
 const boatSlice = createSlice({
   name: 'boats',
@@ -31,5 +32,13 @@ export const {
   addBoat,
   editBoat
 } = boatSlice.actions
+
+export const useBoats = () => {
+  const boats = useSelector(state => state.boats)
+
+  return {
+    ...boats
+  }
+}
 
 export default boatSlice.reducer

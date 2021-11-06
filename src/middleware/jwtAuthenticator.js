@@ -7,22 +7,44 @@ const jwt = require('express-jwt')
  */
 const secret = process.env.JWT_SECRET
 
-const pathFilter = function(req) {
+const pathFilter = (req) => {
+  const { path, method } = req
+
   const excludedPaths = [
-    '/api/health',
-    '/api/site_data',
-    '/api/logged_in_data',
-    '/api/users/login',
-    '/api/carousel_slides', // TODO: need to lock down all but GET endpoint
-    '/api/posts', // TODO: need to lock down all but GET endpoint
-    '/api/boats', // TODO: need to lock down all but GET endpoint
-    '/api/rentals' // TODO: need to lock down all but GET endpoint
+    { path: '/api/health' },
+    { path: '/api/site_data' },
+    { path: '/api/logged_in_data' },
+    { path: '/api/users/login' },
+    { path: '/api/carousel_slides', methods: [ 'GET' ] },
+    { path: '/api/posts', methods: [ 'GET' ] },
+    { path: '/api/boats', methods: [ 'GET' ] },
+    { path: '/api/rentals', methods: [ 'GET' ] },
+    { path: '/api/classes', methods: [ 'GET' ] },
+    { path: '/api/classes/*', methods: [ 'GET' ] },
+    // exclude any non-api paths
+    { path: '!/^\\/api/' }
   ]
 
-  return (
-    !/^\/api/.test(req.path) || // exclude any non-api paths
-    excludedPaths.includes(req.path)
-  )
+  // check if path matches excluded path
+  const excludedPathMatch = excludedPaths.find(({ path: excludedPath }) => {
+    const regex = new RegExp(excludedPath)
+
+    return regex.test(path)
+  })
+
+  if (excludedPathMatch) {
+    const { methods } = excludedPathMatch
+
+    // no methods property makes the entire path unprotected
+    if (!methods) return true
+
+    // check for method match
+    return methods.some((excludedMethod) => {
+      return excludedMethod === method
+    })
+  } else {
+    return false
+  }
 }
 
 module.exports = jwt({ secret, algorithms: ['HS256'] }).unless(pathFilter)

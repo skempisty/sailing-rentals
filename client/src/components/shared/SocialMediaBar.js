@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { FaFacebook, FaInstagram } from 'react-icons/fa'
+import { FaFacebook, FaInstagram, FaDiscord } from 'react-icons/fa'
 
 const StyledSocialMediaDiv = styled.div`
   display: flex;
@@ -18,6 +18,10 @@ const StyledSocialMediaDiv = styled.div`
     
     &.instagram:hover { 
       color: #d72878;
+    }
+    
+    &.discord:hover { 
+      color: #5562ea;
     }
   }
 `
@@ -44,6 +48,14 @@ export default class SocialMediaBar extends React.Component {
         <a href='https://www.instagram.com/npsfoundationyachtclub' target='_blank' rel='noopener noreferrer'>
           <FaInstagram
             className='instagram'
+            size='1.5em'
+            style={{ marginRight: '0.5em' }}
+          />
+        </a>
+
+        <a href='https://discord.gg/VtgJ4Dkf' target='_blank' rel='noopener noreferrer'>
+          <FaDiscord
+            className='discord'
             size='1.5em'
           />
         </a>

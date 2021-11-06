@@ -1,6 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+
+import { useAction } from '../utils/useAction'
 
 import Rental from '../models/Rental'
+
+import getAllRentalsThunk from './thunks/getAllRentalsThunk'
+import removeAddEditClassMeetingThunk from './thunks/removeAddEditClassMeetingThunk'
 
 const rentalSlice = createSlice({
   name: 'rentals',
@@ -30,6 +36,22 @@ const rentalSlice = createSlice({
       state.myRentals[myRentalsIndex] = updatedRental
       state.allRentals[allRentalsIndex] = updatedRental
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getAllRentalsThunk.fulfilled, (state, action) => {
+      const { allRentals, myRentals } = action.payload
+
+      state.allRentals = allRentals
+      state.myRentals = myRentals
+    })
+    builder.addCase(removeAddEditClassMeetingThunk.fulfilled, (state, action) => {
+      const { deleteRentalId } = action.payload
+
+      // some class meetings have rentals attached to them. When the meeting goes - it should go too
+      if (deleteRentalId) {
+        state.allRentals = state.allRentals.filter(rental => rental.id !== deleteRentalId)
+      }
+    })
   }
 })
 
@@ -38,5 +60,23 @@ export const {
   addNewRental,
   editRental
 } = rentalSlice.actions
+
+export const useRentals = () => {
+  const rentals = useSelector(state => state.rentals);
+
+  const {
+    initRentals,
+    addNewRental,
+    editRental
+  } = rentalSlice.actions
+
+  return {
+    ...rentals,
+    initRentals: useAction(initRentals),
+    addNewRental: useAction(addNewRental),
+    editRental: useAction(editRental),
+    getAllRentalsThunk: useAction(getAllRentalsThunk)
+  }
+}
 
 export default rentalSlice.reducer
