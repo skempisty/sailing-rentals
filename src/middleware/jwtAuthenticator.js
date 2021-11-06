@@ -22,7 +22,7 @@ const pathFilter = (req) => {
     { path: '/api/classes', methods: [ 'GET' ] },
     { path: '/api/classes/*', methods: [ 'GET' ] },
     // exclude any non-api paths
-    { path: '!/^\\/api/' }
+    { path: '^(?!/api.*$).*' }
   ]
 
   // check if path matches excluded path
