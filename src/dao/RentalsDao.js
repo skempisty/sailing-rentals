@@ -7,7 +7,7 @@ const { rentalTypes } = require('../utils/constants')
 
 const RentalsDao = () => {
   /**
-   * Create one rental
+   * Create one rental and return the new ID
    * @param {RentalDto} newRentalObj
    * @param {number} rentedBy Id of user creating the rental
    * @returns {Promise<RentalDto>}
@@ -23,11 +23,9 @@ const RentalsDao = () => {
 
     const newRental = [ rentedBy, boatId, start, end, crewCount, type || rentalTypes.STANDARD, reason ]
 
-    await db.query(`INSERT INTO ${db.name}.rentals (rentedBy, boatId, start, end, crewCount, type, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`, newRental)
+    const result = await db.query(`INSERT INTO ${db.name}.rentals (rentedBy, boatId, start, end, crewCount, type, reason) VALUES (?, ?, ?, ?, ?, ?, ?)`, newRental)
 
-    const [ rental ] = await db.query(`SELECT * FROM ${db.name}.rentals WHERE id = LAST_INSERT_ID()`)
-
-    return rental
+    return result.insertId
   }
 
   /**

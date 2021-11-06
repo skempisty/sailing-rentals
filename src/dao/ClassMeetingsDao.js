@@ -6,7 +6,7 @@ const CLASS_MEETINGS_TABLE = `${db.name}.class_meetings`
 
 const ClassMeetingsDao = () => {
   const getByClassId = async (id) => {
-    return await db.query(`SELECT * FROM ${CLASS_MEETINGS_TABLE} WHERE classId = ? AND deletedAt IS NULL`, [id])
+    return await db.query(`SELECT * FROM ${CLASS_MEETINGS_TABLE} WHERE classId = ? AND deletedAt IS NULL ORDER BY start`, [id])
   }
 
   /**
@@ -35,13 +35,16 @@ const ClassMeetingsDao = () => {
    * @returns {Promise<void>}
    */
   const update = async (id, updatedMtgDto) => {
-    const { instructorId, name, details, start, end } = updatedMtgDto
+    const { instructorId, rentalId, name, details, start, end } = updatedMtgDto
 
     const updateSql = []
     const sqlArgs = []
 
     updateSql.push('instructorId = ?')
     sqlArgs.push(instructorId)
+
+    updateSql.push('rentalId = ?')
+    sqlArgs.push(rentalId)
 
     updateSql.push('name = ?')
     sqlArgs.push(name)
