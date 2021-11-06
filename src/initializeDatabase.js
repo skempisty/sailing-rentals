@@ -91,7 +91,7 @@ const initializeDatabase = async function(dbName) {
     'FOREIGN KEY (boatId) REFERENCES boats(id),' +
     'FOREIGN KEY (rentedBy) REFERENCES users(id),' +
     'crewCount INT,' +
-    "type ENUM('standard', 'maintenance') NOT NULL DEFAULT 'standard'," +
+    "type ENUM('standard', 'maintenance', 'klass') NOT NULL," +
     'start TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
     'end TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
     'reason TEXT DEFAULT NULL,' +

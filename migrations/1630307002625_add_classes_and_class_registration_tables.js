@@ -1,4 +1,7 @@
-// TODO: combine and run this migration on production
+/**
+ * RAN ON PRODUCTION 11/5/2021 9:45PM
+ */
+
 (async () => {
   require('dotenv').config()
   const db = require('../src/connectDb')
@@ -7,6 +10,9 @@
 
   await db.connect()
 
+  /**
+   * Create classes table
+   */
   await db.query(`
     CREATE TABLE ${SAILING_DB_NAME}.classes (
       id INT PRIMARY KEY AUTO_INCREMENT, 
@@ -19,6 +25,9 @@
     );
   `)
 
+  /**
+   * Create class meetings table
+   */
   await db.query(`
     CREATE TABLE ${SAILING_DB_NAME}.class_meetings (
       id INT PRIMARY KEY AUTO_INCREMENT,
@@ -38,6 +47,9 @@
     );
   `)
 
+  /**
+   * Create class registrations table
+   */
   await db.query(`
     CREATE TABLE ${SAILING_DB_NAME}.class_registrations (
       id INT PRIMARY KEY AUTO_INCREMENT,
@@ -50,4 +62,20 @@
       deletedAt TIMESTAMP NULL DEFAULT NULL
     );
   `)
+
+  /**
+   * Alter users
+   */
+  await db.query(`ALTER TABLE ${SAILING_DB_NAME}.users 
+    ADD COLUMN isInstructor BOOLEAN DEFAULT false
+  `)
+
+  /**
+   * Alter rentals
+   */
+  await db.query(`ALTER TABLE ${SAILING_DB_NAME}.rentals 
+    MODIFY COLUMN type ENUM('standard', 'maintenance', 'klass') NOT NULL
+  `)
+
+  process.exit()
 })()

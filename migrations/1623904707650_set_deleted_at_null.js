@@ -1,3 +1,7 @@
+/**
+ * RAN ON PRODUCTION <Date Unknown>
+ */
+
 (async () => {
   require('dotenv').config()
   const db = require('../src/connectDb')
