@@ -5,10 +5,12 @@ import moment from 'moment'
 
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 
+import Box from '../styled-system/Box'
+
+import CalendarDomain from '../../../domains/Calendar'
 import { rentalTypes } from '../../../utils/constants'
 
 import useRentalCalendar from './useRentalCalendar'
-import Box from "../styled-system/Box";
 
 const StyledCalendar = styled.div`
   .rbc-calendar { padding: 0 1em 1em 1em; }
@@ -35,7 +37,6 @@ const RentalCalendar = (props) => {
     calendarDate, setCalendarDate,
     titleAccessor, eventStyleGetter,
     minTime, maxTime,
-    calendarViewTypes,
     handleSelectSlot
   } = useRentalCalendar(props)
 
@@ -63,7 +64,7 @@ const RentalCalendar = (props) => {
         <Calendar
           localizer={localizer}
           style={{ height: '30em', marginTop: '1em' }}
-          views={Object.values(calendarViewTypes)}
+          views={Object.values(CalendarDomain.viewTypes)}
           timeslots={1}
           selectable
           view={view}
