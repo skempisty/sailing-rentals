@@ -41,7 +41,7 @@ const RentalCalendar = (props) => {
   } = useRentalCalendar(props)
 
   return (
-    <Box position='relative' paddingTop='1em'>
+    <Box position='relative'>
       {/* Blocking overlay */}
       {disabled &&
         <div style={{

@@ -6,14 +6,15 @@ import styled from 'styled-components'
 
 import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap'
 
+import Flex from '../../shared/styled-system/Flex'
 import RentalCalendar from '../RentalCalendar'
-import Rental from '../../../models/Rental'
-import Payment from '../../../models/Payment'
-
 import PaypalButtons from '../PayPalButtons'
+import SailingRentalPriceBreakdown from '../SailingRentalPriceBreakdown'
 
 import Event from '../../../domains/Event'
 import Calendar from '../../../domains/Calendar'
+import Rental from '../../../models/Rental'
+import Payment from '../../../models/Payment'
 import isNotDeleted from '../../../utils/isNotDeleted'
 import usingTouchDevice from '../../../utils/usingTouchDevice'
 import { rentalTypes } from '../../../utils/constants'
@@ -171,10 +172,29 @@ class AddRentalModal extends React.Component {
 
     if (selectedBoatId < 0) return ''
 
-    const boat = getBoatById(selectedBoatId)
     const hoursRented = this.getRentalDurationHours(newRentalPeriod)
 
-    return (boat.perHourRentalCost * hoursRented).toFixed(2)
+    return (this.boatPricePerHour * hoursRented).toFixed(2)
+  }
+
+  get boatPricePerHour() {
+    const { selectedBoatId } = this.state
+
+    if (selectedBoatId < 0) return ''
+
+    const boat = getBoatById(selectedBoatId)
+
+    return boat.perHourRentalCost
+  }
+
+  get boatName() {
+    const { selectedBoatId } = this.state
+
+    if (selectedBoatId < 0) return ''
+
+    const boat = getBoatById(selectedBoatId)
+
+    return boat.name
   }
 
   get isStandardType () {
@@ -263,7 +283,8 @@ class AddRentalModal extends React.Component {
       newRentalPeriod,
       crewCount,
       reason,
-      paypalButtonReady
+      paypalButtonReady,
+      selectionIsValid
     } = this.state
 
     const that = this
@@ -372,54 +393,64 @@ class AddRentalModal extends React.Component {
           }
 
           {!editRental && this.isStandardType ?
-            <PaypalButtons
-              amount={this.selectedBoatRentalPrice}
-              onApprove={async (data, actions) => {
-                // Authorize the transaction
-                const authorization = await actions.order.authorize()
+            <Flex width='100%' margin='0 10em' justifyContent={selectionIsValid ? 'space-between' : 'center'} alignItems='flex-start'>
+              {selectionIsValid &&
+                <SailingRentalPriceBreakdown
+                  boatName={this.boatName}
+                  boatPricePerHour={this.boatPricePerHour}
+                  hoursToRent={this.getRentalDurationHours(newRentalPeriod)}
+                />
+              }
 
-                // Get the authorization id
-                const authorizationId = authorization.purchase_units[0]
-                  .payments.authorizations[0].id
+              <PaypalButtons
+                amount={this.selectedBoatRentalPrice}
+                onApprove={async (data, actions) => {
+                  // Authorize the transaction
+                  const authorization = await actions.order.authorize()
 
-                const { payer, purchase_units } = authorization
-                const { amount, payee } = purchase_units[0]
+                  // Get the authorization id
+                  const authorizationId = authorization.purchase_units[0]
+                    .payments.authorizations[0].id
 
-                const { orderID, payerID,  } = data
+                  const { payer, purchase_units } = authorization
+                  const { amount, payee } = purchase_units[0]
 
-                const newRental = new Rental({
-                  id: null,
-                  start: newRentalPeriod.start,
-                  end: newRentalPeriod.end,
-                  boatId: newRentalPeriod.boatId,
-                  crewCount,
-                  rentedBy: currentUser.id,
-                  createdAt: null
-                })
+                  const { orderID, payerID,  } = data
 
-                const paymentObj = new Payment({
-                  paidBy: currentUser.id,
-                  orderId: orderID,
-                  amount: amount.value,
-                  currency: amount.currency_code,
-                  payerId: payerID,
-                  payerCountryCode: payer.address.country_code,
-                  payerPostalCode: payer.address.postal_code || '',
-                  payerEmailAddress: payer.email_address || '',
-                  // payerPhone: payer.phone.phone_number.national_number,
-                  payerGivenName: payer.name.given_name,
-                  payerSurname: payer.name.surname,
-                  payeeEmail: payee.email_address,
-                  payeeMerchantId: payee.merchant_id,
-                  paypalAuthorizationId: authorizationId
-                })
+                  const newRental = new Rental({
+                    id: null,
+                    start: newRentalPeriod.start,
+                    end: newRentalPeriod.end,
+                    boatId: newRentalPeriod.boatId,
+                    crewCount,
+                    rentedBy: currentUser.id,
+                    createdAt: null
+                  })
 
-                onRentalAdd(newRental, paymentObj)
+                  const paymentObj = new Payment({
+                    paidBy: currentUser.id,
+                    orderId: orderID,
+                    amount: amount.value,
+                    currency: amount.currency_code,
+                    payerId: payerID,
+                    payerCountryCode: payer.address.country_code,
+                    payerPostalCode: payer.address.postal_code || '',
+                    payerEmailAddress: payer.email_address || '',
+                    // payerPhone: payer.phone.phone_number.national_number,
+                    payerGivenName: payer.name.given_name,
+                    payerSurname: payer.name.surname,
+                    payeeEmail: payee.email_address,
+                    payeeMerchantId: payee.merchant_id,
+                    paypalAuthorizationId: authorizationId
+                  })
 
-                that.resetAndHide()
-              }}
-              onButtonRdy={() => that.setState({ paypalButtonReady: true })}
-            />
+                  onRentalAdd(newRental, paymentObj)
+
+                  that.resetAndHide()
+                }}
+                onButtonRdy={() => that.setState({ paypalButtonReady: true })}
+              />
+            </Flex>
             :
             <React.Fragment>
               <Button variant='secondary' onClick={this.resetAndHide.bind(this)}>
