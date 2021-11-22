@@ -5,18 +5,19 @@ import moment from 'moment'
 import styled from 'styled-components'
 
 import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap'
-import { PayPalButton } from 'react-paypal-button-v2'
 
 import RentalCalendar from '../RentalCalendar'
 import Rental from '../../../models/Rental'
 import Payment from '../../../models/Payment'
+
+import PaypalButtons from '../PayPalButtons'
 
 import Event from '../../../domains/Event'
 import Calendar from '../../../domains/Calendar'
 import isNotDeleted from '../../../utils/isNotDeleted'
 import usingTouchDevice from '../../../utils/usingTouchDevice'
 import { rentalTypes } from '../../../utils/constants'
-import { paypalAccountClientId, breakpoints } from '../../../config'
+import { breakpoints } from '../../../config'
 
 import getBoatById from '../../../store/orm/boats/getBoatById'
 
@@ -371,9 +372,8 @@ class AddRentalModal extends React.Component {
           }
 
           {!editRental && this.isStandardType ?
-            <PayPalButton
+            <PaypalButtons
               amount={this.selectedBoatRentalPrice}
-              shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
               onApprove={async (data, actions) => {
                 // Authorize the transaction
                 const authorization = await actions.order.authorize()
@@ -418,17 +418,7 @@ class AddRentalModal extends React.Component {
 
                 that.resetAndHide()
               }}
-              onError={(e) => {
-                alert(`Error contacting Paypal. Try again later`)
-                console.log('e', e)
-              }}
-              options={{
-                clientId: paypalAccountClientId, // 'PRODUCTION_CLIENT_ID'
-                disableFunding: 'paylater',
-                intent: 'authorize'
-              }}
-              onButtonReady={() => that.setState({ paypalButtonReady: true })}
-              onShippingChange={() => { return '' }} // Just having this prop forces all payment forms to render in popups instead of inline
+              onButtonRdy={() => that.setState({ paypalButtonReady: true })}
             />
             :
             <React.Fragment>
