@@ -86,7 +86,7 @@ class Profile extends React.Component {
 
     return (
       <ContentWrapper>
-        <h1 style={{ color: 'white' }}>Profile</h1>
+        <h1 style={{ color: '#fec307' }}>Profile</h1>
 
         <Card><Card.Body>
           {this.profileIncomplete &&
