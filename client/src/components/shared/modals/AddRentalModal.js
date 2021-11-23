@@ -310,7 +310,7 @@ class AddRentalModal extends React.Component {
                   :
                   <Dropdown>
                     <Dropdown.Toggle variant='dark' id='dropdown-basic'>
-                      {selectedBoatId >= 0 ? getBoatById(selectedBoatId).name : 'Select a boat'}
+                      {selectedBoatId >= 0 ? `${getBoatById(selectedBoatId).name}, $${this.boatPricePerHour}/hr` : 'Select a boat'}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
@@ -319,7 +319,7 @@ class AddRentalModal extends React.Component {
                           key={`boat-select-${boat.id}-${index}`}
                           onSelect={() => this.handleBoatSelect(boat.id)}
                         >
-                          {boat.name}
+                          <b>{boat.name}</b>, ${boat.perHourRentalCost}/hr
                         </Dropdown.Item>
                       )}
                     </Dropdown.Menu>
