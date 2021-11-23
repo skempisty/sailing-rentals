@@ -198,6 +198,8 @@ class TopNavBar extends React.Component {
                       <Nav.Link eventKey onClick={() => history.push('/rentals')}>Sailboat Rentals</Nav.Link>
                     }
 
+                    <Nav.Link eventKey onClick={() => history.push('/class-registration')}>Sailing Classes</Nav.Link>
+
                     {!!currentUser.isAdmin &&
                       <Nav.Link eventKey onClick={() => history.push('/admin-panel')}>Admin Panel</Nav.Link>
                     }
@@ -253,6 +255,8 @@ class TopNavBar extends React.Component {
                       {!!currentUser.isApproved &&
                         <Dropdown.Item onClick={() => history.push('/rentals')}>Sailboat Rentals</Dropdown.Item>
                       }
+
+                      <Dropdown.Item onClick={() => history.push('/class-registration')}>Sailing Classes</Dropdown.Item>
 
                       {!!currentUser.isAdmin &&
                         <Dropdown.Item onClick={() => history.push('/admin-panel')}>Admin Panel</Dropdown.Item>
