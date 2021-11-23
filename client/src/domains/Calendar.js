@@ -2,6 +2,11 @@ import Event from '../domains/Event'
 
 import isNotDeleted from '../utils/isNotDeleted'
 
+const viewTypes = {
+  MONTH: 'month',
+  DAY: 'day'
+}
+
 /**
  * Supplies events suitable for React Big Calendar. combines the transient newEvent and any relevant events
  * and ensures that only usable events will be returned.
@@ -33,5 +38,6 @@ const getEventsForCalendar = (newEvent, events) => {
 }
 
 export default {
+  viewTypes,
   getEventsForCalendar
 }

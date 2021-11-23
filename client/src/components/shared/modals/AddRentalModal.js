@@ -3,40 +3,24 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import styled from 'styled-components'
-import { Calendar, momentLocalizer } from 'react-big-calendar'
-import { PayPalButton } from 'react-paypal-button-v2'
 
 import { Button, Form, Modal, Dropdown, Col } from 'react-bootstrap'
-import { FaExclamationTriangle, FaBan, FaWrench } from 'react-icons/fa'
-import { RiSailboatFill } from 'react-icons/ri'
 
-import EventLabel from '../../pages/Rentals/EventLabel'
+import Flex from '../../shared/styled-system/Flex'
+import RentalCalendar from '../RentalCalendar'
+import PaypalButtons from '../PayPalButtons'
+import SailingRentalPriceBreakdown from '../SailingRentalPriceBreakdown'
 
+import Event from '../../../domains/Event'
+import Calendar from '../../../domains/Calendar'
 import Rental from '../../../models/Rental'
 import Payment from '../../../models/Payment'
-import getBoatById from '../../../store/orm/boats/getBoatById'
-import splitUpcomingAndPastRentals from '../../../utils/splitUpcomingAndPastRentals'
 import isNotDeleted from '../../../utils/isNotDeleted'
 import usingTouchDevice from '../../../utils/usingTouchDevice'
 import { rentalTypes } from '../../../utils/constants'
-import { paypalAccountClientId, breakpoints } from '../../../config'
+import { breakpoints } from '../../../config'
 
-const localizer = momentLocalizer(moment)
-
-const StyledCalendar = styled.div`
-  .rbc-calendar { padding: 0 1em 1em 1em; }
-
-  .rbc-time-slot { min-height: 3em; }
-  
-  .rbc-event-content { overflow: visible }
-  
-  .rbc-toolbar {
-    span.rbc-btn-group,
-    span.rbc-toolbar-label {
-      margin-bottom: 0.5em;
-    }
-  }
-`
+import getBoatById from '../../../store/orm/boats/getBoatById'
 
 const StyledInstructions = styled.div`
   div.calendar-instructions {
@@ -45,7 +29,7 @@ const StyledInstructions = styled.div`
   
   @media only screen and (min-width: ${breakpoints.headerExpand}) {
     div.calendar-instructions {
-      text-align: left;      
+      text-align: left;
     }
   }
 `
@@ -63,50 +47,30 @@ class AddRentalModal extends React.Component {
     const { editRental } = this.props
 
     return {
-      selectedBoatId: editRental ? editRental.boatId : '',
+      selectedBoatId: editRental ? editRental.boatId : -1,
       crewCount: editRental ? editRental.crewCount : 0,
       reason: editRental ? editRental.reason || '' : '',
-      view: this.calendarViewTypes.MONTH,
+      view: Calendar.viewTypes.MONTH,
       date: editRental ? new Date(editRental.start) : new Date(),
       newRentalPeriod: {},
+      selectionIsValid: false,
       paypalButtonReady: false
     }
   }
 
   handleSelectSlot(e) {
     const { selectedBoatId } = this.state
-    const { start, end, slots } = e
+    const { start, end, isValid } = e
 
-    const clickMoment = moment(slots[0])
-
-    const isSingleDateClick = slots.length === 1 && clickMoment.hour() === 0
-    const isDayRangeSelect = moment(start).hour() !== 0
-
-    if (isSingleDateClick) {
-      // drill down to clicked day on calendar
-      this.setState({
-        view: this.calendarViewTypes.DAY,
-        date: new Date(clickMoment.year(), clickMoment.month(), clickMoment.date())
-      })
-    } else if (isDayRangeSelect) {
-      const newRentalPeriod = {
-        start,
-        end,
-        boatId: selectedBoatId
-      }
-
-      this.setState({ newRentalPeriod })
+    const newRentalPeriod = {
+      start,
+      end,
+      boatId: selectedBoatId
     }
-  }
-
-  handleMonthViewEventClick(event) {
-    const { start } = event
-
-    const eventMoment = moment(start)
 
     this.setState({
-      view: this.calendarViewTypes.DAY,
-      date: new Date(eventMoment.year(), eventMoment.month(), eventMoment.date())
+      newRentalPeriod,
+      selectionIsValid: isValid
     })
   }
 
@@ -117,7 +81,8 @@ class AddRentalModal extends React.Component {
     if (id !== selectedBoatId) {
       this.setState({
         selectedBoatId: id,
-        newRentalPeriod: {}
+        newRentalPeriod: {},
+        selectionIsValid: false
       })
     }
   }
@@ -141,7 +106,7 @@ class AddRentalModal extends React.Component {
 
     onRentalEdit(editRental.id, updatedRental)
 
-    onHide()
+    this.resetAndHide()
   }
 
   handleAddMaintenance() {
@@ -165,42 +130,6 @@ class AddRentalModal extends React.Component {
     this.resetAndHide()
   }
 
-  // TODO: this should come from site settings
-  get minTime() {
-    const minTime = new Date()
-    minTime.setHours(7,0,0)
-
-    return minTime
-  }
-
-  // TODO: this should come from site settings
-  get maxTime() {
-    const maxTime = new Date()
-    maxTime.setHours(20,0,0)
-
-    return maxTime
-  }
-
-  get calendarViewTypes() {
-    return {
-      MONTH: 'month',
-      DAY: 'day'
-    }
-  }
-
-  selectedAllowedRentalInterval(rental) {
-    const { settings } = this.props
-
-    const { min_rental_hours, max_rental_hours } = settings
-
-    const selectedRentalInterval = this.getRentalDurationHours(rental)
-
-    return (
-      selectedRentalInterval >= min_rental_hours &&
-      selectedRentalInterval <= max_rental_hours
-    )
-  }
-
   /**
    * Only way to get rental duration. Don't use the slots
    * property, it is inaccurate
@@ -218,36 +147,6 @@ class AddRentalModal extends React.Component {
     return Math.round((duration.asHours() + Number.EPSILON) * 100) / 100
   }
 
-  convertRentalTimeToDates(rental) {
-    return {
-      start: new Date(rental.start),
-      end: new Date(rental.end),
-      boatId: rental.boatId
-    }
-  }
-
-  getBlockingBoatName(rental) {
-    let { myRentals } = this.props
-
-    const selectionDate = {
-      day: moment(rental.end).date(),
-      month: moment(rental.end).month(),
-      year: moment(rental.end).year()
-    }
-
-    const selectionDateString = JSON.stringify(selectionDate)
-
-    const blockingRental =  myRentals.filter(isNotDeleted).find(rental => {
-      return selectionDateString === JSON.stringify({
-        day: moment(rental.end).date(),
-        month: moment(rental.end).month(),
-        year: moment(rental.end).year()
-      })
-    })
-
-    return getBoatById(blockingRental.boatId).name
-  }
-
   resetAndHide() {
     const { onHide } = this.props
 
@@ -261,36 +160,41 @@ class AddRentalModal extends React.Component {
 
     if (!selectedBoatId) return []
 
-    // rental start/end times must be Date objects for React Big Calendar
-    const rentalsWithDateFormatting = allRentals.filter(isNotDeleted).map(rental => {
-      return new Rental({
-        ...rental,
-        start: new Date(rental.start),
-        end: new Date(rental.end)
-      })
-    })
+    const rentalsForBoat = allRentals.filter(rental => rental.boatId === selectedBoatId)
 
-    const { upcomingRentals } = splitUpcomingAndPastRentals(rentalsWithDateFormatting)
+    const { upcomingEvents } = Event.splitUpcomingAndPast(rentalsForBoat)
 
-    const allEvents = [
-      newRentalPeriod,
-      ...upcomingRentals
-    ]
-
-    if (selectedBoatId) {
-      return allEvents.filter(rental => rental.boatId === selectedBoatId)
-    } else {
-      return allEvents
-    }
+    return Calendar.getEventsForCalendar(newRentalPeriod, upcomingEvents)
   }
 
   get selectedBoatRentalPrice() {
     const { newRentalPeriod, selectedBoatId } = this.state
 
-    const boat = getBoatById(selectedBoatId)
+    if (selectedBoatId < 0) return ''
+
     const hoursRented = this.getRentalDurationHours(newRentalPeriod)
 
-    return (boat.perHourRentalCost * hoursRented).toFixed(2)
+    return (this.boatPricePerHour * hoursRented).toFixed(2)
+  }
+
+  get boatPricePerHour() {
+    const { selectedBoatId } = this.state
+
+    if (selectedBoatId < 0) return ''
+
+    const boat = getBoatById(selectedBoatId)
+
+    return boat.perHourRentalCost
+  }
+
+  get boatName() {
+    const { selectedBoatId } = this.state
+
+    if (selectedBoatId < 0) return ''
+
+    const boat = getBoatById(selectedBoatId)
+
+    return boat.name
   }
 
   get isStandardType () {
@@ -308,28 +212,16 @@ class AddRentalModal extends React.Component {
   get validRental() {
     const MINIMUM_CREW_COUNT = 1
 
-    const { editRental } = this.props
     const {
       selectedBoatId,
-      newRentalPeriod,
-      crewCount
+      crewCount,
+      selectionIsValid
     } = this.state
 
     return (
-      (
-        (
-          editRental && JSON.stringify(newRentalPeriod) === '{}'
-        )
-          ||
-        (
-          (this.isMaintenanceType || !this.alreadyRentedThisDay(newRentalPeriod)) &&
-          (this.isMaintenanceType || this.selectedAllowedRentalInterval(newRentalPeriod)) &&
-          !this.selectionOverlapsOtherRental(newRentalPeriod) &&
-          !this.rentalStartsInPast(newRentalPeriod)
-        )
-      ) &&
-      !!selectedBoatId &&
-      (this.isMaintenanceType || crewCount >= MINIMUM_CREW_COUNT)
+      !!selectedBoatId && // must have a boat selected
+      selectionIsValid && // selection has to be valid
+      (this.isMaintenanceType || crewCount >= MINIMUM_CREW_COUNT) // must either be maintenance type or have the minimum crew count
     )
   }
 
@@ -349,7 +241,7 @@ class AddRentalModal extends React.Component {
 
     const actionVerb = usingTouchDevice ? 'Press/hold' : 'Click'
 
-    if (view === this.calendarViewTypes.MONTH) {
+    if (view === Calendar.viewTypes.MONTH) {
       return `${actionVerb} to choose a day`
     } else if (this.isMaintenanceType) {
       return `${actionVerb} and drag to select a time slot`
@@ -376,183 +268,13 @@ class AddRentalModal extends React.Component {
     return moment(rentalSelection.start).isBefore()
   }
 
-  alreadyRentedThisDay(rentalSelection) {
-    let { myRentals, editRental } = this.props
-
-    const selectionDate = {
-      day: moment(rentalSelection.end).date(),
-      month: moment(rentalSelection.end).month(),
-      year: moment(rentalSelection.end).year()
-    }
-
-    const selectionDateString = JSON.stringify(selectionDate)
-
-    if (editRental) {
-      // the saved time slot of the editing rental doesn't count for this validation
-      myRentals = myRentals.filter(rental => rental.id !== editRental.id)
-    }
-
-    return myRentals.filter(isNotDeleted).filter(rental => rental.type === rentalTypes.STANDARD).some(rental => {
-      return selectionDateString === JSON.stringify({
-        day: moment(rental.end).date(),
-        month: moment(rental.end).month(),
-        year: moment(rental.end).year()
-      })
-    })
-  }
-
-  /**
-   * Determines if the selected time slot
-   * overlaps an existing rental on the same boat
-   */
-  selectionOverlapsOtherRental(rentalSelection) {
-    let { allRentals, editRental } = this.props
-    const { selectedBoatId } = this.state
-
-    const selectionStart = moment(rentalSelection.start)
-    const selectionEnd = moment(rentalSelection.end)
-
-    if (editRental) {
-      // the saved time slot of the editing rental doesn't count for this validation
-      allRentals = allRentals.filter(isNotDeleted).filter(rental => rental.id !== editRental.id)
-    }
-
-    const rentalsToCompare = allRentals.filter(isNotDeleted).filter(rental => rental.boatId === selectedBoatId)
-
-    return rentalsToCompare.some((rental) => {
-      const rentalStart = moment(rental.start)
-      const rentalEnd = moment(rental.end)
-
-      const selectionIsBefore = selectionStart.isSameOrBefore(rentalStart) && selectionEnd.isSameOrBefore(rentalStart)
-      const selectionIsAfter = selectionStart.isSameOrAfter(rentalEnd) && selectionEnd.isSameOrAfter(rentalEnd)
-
-      return !(selectionIsBefore || selectionIsAfter)
-    })
-  }
-
-  eventStyleGetter(rental) {
-    const { currentUser, editRental } = this.props
-    const { view } = this.state
-
-    // background color
-    let backgroundColor
-
-    if (editRental && editRental.id === rental.id) {
-      backgroundColor = 'dodgerblue' // one of the user's other rental slots
-    } else if (rental.rentedBy === currentUser.id && rental.type === rentalTypes.STANDARD) {
-      backgroundColor = 'purple' // one of the user's other rental slots
-    } else if (rental.id) {
-      backgroundColor = 'grey' // someone else's rental slot
-    } else if (
-      this.selectionOverlapsOtherRental(rental) ||
-      this.rentalStartsInPast(rental) ||
-      (this.isStandardType && this.alreadyRentedThisDay(rental)) ||
-      (this.isStandardType && !this.selectedAllowedRentalInterval(rental))
-    ) {
-      backgroundColor = 'red' // invalid time slot selection
-    } else {
-      backgroundColor = 'green' // valid time slot selection
-    }
-
-    // event relative size
-    const width = `${(rental.end - rental.start) / (this.maxTime - this.minTime) * 100}%`
-
-    // positioning
-    const minTimeDate = this.minTime.setFullYear(rental.start.getFullYear(), rental.start.getMonth(), rental.start.getDate())
-
-    const left = `${(rental.start - minTimeDate) / (this.maxTime - this.minTime) * 100}%`
-
-    const style = {
-      position: view === this.calendarViewTypes.MONTH ? 'relative' : null,
-      left: view === this.calendarViewTypes.MONTH ? left : null,
-      width: view === this.calendarViewTypes.MONTH ? width : null,
-      backgroundColor
-    }
-
-    return { style }
-  }
-
-  titleAccessor(rental) {
-    const { currentUser, editRental, rentalType } = this.props
-    const { view, reason } = this.state
-
-    const { name: boatName } = getBoatById(rental.boatId)
-
-    let label, icon, details
-
-    if (editRental && editRental.id === rental.id) {
-      switch(rental.type) {
-        case rentalTypes.MAINTENANCE:
-          label = `Saved ${boatName} maintenance`
-          details = rental.reason
-          icon = <FaWrench/>
-          break
-        default: // standard
-          label = 'Saved time slot'
-          icon = <RiSailboatFill/>
-      }
-    } else if (rental.type === rentalTypes.STANDARD && rental.rentedBy === currentUser.id) {
-      label = 'My rental'
-      icon = <RiSailboatFill/>
-    } else if (rental.id && rental.type === rentalTypes.MAINTENANCE) {
-      label = `${boatName} maintenance`
-      details = rental.reason
-      icon = <FaWrench/>
-    } else if (rental.id && rental.type === rentalTypes.STANDARD) {
-      label = 'Rented out'
-      icon = <FaBan/>
-    } else if (this.isStandardType && this.alreadyRentedThisDay(rental)) {
-      label = `You've rented the ${this.getBlockingBoatName(rental)} for today already`
-      icon = <FaExclamationTriangle/>
-    } else if (this.selectionOverlapsOtherRental(rental)) {
-      label = 'Boat unavailable at this time'
-      icon = <FaExclamationTriangle/>
-    } else if (this.rentalStartsInPast(rental)) {
-      label = 'Please select a time slot in the future'
-      icon = <FaExclamationTriangle/>
-    } else if (this.isStandardType && !this.selectedAllowedRentalInterval(rental)) {
-      label = `Please select a ${this.timeIntervalDisplay} hour time slot`
-      icon = <FaExclamationTriangle/>
-    } else if (editRental && !rental.id) {
-      switch(rentalType) {
-        case rentalTypes.MAINTENANCE:
-          label = `Updated ${boatName} maintenance`
-          details = reason
-          icon = <FaWrench/>
-          break
-        default: // standard
-          label = 'Updated time slot'
-          icon = <RiSailboatFill/>
-      }
-    } else if (this.isMaintenanceType) {
-      label = `${boatName} maintenance`
-      details = reason
-      icon = <FaWrench/>
-    } else {
-      label = `Sailing on the ${boatName}`
-      icon = <RiSailboatFill/>
-    }
-
-    const showSvgComponent = view === this.calendarViewTypes.DAY || this.getRentalDurationHours(rental) >= 3 // Can't see full svg unless duration is at least 3 hours
-
-    return (
-      <EventLabel
-        label={view === this.calendarViewTypes.DAY ? label : null}
-        details={details}
-        rental={rental}
-        svgComponent={showSvgComponent ? icon : null}
-        view={view}
-        onMonthViewEventClick={this.handleMonthViewEventClick.bind(this)}
-      />
-    )
-  }
-
   render() {
     const {
       currentUser,
       show,
       boats,
       editRental,
+      rentalType,
       onRentalAdd
     } = this.props
 
@@ -561,9 +283,8 @@ class AddRentalModal extends React.Component {
       newRentalPeriod,
       crewCount,
       reason,
-      view,
-      date,
-      paypalButtonReady
+      paypalButtonReady,
+      selectionIsValid
     } = this.state
 
     const that = this
@@ -589,7 +310,7 @@ class AddRentalModal extends React.Component {
                   :
                   <Dropdown>
                     <Dropdown.Toggle variant='dark' id='dropdown-basic'>
-                      {selectedBoatId ? getBoatById(selectedBoatId).name : 'Select a boat'}
+                      {selectedBoatId >= 0 ? `${getBoatById(selectedBoatId).name}, $${this.boatPricePerHour}/hr` : 'Select a boat'}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
@@ -598,7 +319,7 @@ class AddRentalModal extends React.Component {
                           key={`boat-select-${boat.id}-${index}`}
                           onSelect={() => this.handleBoatSelect(boat.id)}
                         >
-                          {boat.name}
+                          <b>{boat.name}</b>, ${boat.perHourRentalCost}/hr
                         </Dropdown.Item>
                       )}
                     </Dropdown.Menu>
@@ -639,46 +360,16 @@ class AddRentalModal extends React.Component {
           </div>
         </StyledInstructions>
 
-        <div style={{ position: 'relative' }}>
-          {/* Blocking overlay */}
-          {!selectedBoatId &&
-            <div style={{
-              display: 'flex',
-              pointerEvents: null,
-              position: 'absolute',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '100%',
-              height: '100%',
-              color: 'white',
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              zIndex: '5' // need 5 to fully overlay Calendar
-            }}>
-              <h2>Select a boat first!</h2>
-            </div>
-          }
-
-          <StyledCalendar>
-            <Calendar
-              localizer={localizer}
-              style={{ height: '30em', marginTop: '1em' }}
-              views={Object.values(this.calendarViewTypes)}
-              timeslots={1}
-              selectable
-              view={view}
-              date={date}
-              events={this.rentals}
-              longPressThreshold={100}
-              min={this.minTime} // set earliest time visible on calendar
-              max={this.maxTime} // set latest time visible on calendar
-              eventPropGetter={(e) => this.eventStyleGetter(e)}
-              titleAccessor={(e) => this.titleAccessor(e)}
-              onView={(view) => this.setState({ view })} // fires when one of the view buttons is pressed
-              onNavigate={(date) => this.setState({ date })}
-              onSelectSlot={this.handleSelectSlot.bind(this)}
-            />
-          </StyledCalendar>
-        </div>
+        <RentalCalendar
+          selectedBoatId={selectedBoatId}
+          events={this.rentals}
+          editEvent={editRental}
+          rentalType={rentalType}
+          disabled={selectedBoatId < 0}
+          disabledMsg='Select a boat first!'
+          reason={reason}
+          onSelectSlot={this.handleSelectSlot.bind(this)}
+        />
 
         <Modal.Footer
           style={{
@@ -702,65 +393,64 @@ class AddRentalModal extends React.Component {
           }
 
           {!editRental && this.isStandardType ?
-            <PayPalButton
-              amount={this.selectedBoatRentalPrice}
-              shippingPreference='NO_SHIPPING' // default is 'GET_FROM_FILE'
-              onApprove={async (data, actions) => {
-                // Authorize the transaction
-                const authorization = await actions.order.authorize()
+            <Flex width='100%' margin='0 10em' justifyContent={selectionIsValid ? 'space-between' : 'center'} alignItems='flex-start'>
+              {selectionIsValid &&
+                <SailingRentalPriceBreakdown
+                  boatName={this.boatName}
+                  boatPricePerHour={this.boatPricePerHour}
+                  hoursToRent={this.getRentalDurationHours(newRentalPeriod)}
+                />
+              }
 
-                // Get the authorization id
-                const authorizationId = authorization.purchase_units[0]
-                  .payments.authorizations[0].id
+              <PaypalButtons
+                amount={this.selectedBoatRentalPrice}
+                onApprove={async (data, actions) => {
+                  // Authorize the transaction
+                  const authorization = await actions.order.authorize()
 
-                const { payer, purchase_units } = authorization
-                const { amount, payee } = purchase_units[0]
+                  // Get the authorization id
+                  const authorizationId = authorization.purchase_units[0]
+                    .payments.authorizations[0].id
 
-                const { orderID, payerID,  } = data
+                  const { payer, purchase_units } = authorization
+                  const { amount, payee } = purchase_units[0]
 
-                const newRental = new Rental({
-                  id: null,
-                  start: newRentalPeriod.start,
-                  end: newRentalPeriod.end,
-                  boatId: newRentalPeriod.boatId,
-                  crewCount,
-                  rentedBy: currentUser.id,
-                  createdAt: null
-                })
+                  const { orderID, payerID,  } = data
 
-                const paymentObj = new Payment({
-                  paidBy: currentUser.id,
-                  orderId: orderID,
-                  amount: amount.value,
-                  currency: amount.currency_code,
-                  payerId: payerID,
-                  payerCountryCode: payer.address.country_code,
-                  payerPostalCode: payer.address.postal_code || '',
-                  payerEmailAddress: payer.email_address || '',
-                  // payerPhone: payer.phone.phone_number.national_number,
-                  payerGivenName: payer.name.given_name,
-                  payerSurname: payer.name.surname,
-                  payeeEmail: payee.email_address,
-                  payeeMerchantId: payee.merchant_id,
-                  paypalAuthorizationId: authorizationId
-                })
+                  const newRental = new Rental({
+                    id: null,
+                    start: newRentalPeriod.start,
+                    end: newRentalPeriod.end,
+                    boatId: newRentalPeriod.boatId,
+                    crewCount,
+                    rentedBy: currentUser.id,
+                    createdAt: null
+                  })
 
-                onRentalAdd(newRental, paymentObj)
+                  const paymentObj = new Payment({
+                    paidBy: currentUser.id,
+                    orderId: orderID,
+                    amount: amount.value,
+                    currency: amount.currency_code,
+                    payerId: payerID,
+                    payerCountryCode: payer.address.country_code,
+                    payerPostalCode: payer.address.postal_code || '',
+                    payerEmailAddress: payer.email_address || '',
+                    // payerPhone: payer.phone.phone_number.national_number,
+                    payerGivenName: payer.name.given_name,
+                    payerSurname: payer.name.surname,
+                    payeeEmail: payee.email_address,
+                    payeeMerchantId: payee.merchant_id,
+                    paypalAuthorizationId: authorizationId
+                  })
 
-                that.resetAndHide()
-              }}
-              onError={(e) => {
-                alert(`Error contacting Paypal. Try again later`)
-                console.log('e', e)
-              }}
-              options={{
-                clientId: paypalAccountClientId, // 'PRODUCTION_CLIENT_ID'
-                disableFunding: 'paylater',
-                intent: 'authorize'
-              }}
-              onButtonReady={() => that.setState({ paypalButtonReady: true })}
-              onShippingChange={() => { return '' }} // Just having this prop forces all payment forms to render in popups instead of inline
-            />
+                  onRentalAdd(newRental, paymentObj)
+
+                  that.resetAndHide()
+                }}
+                onButtonRdy={() => that.setState({ paypalButtonReady: true })}
+              />
+            </Flex>
             :
             <React.Fragment>
               <Button variant='secondary' onClick={this.resetAndHide.bind(this)}>
