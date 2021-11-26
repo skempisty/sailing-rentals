@@ -11,6 +11,8 @@ const multer  = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
+const ClassRegistrationDto = require('./dto/ClassRegistrationDto')
+
 const router = express.Router()
 
 /*******************************************************************************
@@ -661,6 +663,37 @@ router.delete('/classes/:id', async (req, res) => {
     res.send('ok')
   } else {
     res.status(401).send('You don\'t have permission to delete this class')
+  }
+})
+
+/*******************************************************************************
+ * Class Registrations
+ */
+
+router.get('/class_registrations', async (req, res) => {
+  const registrations = await api.classes.getClassRegistrations()
+
+  res.send(registrations)
+})
+
+router.post('/class_registrations', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+
+  const { userId, isAdmin } = await decodeJwt(jwtToken)
+
+  const classRegistrationDto = new ClassRegistrationDto({ ...req.body, userId })
+
+  if (classRegistrationDto.payPalData) {
+    const newClassRegistration = await api.classes.createPaidClassRegistration(classRegistrationDto)
+
+    res.send(newClassRegistration)
+  } else if (isAdmin) {
+    // create free class registration
+    const newClassRegistration = await api.classes.createFreeClassRegistration(classRegistrationDto)
+
+    res.send(newClassRegistration)
+  } else {
+    res.status(400).send('Only Admins may register for classes without an attached paypal transaction')
   }
 })
 

@@ -7,6 +7,7 @@ const ClassMeeting = require('../domains/ClassMeeting')
 const RentalsDao = require('../dao/RentalsDao')
 const ClassesDao = require('../dao/ClassesDao')
 const ClassMeetingsDao = require('../dao/ClassMeetingsDao')
+const ClassRegistrationsDao = require('../dao/ClassRegistrationsDao')
 
 const ClassDto = require('../dto/ClassDto')
 const RentalDto = require('../dto/RentalDto')
@@ -43,6 +44,10 @@ exports.getClass = async (id) => {
   return klass
 }
 
+exports.getClassRegistrations = async () => {
+  return await ClassRegistrationsDao.getAll()
+}
+
 /**
  * ██████╗░░█████╗░░██████╗████████╗
  * ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
@@ -60,6 +65,17 @@ exports.createClass = async (classObj, creatorId) => {
   await ClassMeeting.createMeetingsWithAndWithoutRentals(classDto.meetings, createdClass, creatorId)
 
   return createdClass
+}
+
+exports.createFreeClassRegistration = async (classRegistrationDto) => {
+  return await ClassRegistrationsDao.create(classRegistrationDto)
+}
+
+exports.createPaidClassRegistration = async (classRegistrationDto) => {
+  const createdRegistration = await ClassRegistrationsDao.create(classRegistrationDto)
+
+  // TODO: create the payment record for this registration
+  return createdRegistration
 }
 
 /**
