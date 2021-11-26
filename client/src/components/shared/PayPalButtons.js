@@ -27,7 +27,7 @@ const PayPalButtons = ({ amount, onApprove, onButtonRdy }) => {
 }
 
 PayPalButtons.propTypes = {
-  amount: PropTypes.string.isRequired,
+  amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   onApprove: PropTypes.func.isRequired,
   onButtonRdy: PropTypes.func
 }

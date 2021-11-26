@@ -4,6 +4,21 @@
 
 import moment from 'moment'
 
+/**
+ * Intended as a filter function. Use to get ONLY upcoming classes
+ * @param {Object} klass
+ * @returns {boolean}
+ */
+const isUpcoming = (klass) => {
+  const mtgs = klass.meetings
+
+  if (!mtgs) return false
+
+  const earliestMtgStart = moment.min(mtgs.map(mtg => moment(mtg.start)))
+
+  return earliestMtgStart.isAfter()
+}
+
 const getRegisteredCount = (classId, classRegistrations) => {
   let count = 0
 
@@ -82,6 +97,7 @@ const validate = (classObj) => {
 }
 
 export default {
+  isUpcoming,
   getRegisteredCount,
   getClassById,
   getStartEndTimes,

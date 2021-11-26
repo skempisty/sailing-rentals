@@ -6,6 +6,8 @@ import { Tab, Tabs } from 'react-bootstrap'
 import Box from '../../shared/styled-system/Box'
 import Title from '../../shared/styled-system/Title'
 import ContentWrapper from '../../shared/ContentWrapper'
+import ClassCatalog from './ClassCatalog'
+import MyClasses from './MyClasses'
 
 import { useClasses } from '../../../store/classes'
 
@@ -19,11 +21,13 @@ const ClassRegistration = () => {
   const [activeKey, setActiveKey] = useState()
 
   const {
-    getClassesThunk
+    getClassesThunk,
+    getClassRegistrationsThunk
   } = useClasses()
 
   const fetchData = async () => {
     getClassesThunk()
+    getClassRegistrationsThunk()
   }
 
   useEffect(() => {
@@ -49,11 +53,11 @@ const ClassRegistration = () => {
             unmountOnExit
           >
             <Tab eventKey='register' title='Register'>
-              whore
+              <ClassCatalog/>
             </Tab>
 
             <Tab eventKey='myClasses' title='My Classes'>
-              bitch
+              <MyClasses/>
             </Tab>
           </Tabs>
         </Box>
