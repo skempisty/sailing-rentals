@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 
-import { Modal, Card, Button } from 'react-bootstrap'
+import { Modal, Card, Button, Table } from 'react-bootstrap'
 import { FaCrown } from 'react-icons/fa'
 
 import Box from '../../shared/styled-system/Box'
@@ -39,7 +40,27 @@ const ClassRegistrationModal = ({ klass, show, onHide }) => {
       </Modal.Header>
 
       <Modal.Body>
+        <Text as='h3'>Some Info</Text>
 
+        <Text>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</Text>
+
+        <Text as='h3' marginTop='0.5em'>Meetings</Text>
+
+        <Table responsive style={{ margin: '0' }}>
+          <thead><tr>
+            <th>When</th>
+            <th>Where</th>
+          </tr></thead>
+
+          <tbody>
+            {klass.meetings.map(mtg =>
+              <tr>
+                <td>{moment(mtg.start).format('hh:mm a')} - {moment(mtg.end).format('hh:mm a')} {moment(mtg.start).format('MM/DD')}</td>
+                <td><Text>{mtg.rentalId ? 'On the water' : 'Online'}</Text></td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
       </Modal.Body>
 
       <Modal.Footer>
