@@ -5,8 +5,16 @@ import { Button, Card } from 'react-bootstrap'
 
 import ClassRegistrationModal from './ClassRegistrationModal'
 
+import { useClasses } from '../../../store/classes'
+import { useSession } from '../../../store/session'
+
 const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
   const [showClassRegistrationModal, setShowClassRegistrationModal] = useState(false)
+
+  const { currentUser } = useSession()
+  const { classRegistrations } = useClasses()
+
+  const isRegisterDisabled = classRegistrations.some(r => r.classId === klass.id && r.userId === currentUser.id)
 
   return (
     <>
@@ -23,7 +31,12 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
 
 
         {hasRegisterBtn &&
-          <Button onClick={() => setShowClassRegistrationModal(true)}>Register</Button>
+          <Button
+            disabled={isRegisterDisabled}
+            onClick={() => setShowClassRegistrationModal(true)}
+          >
+            Register
+          </Button>
         }
       </Card>
     </>
