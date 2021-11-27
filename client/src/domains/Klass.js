@@ -19,7 +19,7 @@ const isUpcoming = (klass) => {
   return earliestMtgStart.isAfter()
 }
 
-const getRegisteredCount = (classId, classRegistrations) => {
+const getRegistrationCount = (classId, classRegistrations) => {
   let count = 0
 
   // find how many registrations are for the class with classId
@@ -98,7 +98,7 @@ const validate = (classObj) => {
 
 export default {
   isUpcoming,
-  getRegisteredCount,
+  getRegistrationCount,
   getClassById,
   getStartEndTimes,
   validate

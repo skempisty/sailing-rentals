@@ -8,6 +8,8 @@ import Flex from '../../shared/styled-system/Flex'
 import Text from '../../shared/styled-system/Text'
 import ClassRegistrationModal from './ClassRegistrationModal'
 
+import ClassDomain from '../../../domains/Klass'
+
 import { useClasses } from '../../../store/classes'
 import { useSession } from '../../../store/session'
 
@@ -30,13 +32,28 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
       <Card style={{ display: 'inline-flex', color: 'black' }}>
 
         <Flex>
-          <Flex flexDirection='column' justifyContent='center' alignItems='center' minWidth='10em'>
-            <Text fontSize='1.1em' fontWeight='bold'>Cohort #{klass.id}</Text>
-            <div>capacity: {klass.capacity}</div>
+          <Flex
+            flexDirection='column'
+            justifyContent='center'
+            alignItems='center'
+            minWidth='10em'
+          >
+            <Text fontSize='1.25em' fontWeight='bold'>Cohort #{klass.id}</Text>
+
+            <Flex flexDirection='column'>
+              <Text textAlign='center'>{ClassDomain.getRegistrationCount(klass.id, classRegistrations)} / {klass.capacity}</Text>
+              <Text textAlign='center' fontSize='0.8em'>capacity</Text>
+            </Flex>
           </Flex>
 
-          <Flex flexDirection='column'>
-            <Text>Meetings</Text>
+          <Flex flexDirection='column' margin='0.5em 0'>
+            <Text
+              marginBottom='0.25em'
+              textAlign='center'
+              fontWeight='bold'
+            >
+              Meetings
+            </Text>
 
             <Table responsive style={{ margin: '0' }}>
               <thead><tr>
@@ -61,7 +78,7 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
             disabled={isRegisterDisabled}
             onClick={() => setShowClassRegistrationModal(true)}
           >
-            Register
+            {isRegisterDisabled ? 'Registered' : 'Register'}
           </Button>
         }
       </Card>
