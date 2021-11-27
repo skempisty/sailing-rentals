@@ -19,7 +19,23 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
   const { currentUser } = useSession()
   const { classRegistrations } = useClasses()
 
-  const isRegisterDisabled = classRegistrations.some(r => r.classId === klass.id && r.userId === currentUser.id)
+  const currentUserIsRegistered = classRegistrations.some(r => r.classId === klass.id && r.userId === currentUser.id)
+
+  const registrationCount = ClassDomain.getRegistrationCount(klass.id, classRegistrations)
+
+  const isClassFull = registrationCount >= klass.capacity
+
+  const isRegisterDisabled = isClassFull || currentUserIsRegistered
+
+  const registerBtnText = () => {
+    if (isClassFull) {
+      return 'Class Full'
+    } else if (currentUserIsRegistered) {
+      return 'Registered'
+    } else {
+      return 'Register'
+    }
+  }
 
   return (
     <>
@@ -30,7 +46,6 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
       />
 
       <Card style={{ display: 'inline-flex', color: 'black' }}>
-
         <Flex>
           <Flex
             flexDirection='column'
@@ -41,7 +56,7 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
             <Text fontSize='1.25em' fontWeight='bold'>Cohort #{klass.id}</Text>
 
             <Flex flexDirection='column'>
-              <Text textAlign='center'>{ClassDomain.getRegistrationCount(klass.id, classRegistrations)} / {klass.capacity}</Text>
+              <Text textAlign='center'>{registrationCount} / {klass.capacity}</Text>
               <Text textAlign='center' fontSize='0.8em'>capacity</Text>
             </Flex>
           </Flex>
@@ -78,7 +93,7 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
             disabled={isRegisterDisabled}
             onClick={() => setShowClassRegistrationModal(true)}
           >
-            {isRegisterDisabled ? 'Registered' : 'Register'}
+            {registerBtnText()}
           </Button>
         }
       </Card>
