@@ -54,7 +54,7 @@ const ClassRegistrationModal = ({ klass, show, onHide }) => {
 
           <tbody>
             {klass.meetings.map(mtg =>
-              <tr>
+              <tr key={mtg.id}>
                 <td>{moment(mtg.start).format('hh:mm a')} - {moment(mtg.end).format('hh:mm a')} {moment(mtg.start).format('MM/DD')}</td>
                 <td><Text>{mtg.rentalId ? 'On the water' : 'Online'}</Text></td>
               </tr>

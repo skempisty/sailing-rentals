@@ -98,7 +98,9 @@ export const useClasses = () => {
 
   return {
     ...classes,
+    inProgressClasses: classes.classes.filter(ClassDomain.isInProgress),
     upcomingClasses: classes.classes.filter(ClassDomain.isUpcoming),
+    pastClasses: classes.classes.filter(ClassDomain.isPast),
     setDefaultAddEditClass: useAction(setDefaultAddEditClass),
     updateAddEditClass: useAction(updateAddEditClass),
     getClassesThunk: useAction(getClassesThunk),
