@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 
-import { Button, Card } from 'react-bootstrap'
+import { Button, Card, Table } from 'react-bootstrap'
 
+import Flex from '../../shared/styled-system/Flex'
+import Text from '../../shared/styled-system/Text'
 import ClassRegistrationModal from './ClassRegistrationModal'
 
 import { useClasses } from '../../../store/classes'
@@ -24,11 +27,34 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
         onHide={() => setShowClassRegistrationModal(false)}
       />
 
-      <Card>
-        <div>id: {klass.id}</div>
-        <div>capacity: {klass.capacity}</div>
-        <div>meetings: {JSON.stringify(klass.meetings)}</div>
+      <Card style={{ display: 'inline-flex', color: 'black' }}>
 
+        <Flex>
+          <Flex flexDirection='column' justifyContent='center' alignItems='center' minWidth='10em'>
+            <Text fontSize='1.1em' fontWeight='bold'>Cohort #{klass.id}</Text>
+            <div>capacity: {klass.capacity}</div>
+          </Flex>
+
+          <Flex flexDirection='column'>
+            <Text>Meetings</Text>
+
+            <Table responsive style={{ margin: '0' }}>
+              <thead><tr>
+                <th>When</th>
+                <th>Where</th>
+              </tr></thead>
+
+              <tbody>
+                {klass.meetings.map(mtg =>
+                  <tr>
+                    <td>{moment(mtg.start).format('hh:mm a')} - {moment(mtg.end).format('hh:mm a')} {moment(mtg.start).format('MM/DD')}</td>
+                    <td><Text>{mtg.rentalId ? 'On the water' : 'Online'}</Text></td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </Flex>
+        </Flex>
 
         {hasRegisterBtn &&
           <Button

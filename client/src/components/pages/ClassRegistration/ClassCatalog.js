@@ -16,18 +16,19 @@ const ClassCatalog = () => {
     <Box>
       <Title as='h2'>Available Classes</Title>
 
-      <Flex alignItems='center'>
+      <Flex alignItems='center' marginBottom='0.5em'>
         <FaArrowCircleDown color='white'/>
         <span style={{ margin: '0 0.5em' }}>First Available Class</span>
         <FaArrowCircleDown color='white'/>
       </Flex>
 
       {upcomingClasses.map((klass) =>
-        <ClassInfoWidget
-          key={klass.id}
-          klass={klass}
-          hasRegisterBtn
-        />
+        <Box key={klass.id} marginBottom='1em'>
+          <ClassInfoWidget
+            klass={klass}
+            hasRegisterBtn
+          />
+        </Box>
       )}
     </Box>
   )
