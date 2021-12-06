@@ -23,7 +23,7 @@ const ClassRow = ({ klass, hasActionColumn }) => {
 
   const { startTime, endTime } = Klass.getStartEndTimes(klass)
 
-  const enrolledCount = Klass.getRegisteredCount(klass.id, classRegistrations)
+  const enrolledCount = Klass.getRegistrationCount(klass.id, classRegistrations)
 
   return (
     <React.Fragment>
