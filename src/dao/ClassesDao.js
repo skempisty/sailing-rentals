@@ -17,9 +17,9 @@ const ClassesDao = () => {
     // create the class
     const newClass = [ details, capacity, price ]
 
-    await db.query(`INSERT INTO ${db.name}.classes (details, capacity, price) VALUES (?, ?, ?)`, newClass)
+    const result = await db.query(`INSERT INTO ${db.name}.classes (details, capacity, price) VALUES (?, ?, ?)`, newClass)
 
-    const [ createdClass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = LAST_INSERT_ID()`)
+    const [ createdClass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = ${result.insertId}`)
 
     return createdClass
   }
