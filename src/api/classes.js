@@ -8,6 +8,7 @@ const RentalsDao = require('../dao/RentalsDao')
 const ClassesDao = require('../dao/ClassesDao')
 const ClassMeetingsDao = require('../dao/ClassMeetingsDao')
 const ClassRegistrationsDao = require('../dao/ClassRegistrationsDao')
+const PaymentsDao = require('../dao/PaymentsDao')
 
 const ClassDto = require('../dto/ClassDto')
 const RentalDto = require('../dto/RentalDto')
@@ -72,10 +73,13 @@ exports.createFreeClassRegistration = async (classRegistrationDto) => {
 }
 
 exports.createPaidClassRegistration = async (classRegistrationDto) => {
-  const createdRegistration = await ClassRegistrationsDao.create(classRegistrationDto)
+  const newRegistrationId = await ClassRegistrationsDao.create(classRegistrationDto)
 
-  // TODO: create the payment record for this registration
-  return createdRegistration
+  classRegistrationDto.id = newRegistrationId
+
+  await PaymentsDao.createClassPayment(classRegistrationDto)
+
+  return newRegistrationId
 }
 
 /**

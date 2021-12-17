@@ -18,7 +18,9 @@ const ClassRegistrationModal = ({ klass, show, onHide }) => {
   const { createClassRegistrationThunk } = useClasses()
 
   const handlePaypalApprove = async (data, actions) => {
-    const payPalData = { data, actions }
+    const authorization = await actions.order.authorize()
+
+    const payPalData = { data, authorization }
 
     createClassRegistrationThunk({ classId: klass.id, payPalData })
 
@@ -66,7 +68,7 @@ const ClassRegistrationModal = ({ klass, show, onHide }) => {
       <Modal.Footer>
         <Box width='100%'>
           <Flex flexDirection='column' alignItems='center'>
-            {currentUser.isAdmin &&
+            {!!currentUser.isAdmin &&
               <Card style={{ marginBottom: '1em', padding: '0.25em', background: 'lightgrey' }}>
                 <Flex flexDirection='column'>
                   <Flex justifyContent='center' alignItems='center' marginBottom='0.25em'>
