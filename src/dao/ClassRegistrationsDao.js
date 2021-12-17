@@ -14,9 +14,9 @@ const ClassRegistrationsDao = () => {
 
     const newRegistration = [ userId, classId ]
 
-    await db.query(`INSERT INTO ${db.name}.class_registrations (userId, classId) VALUES (?, ?)`, newRegistration)
+    const result = await db.query(`INSERT INTO ${db.name}.class_registrations (userId, classId) VALUES (?, ?)`, newRegistration)
 
-    const [ createdRegistration ] = await db.query(`SELECT * FROM ${db.name}.class_registrations WHERE id = LAST_INSERT_ID()`)
+    const [ createdRegistration ] = await db.query(`SELECT * FROM ${db.name}.class_registrations WHERE id = ${result.insertId}`)
 
     return createdRegistration
   }
