@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import Box from '../../shared/styled-system/Box'
 import ContentWrapper from '../../shared/ContentWrapper'
 
 import PhotoCarousel from './PhotoCarousel'
@@ -35,7 +36,9 @@ const HomePage = () => {
       <ContentWrapper>
         <div className='rent-btn-and-posts-container' style={{ display: 'flex' }}>
           {!!currentUser.isApproved &&
-            <ApprovedUserCallToActions/>
+            <Box marginBottom='1em'>
+              <ApprovedUserCallToActions/>
+            </Box>
           }
 
           <Posts/>
