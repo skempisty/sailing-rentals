@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
 
 const carouselSlideSlice = createSlice({
   name: 'carouselSlides',
@@ -39,5 +40,11 @@ export const {
   editCarouselSlide,
   removeCarouselSlide
 } = carouselSlideSlice.actions
+
+export const useCarouselSlides = () => {
+  const carouselSlides = useSelector(state => state.carouselSlides)
+
+  return { ...carouselSlides }
+}
 
 export default carouselSlideSlice.reducer
