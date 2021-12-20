@@ -25,8 +25,6 @@ const PaymentsDao = () => {
       classRegistrationId
     } = PaymentDto.classRegistrationDtoToPaymentDto(classRegistrationDto)
 
-    console.log('ORDER ID', orderId)
-
     const newPayment = [
       orderId,
       amount,
@@ -45,7 +43,7 @@ const PaymentsDao = () => {
       classRegistrationId
     ]
 
-    await db.query(`INSERT INTO ${db.name}.payments (
+    const result = await db.query(`INSERT INTO ${db.name}.payments (
       orderId,
       amount,
       currency,
@@ -63,7 +61,7 @@ const PaymentsDao = () => {
       classRegistrationId
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, newPayment)
 
-    const [ payment ] = await db.query(`SELECT * FROM ${db.name}.payments WHERE id = LAST_INSERT_ID()`)
+    const [ payment ] = await db.query(`SELECT * FROM ${db.name}.payments WHERE id = ${result.insertId}`)
 
     return payment
   }

@@ -73,13 +73,13 @@ exports.createFreeClassRegistration = async (classRegistrationDto) => {
 }
 
 exports.createPaidClassRegistration = async (classRegistrationDto) => {
-  const newRegistrationId = await ClassRegistrationsDao.create(classRegistrationDto)
+  const newRegistration = await ClassRegistrationsDao.create(classRegistrationDto)
 
-  classRegistrationDto.id = newRegistrationId
+  classRegistrationDto.id = newRegistration.id
 
   await PaymentsDao.createClassPayment(classRegistrationDto)
 
-  return newRegistrationId
+  return 'ok'
 }
 
 /**
