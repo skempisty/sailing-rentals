@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
 
 const postSlice = createSlice({
   name: 'posts',
@@ -39,5 +40,11 @@ export const {
   editPost,
   removePost
 } = postSlice.actions;
+
+export const usePosts = () => {
+  const posts = useSelector(state => state.posts)
+
+  return { ...posts }
+}
 
 export default postSlice.reducer;
