@@ -147,6 +147,7 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
           <Form.Control
             as='textarea'
             style={{ height: '5em' }}
+            placeholder='Put meeting links and other useful info specific to this meeting here.'
             value={details}
             onChange={(e) => setState({ ...state, details: e.target.value })}
           />
