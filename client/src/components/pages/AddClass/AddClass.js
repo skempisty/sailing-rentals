@@ -65,7 +65,7 @@ const AddClass = () => {
 
   const pageTitle = View.isNewClass(classId) ? 'Add Class' : `Edit Class ${classId}`
 
-  const { capacity, price, details } = addEditClass
+  const { capacity, price } = addEditClass
 
   return (
     <ContentWrapper>
@@ -107,19 +107,8 @@ const AddClass = () => {
                     />
                   </Form.Group>
                 </Box>
-
-                <Form.Group>
-                  <Form.Label style={{ color: 'white' }}><b>Details</b></Form.Label>
-
-                  <RichTextArea
-                    value={details}
-                    onChange={(newDetails) => updateAddEditClass({ details: newDetails })}
-                  />
-                </Form.Group>
               </Form>
-            </ContentStep>
 
-            <ContentStep>
               <CustomizeClassMtgs isNewClass={View.isNewClass(classId)}/>
             </ContentStep>
           </MultiStepContent>
