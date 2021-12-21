@@ -5,6 +5,7 @@ import Switch from 'react-switch'
 
 import Box from '../../../shared/styled-system/Box'
 import Flex from '../../../shared/styled-system/Flex'
+import RichTextArea from '../../../shared/RichTextArea'
 import MultiStepModal from '../../../shared/modals/MultiStepModal'
 import ModalStep from '../../../shared/modals/MultiStepModal/ModalStep'
 import RentalCalendar from '../../../shared/RentalCalendar'
@@ -144,12 +145,11 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
           </Box>
 
           <Form.Label><b>Details</b></Form.Label>
-          <Form.Control
-            as='textarea'
-            style={{ height: '5em' }}
-            placeholder='Put meeting links and other useful info specific to this meeting here.'
+          <RichTextArea
             value={details}
-            onChange={(e) => setState({ ...state, details: e.target.value })}
+            placeholder='Put meeting links and other useful info specific to this meeting here.'
+            height={200}
+            onChange={(value) => setState({ ...state, details: value })}
           />
         </Form>
       </ModalStep>

@@ -4,15 +4,15 @@ import PropTypes from 'prop-types'
 import { Card } from 'react-bootstrap'
 import { Editor } from '@tinymce/tinymce-react'
 
-const RichTextArea = ({ value, onChange }) => {
+const RichTextArea = ({ value, placeholder, height, onChange }) => {
   return (
     <Card style={{ padding: '0.5em' }}>
       <Editor
         value={value}
         apiKey='k7k4vfwhahx9lkapst52sfshfl2z36j4wmnsycw2lc30avnv'
         init={{
-          placeholder: 'Optional',
-          height: 500,
+          placeholder,
+          height,
           menubar: false,
           elementpath: false,
           contextmenu: false,
@@ -37,6 +37,11 @@ const RichTextArea = ({ value, onChange }) => {
 RichTextArea.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired
+}
+
+RichTextArea.defaultProps = {
+  placeholder: 'Optional',
+  height: 500
 }
 
 export default RichTextArea
