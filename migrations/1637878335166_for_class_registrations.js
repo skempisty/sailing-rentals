@@ -19,5 +19,12 @@
     MODIFY COLUMN rentalId INT
   `)
 
+  /**
+   * Remove class details
+   */
+  await db.query(`ALTER TABLE ${SAILING_DB_NAME}.classes
+    DROP COLUMN details
+  `)
+
   process.exit()
 })()
