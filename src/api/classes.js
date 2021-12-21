@@ -79,7 +79,7 @@ exports.createPaidClassRegistration = async (classRegistrationDto) => {
 
   await PaymentsDao.createClassPayment(classRegistrationDto)
 
-  return 'ok'
+  return newRegistration
 }
 
 /**

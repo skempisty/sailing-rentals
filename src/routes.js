@@ -684,14 +684,14 @@ router.post('/class_registrations', async (req, res) => {
   const classRegistrationDto = new ClassRegistrationDto({ ...req.body, userId })
 
   if (classRegistrationDto.payPalData) {
-    await api.classes.createPaidClassRegistration(classRegistrationDto)
+    const newPaidRegistration = await api.classes.createPaidClassRegistration(classRegistrationDto)
 
-    res.send('ok')
+    res.send(newPaidRegistration)
   } else if (isAdmin) {
     // create free class registration
-    await api.classes.createFreeClassRegistration(classRegistrationDto)
+    const newFreeRegistration = await api.classes.createFreeClassRegistration(classRegistrationDto)
 
-    res.send('ok')
+    res.send(newFreeRegistration)
   } else {
     res.status(400).send('Only Admins may register for classes without an attached paypal transaction')
   }
