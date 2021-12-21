@@ -8,6 +8,9 @@ import Title from '../../shared/styled-system/Title'
 import ContentWrapper from '../../shared/ContentWrapper'
 import ClassCatalog from './ClassCatalog'
 import MyClasses from './MyClasses'
+import ClassInfo from './ClassInfo'
+
+import { siteColors } from '../../../utils/constants'
 
 import { useClasses } from '../../../store/classes'
 
@@ -38,7 +41,7 @@ const ClassRegistration = () => {
     <ContentWrapper>
       <StyledWrapper>
         <Box color='white'>
-          <Title color='#fec307'>Sailing Classes</Title>
+          <Title color={siteColors.gold}>Sailing Classes</Title>
 
           <Tabs
             activeKey={activeKey}
@@ -58,6 +61,10 @@ const ClassRegistration = () => {
 
             <Tab eventKey='myClasses' title='My Classes'>
               <MyClasses/>
+            </Tab>
+
+            <Tab eventKey='classInfo' title='Class Info'>
+              <ClassInfo/>
             </Tab>
           </Tabs>
         </Box>

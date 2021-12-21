@@ -9,7 +9,15 @@ const rentalTypes = {
     KLASS: 'klass'
 }
 
+const siteColors = {
+    blue: '#004679',
+    gold: '#fec307',
+    white: '#ffffff',
+    darkGrey: '#343a40'
+}
+
 module.exports = {
     baseUrl: process.env.REACT_APP_BACKEND_BASE_URL || 'http://localhost:5000',
-    rentalTypes
+    rentalTypes,
+    siteColors
 }
