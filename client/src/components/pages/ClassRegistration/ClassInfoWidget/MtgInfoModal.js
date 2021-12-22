@@ -38,7 +38,7 @@ const MtgInfoModal = ({ mtg, show, onHide }) => {
             {!!mtg.details &&
               <Flex flexDirection='column' marginTop='1em'>
                 <Text fontWeight='bold'>Additional Details</Text>
-                <Text>{mtg.details}</Text>
+                <Text dangerouslySetInnerHTML={{ __html: mtg.details }}/>
               </Flex>
             }
           </>
@@ -46,7 +46,11 @@ const MtgInfoModal = ({ mtg, show, onHide }) => {
 
         {!mtg.rentalId &&
           <Flex>
-            {mtg.details ? mtg.details : 'No further details given.'}
+            {mtg.details ?
+              <Text dangerouslySetInnerHTML={{ __html: mtg.details }}/>
+              :
+              'No further details given.'
+            }
           </Flex>
         }
       </Modal.Body>
