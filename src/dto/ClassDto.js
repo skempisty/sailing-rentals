@@ -3,7 +3,6 @@ const ClassMeetingDto = require('./ClassMeetingDto')
 class ClassDto {
   constructor({
     id,
-    details,
     capacity,
     price,
     meetings
@@ -12,7 +11,6 @@ class ClassDto {
     if (!hasRequiredFields) throw new Error('Error creating a ClassDto without a required field')
 
     this.id = id || null
-    this.details = details
     this.capacity = capacity
     this.price = price
     this.meetings = meetings.map(mtg => new ClassMeetingDto(mtg))

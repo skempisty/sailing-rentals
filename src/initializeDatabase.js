@@ -143,7 +143,6 @@ const initializeDatabase = async function(dbName) {
 
   await db.query(`CREATE TABLE ${dbName}.classes (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
-    'details TEXT,' +
     'capacity INT NOT NULL,' +
     'price DOUBLE(10,2) NOT NULL,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
