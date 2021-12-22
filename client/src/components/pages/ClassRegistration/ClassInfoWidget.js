@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 
 import { Button, Card, Table } from 'react-bootstrap'
+import { FaInfoCircle } from 'react-icons/fa'
 
 import Flex from '../../shared/styled-system/Flex'
 import Text from '../../shared/styled-system/Text'
 import ClassRegistrationModal from './ClassRegistrationModal'
 
 import ClassDomain from '../../../domains/Klass'
+import { siteColors } from '../../../utils/constants'
 
 import { useClasses } from '../../../store/classes'
 import { useSession } from '../../../store/session'
@@ -55,10 +57,12 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
           >
             <Text fontSize='1.25em' fontWeight='bold'>Cohort #{klass.id}</Text>
 
-            <Flex flexDirection='column'>
-              <Text textAlign='center'>{registrationCount} / {klass.capacity}</Text>
-              <Text textAlign='center' fontSize='0.8em'>capacity</Text>
-            </Flex>
+            {hasRegisterBtn &&
+              <Flex flexDirection='column'>
+                <Text textAlign='center'>{registrationCount} / {klass.capacity}</Text>
+                <Text textAlign='center' fontSize='0.8em'>capacity</Text>
+              </Flex>
+            }
           </Flex>
 
           <Flex flexDirection='column' margin='0.5em 0'>
@@ -79,8 +83,32 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
               <tbody>
                 {klass.meetings.map(mtg =>
                   <tr key={mtg.id}>
-                    <td>{moment(mtg.start).format('hh:mm a')} - {moment(mtg.end).format('hh:mm a')} {moment(mtg.start).format('MM/DD')}</td>
-                    <td><Text>{mtg.rentalId ? 'On the water' : 'Online'}</Text></td>
+                    <td style={{ verticalAlign: 'middle' }}>
+                      <Flex alignItems='center'>
+                        <Text
+                          marginRight='1em'
+                          color={siteColors.blue}
+                          fontWeight='bold'
+                        >
+                          {moment(mtg.start).format('MMM DD')}
+                        </Text>
+
+                        <Text>{moment(mtg.start).format('hh:mm a')} - {moment(mtg.end).format('hh:mm a')}</Text>
+                      </Flex>
+                    </td>
+
+                    <td>
+                      {hasRegisterBtn ?
+                        <Text>{mtg.rentalId ? 'On the water' : 'Online'}</Text>
+                        :
+                        <Button style={{ width: '100%' }} variant='secondary'>
+                          <Flex alignItems='center'>
+                            <FaInfoCircle/>
+                            <Text marginLeft='0.5em'>{mtg.rentalId ? 'On the water' : 'Online'}</Text>
+                          </Flex>
+                        </Button>
+                      }
+                    </td>
                   </tr>
                 )}
               </tbody>
