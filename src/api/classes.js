@@ -26,7 +26,7 @@ const { rentalTypes } = require('../utils/constants')
 
 exports.getClasses = async () => {
   const classes = await db.query(`SELECT * FROM ${db.name}.classes`)
-  const classMeetings = await db.query(`SELECT * FROM ${db.name}.class_meetings`)
+  const classMeetings = await ClassMeetingsDao.getAll()
 
   return classes.map(klass => {
     const mtgsInClass = classMeetings.filter(mtg => mtg.classId === klass.id)

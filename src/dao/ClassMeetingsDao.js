@@ -5,6 +5,10 @@ const getInsertSqlPlaceholders = require('../utils/getInsertSqlPlaceholders')
 const CLASS_MEETINGS_TABLE = `${db.name}.class_meetings`
 
 const ClassMeetingsDao = () => {
+  const getAll = async () => {
+    return await db.query(`SELECT * FROM ${CLASS_MEETINGS_TABLE} WHERE deletedAt IS NULL ORDER BY start`)
+  }
+
   const getByClassId = async (id) => {
     return await db.query(`SELECT * FROM ${CLASS_MEETINGS_TABLE} WHERE classId = ? AND deletedAt IS NULL ORDER BY start`, [id])
   }
@@ -78,6 +82,7 @@ const ClassMeetingsDao = () => {
   }
 
   return {
+    getAll,
     getByClassId,
     createMany,
     update,
