@@ -25,7 +25,7 @@ const RichTextArea = ({ value, placeholder, height, onChange }) => {
           toolbar: 'undo redo | formatselect | ' +
             'bold italic forecolor emoticons | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
-            'removeformat | help',
+            'removeformat',
           content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
         }}
         onEditorChange={(newValue) => onChange(newValue)}
