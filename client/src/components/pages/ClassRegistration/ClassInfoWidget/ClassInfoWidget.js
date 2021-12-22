@@ -80,7 +80,7 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
 
               <tbody>
                 {klass.meetings.map(mtg =>
-                  <MtgInfoRow mtg={mtg} hasRegisterBtn={hasRegisterBtn}/>
+                  <MtgInfoRow key={mtg.id} mtg={mtg} hasRegisterBtn={hasRegisterBtn}/>
                 )}
               </tbody>
             </Table>
