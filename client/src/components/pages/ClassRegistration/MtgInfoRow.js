@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import moment from 'moment'
 
 import { Button } from 'react-bootstrap'
 import { FaInfoCircle } from 'react-icons/fa'
 
-import Flex from '../../../shared/styled-system/Flex'
-import Text from '../../../shared/styled-system/Text'
-import MtgInfoModal from './MtgInfoModal'
+import Flex from '../../shared/styled-system/Flex'
+import Text from '../../shared/styled-system/Text'
+import MtgInfoModal from './ClassInfoWidget/MtgInfoModal'
 
-import { siteColors } from '../../../../utils/constants'
+import { siteColors } from '../../../utils/constants'
 
 const MtgInfoRow = ({ mtg, hasRegisterBtn }) => {
   const [showMtgInfoModal, setShowMtgInfoModal] = useState(false)
@@ -51,6 +52,11 @@ const MtgInfoRow = ({ mtg, hasRegisterBtn }) => {
       </tr>
     </>
   )
+}
+
+MtgInfoRow.propTypes = {
+  mtg: PropTypes.object.isRequired,
+  hasRegisterBtn: PropTypes.bool
 }
 
 export default MtgInfoRow

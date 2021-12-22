@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 
 import { Modal, Card, Button, Table } from 'react-bootstrap'
 import { FaCrown } from 'react-icons/fa'
@@ -9,6 +8,7 @@ import Box from '../../shared/styled-system/Box'
 import Flex from '../../shared/styled-system/Flex'
 import Text from '../../shared/styled-system/Text'
 import PayPalButtons from '../../shared/PayPalButtons'
+import MtgInfoRow from './MtgInfoRow'
 
 import { useSession } from '../../../store/session'
 import { useClasses } from '../../../store/classes'
@@ -52,10 +52,7 @@ const ClassRegistrationModal = ({ klass, show, onHide }) => {
 
           <tbody>
             {klass.meetings.map(mtg =>
-              <tr key={mtg.id}>
-                <td>{moment(mtg.start).format('hh:mm a')} - {moment(mtg.end).format('hh:mm a')} {moment(mtg.start).format('MM/DD')}</td>
-                <td><Text>{mtg.rentalId ? 'On the water' : 'Online'}</Text></td>
-              </tr>
+              <MtgInfoRow key={mtg.id} mtg={mtg} hasRegisterBtn/>
             )}
           </tbody>
         </Table>

@@ -6,7 +6,7 @@ import { Button, Card, Table } from 'react-bootstrap'
 import Flex from '../../../shared/styled-system/Flex'
 import Text from '../../../shared/styled-system/Text'
 import ClassRegistrationModal from '../ClassRegistrationModal'
-import MtgInfoRow from './MtgInfoRow'
+import MtgInfoRow from '../MtgInfoRow'
 
 import ClassDomain from '../../../../domains/Klass'
 
