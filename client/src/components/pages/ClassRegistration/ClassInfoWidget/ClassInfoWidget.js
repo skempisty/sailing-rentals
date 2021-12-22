@@ -1,19 +1,17 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 
 import { Button, Card, Table } from 'react-bootstrap'
-import { FaInfoCircle } from 'react-icons/fa'
 
-import Flex from '../../shared/styled-system/Flex'
-import Text from '../../shared/styled-system/Text'
-import ClassRegistrationModal from './ClassRegistrationModal'
+import Flex from '../../../shared/styled-system/Flex'
+import Text from '../../../shared/styled-system/Text'
+import ClassRegistrationModal from '../ClassRegistrationModal'
+import MtgInfoRow from './MtgInfoRow'
 
-import ClassDomain from '../../../domains/Klass'
-import { siteColors } from '../../../utils/constants'
+import ClassDomain from '../../../../domains/Klass'
 
-import { useClasses } from '../../../store/classes'
-import { useSession } from '../../../store/session'
+import { useClasses } from '../../../../store/classes'
+import { useSession } from '../../../../store/session'
 
 const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
   const [showClassRegistrationModal, setShowClassRegistrationModal] = useState(false)
@@ -82,34 +80,7 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
 
               <tbody>
                 {klass.meetings.map(mtg =>
-                  <tr key={mtg.id}>
-                    <td style={{ verticalAlign: 'middle' }}>
-                      <Flex alignItems='center'>
-                        <Text
-                          marginRight='1em'
-                          color={siteColors.blue}
-                          fontWeight='bold'
-                        >
-                          {moment(mtg.start).format('MMM DD')}
-                        </Text>
-
-                        <Text>{moment(mtg.start).format('hh:mm a')} - {moment(mtg.end).format('hh:mm a')}</Text>
-                      </Flex>
-                    </td>
-
-                    <td>
-                      {hasRegisterBtn ?
-                        <Text>{mtg.rentalId ? 'On the water' : 'Online'}</Text>
-                        :
-                        <Button style={{ width: '100%' }} variant='secondary'>
-                          <Flex alignItems='center'>
-                            <FaInfoCircle/>
-                            <Text marginLeft='0.5em'>{mtg.rentalId ? 'On the water' : 'Online'}</Text>
-                          </Flex>
-                        </Button>
-                      }
-                    </td>
-                  </tr>
+                  <MtgInfoRow mtg={mtg} hasRegisterBtn={hasRegisterBtn}/>
                 )}
               </tbody>
             </Table>
