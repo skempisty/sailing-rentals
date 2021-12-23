@@ -23,7 +23,7 @@ const RichTextArea = ({ value, placeholder, height, onChange }) => {
             'insertdatetime media table emoticons paste code help wordcount'
           ],
           toolbar: 'undo redo | formatselect | fontsizeselect | ' +
-            'bold italic forecolor emoticons | alignleft aligncenter ' +
+            'bold italic forecolor emoticons link | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
             'removeformat',
           content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
