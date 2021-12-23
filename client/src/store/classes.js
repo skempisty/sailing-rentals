@@ -6,6 +6,7 @@ import { useAction } from '../utils/useAction'
 import getClassesThunk from './thunks/getClassesThunk'
 import getClassThunk from './thunks/getClassThunk'
 import getClassRegistrationsThunk from './thunks/getClassRegistrationsThunk'
+import getClassInfoThunk from './thunks/getClassInfoThunk'
 import createClassThunk from './thunks/createClassThunk'
 import createClassRegistrationThunk from './thunks/createClassRegistrationThunk'
 import updateClassThunk from './thunks/updateClassThunk'
@@ -22,6 +23,10 @@ const classSlice = createSlice({
   initialState: {
     classes: [],
     classRegistrations: [],
+    classInfo: {
+      html: 'some class info will go here',
+      files: []
+    },
     addEditClass: new Klass(),
     addEditValidationErrorMsg: null
   },
@@ -36,6 +41,9 @@ const classSlice = createSlice({
         ...state.addEditClass,
         ...updateFields
       }
+    },
+    setClassInfo: (state, action) => {
+      state.classInfo = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -47,6 +55,9 @@ const classSlice = createSlice({
     })
     builder.addCase(getClassRegistrationsThunk.fulfilled, (state, action) => {
       state.classRegistrations = action.payload
+    })
+    builder.addCase(getClassInfoThunk.fulfilled, (state, action) => {
+      state.classInfo = action.payload
     })
     builder.addCase(createClassThunk.fulfilled, (state, action) => {
       const newClass = action.payload
@@ -90,7 +101,8 @@ const classSlice = createSlice({
 
 const {
   setDefaultAddEditClass,
-  updateAddEditClass
+  updateAddEditClass,
+  setClassInfo
 } = classSlice.actions
 
 export const useClasses = () => {
@@ -103,9 +115,11 @@ export const useClasses = () => {
     pastClasses: classes.classes.filter(ClassDomain.isPast),
     setDefaultAddEditClass: useAction(setDefaultAddEditClass),
     updateAddEditClass: useAction(updateAddEditClass),
+    setClassInfo: useAction(setClassInfo),
     getClassesThunk: useAction(getClassesThunk),
     getClassThunk: useAction(getClassThunk),
     getClassRegistrationsThunk: useAction(getClassRegistrationsThunk),
+    getClassInfoThunk: useAction(getClassInfoThunk),
     createClassThunk: useAction(createClassThunk),
     createClassRegistrationThunk: useAction(createClassRegistrationThunk),
     updateClassThunk: useAction(updateClassThunk),

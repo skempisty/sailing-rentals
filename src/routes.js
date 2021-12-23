@@ -583,6 +583,12 @@ router.get('/payments/my', async (req, res) => {
  * Settings
  */
 
+router.get('/settings/class_info', async (req, res) => {
+  const classInfo = await api.settings.getClassInfo()
+
+  res.send(classInfo)
+})
+
 /*** ADMIN ONLY */
 router.put('/settings', async (req, res) => {
   const { authorization: jwtToken } = req.headers

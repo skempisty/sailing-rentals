@@ -22,7 +22,7 @@ const RichTextArea = ({ value, placeholder, height, onChange }) => {
             'searchreplace visualblocks code fullscreen',
             'insertdatetime media table emoticons paste code help wordcount'
           ],
-          toolbar: 'undo redo | formatselect | ' +
+          toolbar: 'undo redo | formatselect | fontsizeselect | ' +
             'bold italic forecolor emoticons | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
             'removeformat',

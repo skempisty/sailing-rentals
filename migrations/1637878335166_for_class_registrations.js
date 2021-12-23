@@ -26,5 +26,12 @@
     DROP COLUMN details
   `)
 
+  /**
+   * Alter settings
+   */
+  await db.query(`ALTER TABLE ${SAILING_DB_NAME}.settings
+    MODIFY COLUMN value TEXT
+  `)
+
   process.exit()
 })()

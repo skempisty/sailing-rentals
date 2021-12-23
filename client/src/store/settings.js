@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
+import {useAction} from '../utils/useAction'
+
+import updateSettingsThunk from './thunks/updateSettingsThunk'
 
 const settingsSlice = createSlice({
   name: 'settings',
@@ -23,7 +26,8 @@ export const useSettings = () => {
   const settings = useSelector(state => state.settings)
 
   return {
-    ...settings
+    ...settings,
+    updateSettingsThunk: useAction(updateSettingsThunk)
   }
 }
 

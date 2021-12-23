@@ -1,7 +1,13 @@
 const db = require('../connectDb')
 
+const SettingsDao = require('../dao/SettingsDao')
+
 exports.getSettings = async () => {
   return await getSettingsObject()
+}
+
+exports.getClassInfo = async () => {
+  return await SettingsDao.getClassInfo()
 }
 
 exports.updateSettings = async (updatedSettingsObj) => {
