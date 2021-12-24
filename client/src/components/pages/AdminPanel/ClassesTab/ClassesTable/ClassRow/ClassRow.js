@@ -5,12 +5,15 @@ import moment from 'moment'
 
 import { FaBan, FaEdit } from 'react-icons/fa'
 
-import DeleteClassModal from './DeleteClassModal'
-
+import Flex from '../../../../../shared/styled-system/Flex'
+import Text from '../../../../../shared/styled-system/Text'
 import SelectMenu from '../../../../../shared/SelectMenu'
 import SelectMenuItem from '../../../../../shared/SelectMenuItem'
 
+import DeleteClassModal from './DeleteClassModal'
+
 import Klass from '../../../../../../domains/Klass'
+import { siteColors } from '../../../../../../utils/constants'
 
 import { useClasses } from '../../../../../../store/classes'
 
@@ -38,10 +41,34 @@ const ClassRow = ({ klass, hasActionColumn }) => {
         <td>{klass.id}</td>
 
         {/* Start */}
-        <td>{moment.isMoment(startTime) ? startTime.format('hh:mm a, MMM DD, YYYY') : ''}</td>
+        <td>
+          <Flex alignItems='center'>
+            <Text
+              marginRight='1em'
+              color={siteColors.blue}
+              fontWeight='bold'
+            >
+              {moment(startTime).format('MMM DD, YYYY')}
+            </Text>
+
+            <Text>{moment(startTime).format('hh:mm a')}</Text>
+          </Flex>
+        </td>
 
         {/* End */}
-        <td>{moment.isMoment(endTime) ? endTime.format('hh:mm a, MMM DD, YYYY') : ''}</td>
+        <td>
+          <Flex alignItems='center'>
+            <Text
+              marginRight='1em'
+              color={siteColors.blue}
+              fontWeight='bold'
+            >
+              {moment(endTime).format('MMM DD, YYYY')}
+            </Text>
+
+            <Text>{moment(endTime).format('hh:mm a')}</Text>
+          </Flex>
+        </td>
 
         {/* Enrolled */}
         <td>{enrolledCount}/{klass.capacity}</td>
