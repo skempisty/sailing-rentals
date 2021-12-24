@@ -17,16 +17,6 @@ const defaultClassMtgs = [
   },
   {
     id: uuidv4(),
-    name: 'Classroom training 2',
-    classId: randomClassId,
-    instructorId: -1,
-    boatId: null,
-    details: '',
-    start: null,
-    end: null
-  },
-  {
-    id: uuidv4(),
     name: 'On-the-water training 1',
     classId: randomClassId,
     instructorId: -1,
