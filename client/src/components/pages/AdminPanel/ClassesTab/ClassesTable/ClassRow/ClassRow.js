@@ -3,13 +3,14 @@ import { useHistory } from 'react-router'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 
-import { FaBan, FaEdit } from 'react-icons/fa'
+import { FaBan, FaEdit, FaUsers } from 'react-icons/fa'
 
 import Flex from '../../../../../shared/styled-system/Flex'
 import Text from '../../../../../shared/styled-system/Text'
 import SelectMenu from '../../../../../shared/SelectMenu'
 import SelectMenuItem from '../../../../../shared/SelectMenuItem'
 
+import ClassRosterModal from './ClassRosterModal'
 import DeleteClassModal from './DeleteClassModal'
 
 import Klass from '../../../../../../domains/Klass'
@@ -17,9 +18,9 @@ import { siteColors } from '../../../../../../utils/constants'
 
 import { useClasses } from '../../../../../../store/classes'
 
-
 const ClassRow = ({ klass, hasActionColumn }) => {
   const history = useHistory()
+  const [showClassRosterModal, setShowClassRosterModal] = useState(false)
   const [showDeleteClassModal, setShowDeleteClassModal] = useState(false)
 
   const { classRegistrations } = useClasses()
@@ -30,6 +31,13 @@ const ClassRow = ({ klass, hasActionColumn }) => {
 
   return (
     <React.Fragment>
+      {showClassRosterModal &&
+        <ClassRosterModal
+          classId={klass.id}
+          onHide={() => setShowClassRosterModal(false)}
+        />
+      }
+
       <DeleteClassModal
         klass={klass}
         show={showDeleteClassModal}
@@ -80,6 +88,12 @@ const ClassRow = ({ klass, hasActionColumn }) => {
         {hasActionColumn &&
           <td>
             <SelectMenu variant='outline-dark'>
+              <SelectMenuItem
+                label='Roster'
+                iconComponent={<FaUsers/>}
+                callback={() => setShowClassRosterModal(true)}
+              />
+
               <SelectMenuItem
                 label='Edit Class'
                 iconComponent={<FaEdit/>}
