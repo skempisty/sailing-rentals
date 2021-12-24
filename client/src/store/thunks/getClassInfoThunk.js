@@ -5,12 +5,7 @@ const getClassInfoThunk = createAsyncThunk(
   async (_, { extra }) => {
     const { settingsApiService } = extra
 
-    const html = await settingsApiService.getClassInfo()
-
-    return {
-      html,
-      files: []
-    }
+    return await settingsApiService.getClassInfo()
   }
 )
 

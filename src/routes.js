@@ -132,7 +132,7 @@ router.post('/logged_in_data', async (req, res) => {
 })
 
 /*******************************************************************************
- * Image Upload
+ * File Upload
  */
 
 /**
@@ -148,6 +148,26 @@ router.post('/images', upload.any(), async (req, res) => {
 
   if (isAdmin) {
     const fileDownloadUrl = await api.images.uploadFile(buffer, imageCategory)
+
+    res.send(fileDownloadUrl)
+  } else {
+    res.status(401).send('Only admins may upload a file')
+  }
+})
+
+/**
+ * Upload a zipfile to Backblaze storage - get back friendly url for download
+ */
+/*** ADMIN ONLY */
+router.post('/zip_file', upload.any(), async (req, res) => {
+  const buffer = req.files[0].buffer
+  const { category: imageCategory } = req.query
+  const { authorization: jwtToken } = req.headers
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const fileDownloadUrl = await api.images.uploadFile(buffer, imageCategory, true)
 
     res.send(fileDownloadUrl)
   } else {

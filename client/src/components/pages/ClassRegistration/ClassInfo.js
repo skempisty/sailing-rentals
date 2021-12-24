@@ -2,21 +2,20 @@ import React, { useEffect, useState } from 'react'
 
 import { Button, Card } from 'react-bootstrap'
 
+import Box from '../../shared/styled-system/Box'
 import Flex from '../../shared/styled-system/Flex'
 import Text from '../../shared/styled-system/Text'
 import Title from '../../shared/styled-system/Title'
 import RichTextArea from '../../shared/RichTextArea'
+import FileUploader from '../../shared/FileUploader'
 
 import { useClasses } from '../../../store/classes'
 import { useSession } from '../../../store/session'
 import { useSettings } from '../../../store/settings'
 
 const ClassInfo = () => {
-  const [isEditMode, setIsEditMode] = useState(false)
-  const [showSaveChangesBtn, setShowSaveChangesBtn] = useState(false)
-
   const {
-    classInfo: { html: infoHtml, files: infoFiles },
+    classInfo: { html: infoHtml, file: infoFile },
     setClassInfo,
     getClassInfoThunk
   } = useClasses()
@@ -24,6 +23,11 @@ const ClassInfo = () => {
   const { updateSettingsThunk } = useSettings()
 
   const { currentUser } = useSession()
+
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [showSaveHtmlBtn, setShowSaveHtmlBtn] = useState(false)
+  const [showSaveFileBtn, setShowSaveFileBtn] = useState(false)
+  const [fileUrl, setFileUrl] = useState(null)
 
   const fetchData = async () => {
     getClassInfoThunk()
@@ -33,17 +37,38 @@ const ClassInfo = () => {
     fetchData()
   }, [])
 
+  useEffect(() => {
+    if (infoFile) {
+      setFileUrl(infoFile)
+    }
+  }, [infoFile])
+
   const handleRichTextChange = (newValue) => {
-    if (!showSaveChangesBtn) {
-      setShowSaveChangesBtn(true)
+    if (!showSaveHtmlBtn) {
+      setShowSaveHtmlBtn(true)
     }
 
-    setClassInfo({ html: newValue, files: infoFiles })
+    setClassInfo({ html: newValue, files: infoFile })
   }
 
   const handleSaveChangesClick = () => {
-    setShowSaveChangesBtn(false)
+    setShowSaveHtmlBtn(false)
     updateSettingsThunk({ class_info_html: infoHtml })
+  }
+
+  const handleFileChange = (downloadUrl) => {
+    setShowSaveFileBtn(true)
+    setFileUrl(downloadUrl)
+  }
+
+  const handleSaveFilesClick = () => {
+    setShowSaveFileBtn(false)
+    updateSettingsThunk({ class_info_file: fileUrl })
+  }
+
+  const handleFileRemoveClick = () => {
+    setShowSaveFileBtn(true)
+    setFileUrl('')
   }
 
   return (
@@ -54,7 +79,7 @@ const ClassInfo = () => {
         <Flex marginBottom='1em'>
           <Button onClick={() => setIsEditMode(!isEditMode)}>{isEditMode ? 'View' : 'Edit'}</Button>
 
-          {showSaveChangesBtn &&
+          {showSaveHtmlBtn &&
             <Button
               variant='success'
               style={{ marginLeft: '0.5em' }}
@@ -74,14 +99,26 @@ const ClassInfo = () => {
         </Card>
       }
 
-      {/*<FileUploader*/}
-      {/*  file={imageUrl}*/}
-      {/*  bucketDirectory='class_info'*/}
-      {/*  maxWidth='20em'*/}
-      {/*  labelMaxFileSize='Max file size is {filesize}'*/}
-      {/*  onFileChange={(downloadUrl) => this.setState({ uploadedImageUrl: downloadUrl })}*/}
-      {/*  onRemoveFileClick={() => this.setState({ imageUrl: '' })}*/}
-      {/*/>*/}
+      {(currentUser.isAdmin > 0 || fileUrl) &&
+        <Box marginTop='1em'>
+          <Title as='h3'>Important Files</Title>
+
+          <FileUploader
+            file={fileUrl}
+            displayedFileName='Sailing Class Files'
+            bucketDirectory='class_info'
+            maxWidth='20em'
+            labelMaxFileSize='Max file size is {filesize}'
+            showDeleteFileBtn={currentUser.isAdmin > 0}
+            onFileChange={handleFileChange}
+            onRemoveFileClick={handleFileRemoveClick}
+          />
+
+          {showSaveFileBtn &&
+            <Button style={{ marginTop: '1em' }} onClick={handleSaveFilesClick}>Save</Button>
+          }
+        </Box>
+      }
     </>
   )
 }

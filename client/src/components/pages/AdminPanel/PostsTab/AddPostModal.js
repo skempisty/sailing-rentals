@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { Button, Form, Modal } from 'react-bootstrap'
 
-import FileUploader from '../../../shared/FileUploader'
+import ImageUploader from '../../../shared/ImageUploader'
 
 import createPost from '../../../../api/createPost'
 import updatePost from '../../../../api/updatePost'
@@ -116,7 +116,7 @@ class AddPostModal extends React.Component {
             <Form.Group>
               <Form.Label><b>Image</b></Form.Label>
 
-              <FileUploader
+              <ImageUploader
                 file={imageUrl}
                 bucketDirectory='posts'
                 maxWidth='20em'

@@ -10,9 +10,10 @@ const b2 = new B2({
  * Upload a file to backblaze given a buffer
  * @param {Buffer} fileBuffer
  * @param {string} fileCategory a 'folder' for the file to go into on backblaze
+ * @param {boolean} isZip some files needs to be uploaded as zip
  * @return {string} the download url for the newly uploaded file
  */
-exports.uploadFile = async (fileBuffer, fileCategory = '') => {
+exports.uploadFile = async (fileBuffer, fileCategory = '', isZip = false) => {
   /*
    * Must authorize with Backblaze first before any api calls
    */
@@ -39,7 +40,8 @@ exports.uploadFile = async (fileBuffer, fileCategory = '') => {
     uploadUrl,
     uploadAuthToken,
     fileName: `${fileCategory}/${nanoid()}`, // nanoid generates a random string such as '-icTbO-sqdYP_Da6NYgY0'
-    data: fileBuffer // this is expecting a Buffer, not an encoded string
+    data: fileBuffer, // this is expecting a Buffer, not an encoded string
+    mime: isZip ? 'application/zip' : null // without this, zip files will not be downloaded as zip
   })
 
   const { fileId } = uploadFileResponse.data

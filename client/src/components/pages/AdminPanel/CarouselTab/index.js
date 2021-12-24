@@ -7,7 +7,7 @@ import { FaPlusCircle, FaArrowCircleDown } from 'react-icons/fa'
 
 import CarouselSlide from './CarouselSlide'
 
-import FileUploader from '../../../shared/FileUploader'
+import ImageUploader from '../../../shared/ImageUploader'
 
 import createCarouselSlide from '../../../../api/createCarouselSlide'
 import rearrangeCarouselSlides from '../../../../api/rearrangeCarouselSlides'
@@ -148,7 +148,7 @@ class CarouselTab extends React.Component {
         </div>
 
         <Card style={{ marginBottom: '0.5em' }}>
-          <FileUploader
+          <ImageUploader
             bucketDirectory='carousel'
             onFileChange={(downloadUrl) => this.setState({ uploadedImageUrl: downloadUrl })}
             onPreviewRemove={() => this.setState({ uploadedImageUrl: '' })}

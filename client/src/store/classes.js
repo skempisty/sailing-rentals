@@ -25,7 +25,7 @@ const classSlice = createSlice({
     classRegistrations: [],
     classInfo: {
       html: 'some class info will go here',
-      files: []
+      file: null
     },
     addEditClass: new Klass(),
     addEditValidationErrorMsg: null
