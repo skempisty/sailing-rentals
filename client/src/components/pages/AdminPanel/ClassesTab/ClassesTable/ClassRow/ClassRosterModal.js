@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import { Modal, Table } from 'react-bootstrap'
+import { Alert, Modal, Table } from 'react-bootstrap'
 
 import Text from '../../../../../shared/styled-system/Text'
 
@@ -45,35 +45,49 @@ const ClassRosterModal = ({ classId, onHide }) => {
 
       <Modal.Body>
         {!isLoading ?
-          <StyledTableWrapper>
-            <Table responsive style={{ margin: '0' }}>
-              <thead><tr>
-                <th>Sailor</th>
-                <th>Email</th>
-                <th>Phone</th>
-              </tr></thead>
+          <>
+            {registeredUsers.length > 0 ?
+              <StyledTableWrapper>
+                <Table responsive style={{ margin: '0' }}>
+                  <thead><tr>
+                    <th>Sailor</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                  </tr></thead>
 
-              <tbody>
-                {registeredUsers.map((user) =>
-                  <tr>
-                    <td>
-                      <img
-                        src={user.imageUrl}
-                        alt=''
-                        style={{ maxWidth: '2em', height: '2em', marginRight: '1em' }}
-                      />
+                  <tbody>
+                    {registeredUsers.map((user) =>
+                      <tr>
+                        <td>
+                          <img
+                            src={user.imageUrl}
+                            alt=''
+                            style={{ maxWidth: '2em', height: '2em', marginRight: '1em' }}
+                          />
 
-                      <b>{buildFullName(user.firstName, user.lastName)}</b>
-                    </td>
+                          <b>{buildFullName(user.firstName, user.lastName)}</b>
+                        </td>
 
-                    <td>{user.email}</td>
+                        <td>{user.email}</td>
 
-                    <td>{user.phone}</td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-          </StyledTableWrapper>
+                        <td>{user.phone}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </StyledTableWrapper>
+              :
+              <Alert
+                variant='dark'
+                style={{
+                  margin: '0.5em',
+                  textAlign: 'center'
+                }}
+              >
+                <b>No Registered Users</b>
+              </Alert>
+            }
+          </>
           :
           <Text>Loading...</Text>
         }
