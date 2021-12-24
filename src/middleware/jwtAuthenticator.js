@@ -13,6 +13,7 @@ const pathFilter = (req) => {
   const excludedPaths = [
     { path: '/api/health' },
     { path: '/api/site_data' },
+    { path: '/api/settings/class_info' },
     { path: '/api/logged_in_data' },
     { path: '/api/users/login' },
     { path: '/api/carousel_slides', methods: [ 'GET' ] },
@@ -21,6 +22,7 @@ const pathFilter = (req) => {
     { path: '/api/rentals', methods: [ 'GET' ] },
     { path: '/api/classes', methods: [ 'GET' ] },
     { path: '/api/classes/*', methods: [ 'GET' ] },
+    { path: '/api/class_registrations/*', methods: [ 'GET' ] },
     // exclude any non-api paths
     { path: '^(?!/api.*$).*' }
   ]

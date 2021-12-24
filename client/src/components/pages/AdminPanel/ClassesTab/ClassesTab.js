@@ -21,13 +21,14 @@ const ClassesTab = () => {
   const [loading, setLoading] = useState(true)
 
   const { getUsersThunk } = useUsers()
-  const { classes, getClassesThunk } = useClasses()
+  const { inProgressClasses, upcomingClasses, pastClasses, getClassesThunk, getClassRegistrationsThunk } = useClasses()
   const { getAllRentalsThunk } = useRentals()
 
   const fetchData = async () => {
     await getUsersThunk()
     await getClassesThunk()
     await getAllRentalsThunk()
+    await getClassRegistrationsThunk()
 
     setLoading(false)
   }
@@ -59,9 +60,27 @@ const ClassesTab = () => {
             </Button>
           </Flex>
 
+          <Title as='h3' marginTop='1em' color='white'>In Progress</Title>
+
           <ClassesTable
-            classes={classes}
-            noDataMsg='No Classes'
+            classes={inProgressClasses}
+            noDataMsg='No Classes In Progress'
+            hasActionColumn
+          />
+
+          <Title as='h3' marginTop='1em' color='white'>Upcoming</Title>
+
+          <ClassesTable
+            classes={upcomingClasses}
+            noDataMsg='No Upcoming Classes'
+            hasActionColumn
+          />
+
+          <Title as='h3' marginTop='1em' color='white'>Past</Title>
+
+          <ClassesTable
+            classes={pastClasses}
+            noDataMsg='No Past Classes'
             hasActionColumn
           />
         </React.Fragment>

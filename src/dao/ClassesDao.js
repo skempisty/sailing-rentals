@@ -12,14 +12,14 @@ const ClassesDao = () => {
    * @returns {Promise<ClassDto>} the created class
    */
   const create = async (classObj) => {
-    const { details, capacity, price } = classObj
+    const { capacity, price } = classObj
 
     // create the class
-    const newClass = [ details, capacity, price ]
+    const newClass = [ capacity, price ]
 
-    await db.query(`INSERT INTO ${db.name}.classes (details, capacity, price) VALUES (?, ?, ?)`, newClass)
+    const result = await db.query(`INSERT INTO ${db.name}.classes (capacity, price) VALUES (?, ?)`, newClass)
 
-    const [ createdClass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = LAST_INSERT_ID()`)
+    const [ createdClass ] = await db.query(`SELECT * FROM ${db.name}.classes WHERE id = ${result.insertId}`)
 
     return createdClass
   }
@@ -30,13 +30,10 @@ const ClassesDao = () => {
    * @returns {Promise<void>}
    */
   const update = async (id, updatedClassDto) => {
-    const { details, capacity, price } = updatedClassDto
+    const { capacity, price } = updatedClassDto
 
     const updateSql = []
     const sqlArgs = []
-
-    updateSql.push('details = ?')
-    sqlArgs.push(details)
 
     updateSql.push('capacity = ?')
     sqlArgs.push(capacity)

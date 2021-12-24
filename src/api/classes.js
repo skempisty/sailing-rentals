@@ -7,6 +7,8 @@ const ClassMeeting = require('../domains/ClassMeeting')
 const RentalsDao = require('../dao/RentalsDao')
 const ClassesDao = require('../dao/ClassesDao')
 const ClassMeetingsDao = require('../dao/ClassMeetingsDao')
+const ClassRegistrationsDao = require('../dao/ClassRegistrationsDao')
+const PaymentsDao = require('../dao/PaymentsDao')
 
 const ClassDto = require('../dto/ClassDto')
 const RentalDto = require('../dto/RentalDto')
@@ -24,7 +26,7 @@ const { rentalTypes } = require('../utils/constants')
 
 exports.getClasses = async () => {
   const classes = await db.query(`SELECT * FROM ${db.name}.classes`)
-  const classMeetings = await db.query(`SELECT * FROM ${db.name}.class_meetings`)
+  const classMeetings = await ClassMeetingsDao.getAll()
 
   return classes.map(klass => {
     const mtgsInClass = classMeetings.filter(mtg => mtg.classId === klass.id)
@@ -41,6 +43,10 @@ exports.getClass = async (id) => {
   klass.meetings = await ClassMeetingsDao.getByClassId(id)
 
   return klass
+}
+
+exports.getClassRegistrations = async () => {
+  return await ClassRegistrationsDao.getAll()
 }
 
 /**
@@ -60,6 +66,20 @@ exports.createClass = async (classObj, creatorId) => {
   await ClassMeeting.createMeetingsWithAndWithoutRentals(classDto.meetings, createdClass, creatorId)
 
   return createdClass
+}
+
+exports.createFreeClassRegistration = async (classRegistrationDto) => {
+  return await ClassRegistrationsDao.create(classRegistrationDto)
+}
+
+exports.createPaidClassRegistration = async (classRegistrationDto) => {
+  const newRegistration = await ClassRegistrationsDao.create(classRegistrationDto)
+
+  classRegistrationDto.id = newRegistration.id
+
+  await PaymentsDao.createClassPayment(classRegistrationDto)
+
+  return newRegistration
 }
 
 /**

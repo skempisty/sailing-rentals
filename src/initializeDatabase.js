@@ -121,9 +121,11 @@ const initializeDatabase = async function(dbName) {
     'paypalAuthorizationId VARCHAR(255) NOT NULL,' +
     'paypalCaptureId VARCHAR(255),' +
 
-    'rentalId INT NOT NULL,' +
+    'rentalId INT,' +
+    'classRegistrationId INT,' +
     'paidBy INT NOT NULL,' +
     'FOREIGN KEY (rentalId) REFERENCES rentals(id),' +
+    'FOREIGN KEY (classRegistrationId) REFERENCES class_registrations(id),' +
     'FOREIGN KEY (paidBy) REFERENCES users(id),' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' +
@@ -141,7 +143,6 @@ const initializeDatabase = async function(dbName) {
 
   await db.query(`CREATE TABLE ${dbName}.classes (` +
     'id INT PRIMARY KEY AUTO_INCREMENT,' +
-    'details TEXT,' +
     'capacity INT NOT NULL,' +
     'price DOUBLE(10,2) NOT NULL,' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +

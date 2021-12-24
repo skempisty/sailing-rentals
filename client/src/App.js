@@ -13,6 +13,7 @@ import ShowPost from './components/pages/ShowPost'
 import AdminPanel from './components/pages/AdminPanel'
 import Rentals from './components/pages/Rentals'
 import AddClass from './components/pages/AddClass'
+import ClassRegistration from './components/pages/ClassRegistration'
 
 import setLoginJwt from './utils/setLoginJwt'
 import getSiteData from './api/getSiteData'
@@ -137,6 +138,7 @@ class App extends React.Component {
                 <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isApproved === 1} exact path='/rentals' component={Rentals} />
                 <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isAdmin === 1} exact path='/admin-panel' component={AdminPanel} />
                 <ConditionalRoute renderCondition={!!currentUser.id && currentUser.isAdmin === 1} exact path='/classes/:id' component={AddClass} />
+                <ConditionalRoute renderCondition={!!currentUser.id} exact path='/class-registration' component={ClassRegistration} />
                 <Route exact path='/posts/:id' component={ShowPost} />
                 <Route component={HomePage} />
               </Switch>

@@ -30,6 +30,28 @@ import Constants from '../utils/constants'
  * @property {Date} deletedAt
  */
 
+/**
+ * @typedef ClassRegistration
+ * @type {object}
+ * @property {number} userId
+ * @property {number} classId
+ */
+
+/**
+ * @typedef ClassRegistrationPayload
+ * @type {object}
+ * @property {number} classId
+ * @property {PayPalData} payPalData
+ */
+
+/**
+ * @typedef PayPalData Information from PayPal buttons returned when transaction is approved.
+ * Required to create payment record and to authorize the payment
+ * @type {object}
+ * @property {number} data from paypal buttons onApprove callback
+ * @property {number} actions from paypal buttons onApprove callback
+ */
+
 const classesApiService = () => {
   /**
    * ░██████╗░███████╗████████╗
@@ -55,6 +77,12 @@ const classesApiService = () => {
    */
   const getClass = async (id) => {
     const url = `${Constants.baseUrl}/api/classes/${id}`
+
+    return await fetchAndCheckStatus(url)
+  }
+
+  const getClassRegistrations = async () => {
+    const url = `${Constants.baseUrl}/api/class_registrations`
 
     return await fetchAndCheckStatus(url)
   }
@@ -88,6 +116,26 @@ const classesApiService = () => {
     }
 
     return await fetchAndCheckStatus(url, expectedStatuses, postOptions)
+  }
+
+  /**
+   *
+   * @param {ClassRegistrationPayload} classRegistration
+   * @returns {Promise<ClassRegistration>}
+   */
+  const createClassRegistration = async (classRegistration) => {
+    const url = `${Constants.baseUrl}/api/class_registrations`
+
+    const postOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`,
+      },
+      body: JSON.stringify(classRegistration)
+    }
+
+    return await fetchAndCheckStatus(url, undefined, postOptions)
   }
 
   /**
@@ -146,8 +194,10 @@ const classesApiService = () => {
     // GET
     getClasses,
     getClass,
+    getClassRegistrations,
     // POST
     createClass,
+    createClassRegistration,
     // PUT
     updateClass,
     // DELETE

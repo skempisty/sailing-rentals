@@ -8,7 +8,7 @@ const Text = styled(Box)`
 `
 
 Text.defaultProps = {
-  as: 'div'
+  as: 'span'
 }
 
 export default Text

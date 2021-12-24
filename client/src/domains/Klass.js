@@ -4,7 +4,53 @@
 
 import moment from 'moment'
 
-const getRegisteredCount = (classId, classRegistrations) => {
+/**
+ * Intended as a filter function. Use to get ONLY classes that are currently in progress
+ * @param {Object} klass
+ * @returns {boolean}
+ */
+const isInProgress = (klass) => {
+  const mtgs = klass.meetings
+
+  if (!mtgs) return false
+
+  const firstMtgStart = moment.min(mtgs.map(mtg => moment(mtg.start)))
+  const lastMtgEnd = moment.max(mtgs.map(mtg => moment(mtg.end)))
+
+  return firstMtgStart.isBefore() && lastMtgEnd.isAfter()
+}
+
+/**
+ * Intended as a filter function. Use to get ONLY upcoming classes
+ * @param {Object} klass
+ * @returns {boolean}
+ */
+const isUpcoming = (klass) => {
+  const mtgs = klass.meetings
+
+  if (!mtgs) return false
+
+  const firstMtgStart = moment.min(mtgs.map(mtg => moment(mtg.start)))
+
+  return firstMtgStart.isAfter()
+}
+
+/**
+ * Intended as a filter function. Use to get ONLY past classes
+ * @param {Object} klass
+ * @returns {boolean}
+ */
+const isPast = (klass) => {
+  const mtgs = klass.meetings
+
+  if (!mtgs) return false
+
+  const lastMtgEnd = moment.max(mtgs.map(mtg => moment(mtg.end)))
+
+  return lastMtgEnd.isBefore()
+}
+
+const getRegistrationCount = (classId, classRegistrations) => {
   let count = 0
 
   // find how many registrations are for the class with classId
@@ -82,7 +128,10 @@ const validate = (classObj) => {
 }
 
 export default {
-  getRegisteredCount,
+  isInProgress,
+  isUpcoming,
+  isPast,
+  getRegistrationCount,
   getClassById,
   getStartEndTimes,
   validate

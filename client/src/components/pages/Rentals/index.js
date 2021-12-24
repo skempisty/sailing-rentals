@@ -88,7 +88,7 @@ class Rentals extends React.Component {
             marginBottom: '1em'
           }}
         >
-          <h1 style={{ color: 'white', margin: '0' }}>Sailing Rentals</h1>
+          <h1 style={{ color: '#fec307', margin: '0' }}>Sailing Rentals</h1>
 
           <Button onClick={() => this.setState({ showAddRentalModal: true })}>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

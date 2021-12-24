@@ -11,6 +11,8 @@ const multer  = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
+const ClassRegistrationDto = require('./dto/ClassRegistrationDto')
+
 const router = express.Router()
 
 /*******************************************************************************
@@ -130,7 +132,7 @@ router.post('/logged_in_data', async (req, res) => {
 })
 
 /*******************************************************************************
- * Image Upload
+ * File Upload
  */
 
 /**
@@ -146,6 +148,26 @@ router.post('/images', upload.any(), async (req, res) => {
 
   if (isAdmin) {
     const fileDownloadUrl = await api.images.uploadFile(buffer, imageCategory)
+
+    res.send(fileDownloadUrl)
+  } else {
+    res.status(401).send('Only admins may upload a file')
+  }
+})
+
+/**
+ * Upload a zipfile to Backblaze storage - get back friendly url for download
+ */
+/*** ADMIN ONLY */
+router.post('/zip_file', upload.any(), async (req, res) => {
+  const buffer = req.files[0].buffer
+  const { category: imageCategory } = req.query
+  const { authorization: jwtToken } = req.headers
+
+  const { isAdmin } = await decodeJwt(jwtToken)
+
+  if (isAdmin) {
+    const fileDownloadUrl = await api.images.uploadFile(buffer, imageCategory, true)
 
     res.send(fileDownloadUrl)
   } else {
@@ -581,6 +603,12 @@ router.get('/payments/my', async (req, res) => {
  * Settings
  */
 
+router.get('/settings/class_info', async (req, res) => {
+  const classInfo = await api.settings.getClassInfo()
+
+  res.send(classInfo)
+})
+
 /*** ADMIN ONLY */
 router.put('/settings', async (req, res) => {
   const { authorization: jwtToken } = req.headers
@@ -661,6 +689,37 @@ router.delete('/classes/:id', async (req, res) => {
     res.send('ok')
   } else {
     res.status(401).send('You don\'t have permission to delete this class')
+  }
+})
+
+/*******************************************************************************
+ * Class Registrations
+ */
+
+router.get('/class_registrations', async (req, res) => {
+  const registrations = await api.classes.getClassRegistrations()
+
+  res.send(registrations)
+})
+
+router.post('/class_registrations', async (req, res) => {
+  const { authorization: jwtToken } = req.headers
+
+  const { userId, isAdmin } = await decodeJwt(jwtToken)
+
+  const classRegistrationDto = new ClassRegistrationDto({ ...req.body, userId })
+
+  if (classRegistrationDto.payPalData) {
+    const newPaidRegistration = await api.classes.createPaidClassRegistration(classRegistrationDto)
+
+    res.send(newPaidRegistration)
+  } else if (isAdmin) {
+    // create free class registration
+    const newFreeRegistration = await api.classes.createFreeClassRegistration(classRegistrationDto)
+
+    res.send(newFreeRegistration)
+  } else {
+    res.status(400).send('Only Admins may register for classes without an attached paypal transaction')
   }
 })
 

@@ -45,7 +45,7 @@ const AdminPanel = () => {
   return (
     <ContentWrapper>
       <StyledWrapper>
-        <h1>Admin Panel</h1>
+        <h1 style={{ color: '#fec307' }}>Admin Panel</h1>
 
         <Tabs
           activeKey={activeKey}

@@ -12,6 +12,7 @@ import setLoginJwt from '../utils/setLoginJwt'
 import getLoggedInData from '../api/getLoggedInData'
 
 import { breakpoints } from '../config'
+import { siteColors } from '../utils/constants'
 
 import logo from '../images/logo.png'
 
@@ -146,7 +147,7 @@ class TopNavBar extends React.Component {
 
     return (
       <ResponsivenessWrapper>
-        <div style={{ background: '#343a40' }}>
+        <div style={{ background: siteColors.darkGrey }}>
           <Navbar
             bg='dark'
             variant='dark'
@@ -171,7 +172,7 @@ class TopNavBar extends React.Component {
               <span
                 style={{
                   marginLeft: '0.5em',
-                  color: '#fec114',
+                  color: siteColors.gold,
                   fontFamily: 'arial'
                 }}
               >
@@ -197,6 +198,8 @@ class TopNavBar extends React.Component {
                     {!!currentUser.isApproved &&
                       <Nav.Link eventKey onClick={() => history.push('/rentals')}>Sailboat Rentals</Nav.Link>
                     }
+
+                    <Nav.Link eventKey onClick={() => history.push('/class-registration')}>Sailing Classes</Nav.Link>
 
                     {!!currentUser.isAdmin &&
                       <Nav.Link eventKey onClick={() => history.push('/admin-panel')}>Admin Panel</Nav.Link>
@@ -253,6 +256,8 @@ class TopNavBar extends React.Component {
                       {!!currentUser.isApproved &&
                         <Dropdown.Item onClick={() => history.push('/rentals')}>Sailboat Rentals</Dropdown.Item>
                       }
+
+                      <Dropdown.Item onClick={() => history.push('/class-registration')}>Sailing Classes</Dropdown.Item>
 
                       {!!currentUser.isAdmin &&
                         <Dropdown.Item onClick={() => history.push('/admin-panel')}>Admin Panel</Dropdown.Item>

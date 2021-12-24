@@ -15,6 +15,7 @@ import SelectMenuItem from '../../../shared/SelectMenuItem'
 import EditClassMtgModal from './EditClassMtgModal'
 
 import User from '../../../../domains/User'
+import { siteColors } from '../../../../utils/constants'
 
 import getUserById from '../../../../store/orm/users/getUserById'
 import getBoatById from '../../../../store/orm/boats/getBoatById'
@@ -91,7 +92,17 @@ const ClassMtg = ({ mtg, index, onDeleteClick }) => {
 
                 <Box marginLeft='0.25em'>
                   {hasValidMtgTime ?
-                    <>{moment(mtg.start).format('hh:mm a')} - {moment(mtg.end).format('hh:mm a, MMM DD, YYYY')}</>
+                    <>
+                      <Text
+                        marginRight='0.5em'
+                        color={siteColors.blue}
+                        fontWeight='bold'
+                      >
+                        {moment(mtg.start).format('MMM DD, YYYY')}
+                      </Text>
+
+                      <Text>{moment(mtg.start).format('hh:mm a')} - {moment(mtg.end).format('hh:mm a')}</Text>
+                    </>
                     :
                     <>Missing Time Slot</>
                   }

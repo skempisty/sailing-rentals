@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Button, Form, Modal } from 'react-bootstrap'
 import CurrencyInput from 'react-currency-input-field'
 
-import FileUploader from '../../../shared/FileUploader';
+import ImageUploader from '../../../shared/ImageUploader'
 
 import createBoat from '../../../../api/createBoat'
 import updateBoat from '../../../../api/updateBoat'
@@ -157,7 +157,7 @@ class AddBoatModal extends React.Component {
             <Form.Group>
               <Form.Label><b>Image</b></Form.Label>
 
-              <FileUploader
+              <ImageUploader
                 file={imageUrl}
                 bucketDirectory='boats'
                 maxWidth='20em'

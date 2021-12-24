@@ -5,6 +5,7 @@ import logger from './middleware/logger'
 
 import usersApiService from '../services/usersApiService'
 import classesApiService from '../services/classesApiService'
+import settingsApiService from '../services/settingsApiService'
 
 import users from './users'
 import boats from './boats'
@@ -37,7 +38,8 @@ export default configureStore({
       thunk: {
         extraArgument: {
           usersApiService: usersApiService(),
-          classesApiService: classesApiService()
+          classesApiService: classesApiService(),
+          settingsApiService: settingsApiService()
         }
       },
       serializableCheck: false // Don't warn when putting non-serializable objects into Store

@@ -3,10 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import { FilePond, registerPlugin } from 'react-filepond'
-import { FaFile, FaTrash } from 'react-icons/fa'
-
-import Flex from './styled-system/Flex'
-import Text from './styled-system/Text'
+import { FaTrash } from 'react-icons/fa'
 
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
@@ -37,7 +34,7 @@ const StyledFileUploader = styled.div`
   }
 `
 
-export default class FileUploader extends React.Component {
+export default class ImageUploader extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.triggerPreviewRemove !== this.props.triggerPreviewRemove) {
       this.removePreview()
@@ -51,10 +48,9 @@ export default class FileUploader extends React.Component {
   render() {
     const {
       file,
-      displayedFileName,
       bucketDirectory,
+      allowMultiple,
       maxWidth,
-      showDeleteFileBtn,
       onFileChange,
       onRemoveFileClick,
       onPreviewRemove
@@ -65,27 +61,43 @@ export default class FileUploader extends React.Component {
         $maxWidth={maxWidth}
       >
         {file ?
-          <Flex alignItems='center'>
-            <FaFile style={{ marginRight: '0.5em' }}/>
-
-            <Text><a href={file}>{displayedFileName}</a></Text>
-
-            {showDeleteFileBtn &&
-              <FaTrash
+          <div style={{ position: 'relative' }}>
+            {onRemoveFileClick &&
+              <div
                 style={{
-                  marginLeft: '0.5em',
+                  display: 'flex',
+                  position: 'absolute',
+                  top: '0',
+                  right: '0',
+                  padding: '0.5em',
+                  background: 'rgba(0, 0, 0, 0.45)',
+                  borderTopRightRadius: '5px',
+                  borderBottomLeftRadius: '5px',
                   cursor: 'pointer'
                 }}
                 onClick={onRemoveFileClick}
-              />
+              >
+                <FaTrash color='white' />
+              </div>
             }
-          </Flex>
+
+            <img
+              src={file}
+              alt=''
+              style={{
+                width: '100%',
+                minHeight: '4em',
+                boxShadow: '0px 0px 0px 2px black',
+                borderRadius: '5px'
+              }}
+            />
+          </div>
           :
           <FilePond
             ref={ref => this.pond = ref}
             server={{
-              url: `${Constants.baseUrl}/api/zip_file?category=${bucketDirectory}`,
-              revert: null, // endpoint for when file is removed
+              url: `${Constants.baseUrl}/api/images?category=${bucketDirectory}`,
+              revert: null, // endpoint for when image is removed
               headers: {
                 'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`
               },
@@ -93,7 +105,9 @@ export default class FileUploader extends React.Component {
                 onload: (response) => onFileChange(response)
               }
             }}
-            maxFileSize='20MB'
+            acceptedFileTypes={['image/*']}
+            maxFileSize='3MB'
+            allowMultiple={allowMultiple}
             onremovefile={onPreviewRemove}
           />
         }
@@ -102,9 +116,10 @@ export default class FileUploader extends React.Component {
   }
 }
 
-FileUploader.propTypes = {
+ImageUploader.propTypes = {
   file: PropTypes.string,
-  bucketDirectory: PropTypes.oneOf(['class_info']).isRequired,
+  bucketDirectory: PropTypes.oneOf(['boats', 'carousel', 'posts']).isRequired,
+  allowMultiple: PropTypes.bool,
   maxWidth: PropTypes.string,
   onFileChange: PropTypes.func.isRequired,
   onRemoveFileClick: PropTypes.func,
