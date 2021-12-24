@@ -21,13 +21,14 @@ const ClassesTab = () => {
   const [loading, setLoading] = useState(true)
 
   const { getUsersThunk } = useUsers()
-  const { inProgressClasses, upcomingClasses, pastClasses, getClassesThunk } = useClasses()
+  const { inProgressClasses, upcomingClasses, pastClasses, getClassesThunk, getClassRegistrationsThunk } = useClasses()
   const { getAllRentalsThunk } = useRentals()
 
   const fetchData = async () => {
     await getUsersThunk()
     await getClassesThunk()
     await getAllRentalsThunk()
+    await getClassRegistrationsThunk()
 
     setLoading(false)
   }
