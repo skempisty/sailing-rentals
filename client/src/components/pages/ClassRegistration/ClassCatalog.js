@@ -39,7 +39,7 @@ const ClassCatalog = () => {
         <Alert
           variant='dark'
           style={{
-            margin: '0.5em',
+            marginTop: '0.5em',
             textAlign: 'center'
           }}
         >
