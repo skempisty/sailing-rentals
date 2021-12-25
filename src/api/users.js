@@ -40,17 +40,17 @@ exports.updateUser = async (id, updateFields, requesterIsAdmin = false) => {
     sqlArgs.push(affiliation)
   }
 
-  if (requesterIsAdmin && isApproved !== null) {
+  if (requesterIsAdmin && isApproved !== undefined) {
     updateSql.push('isApproved = ?')
     sqlArgs.push(isApproved)
   }
 
-  if (requesterIsAdmin && isInstructor !== null) {
+  if (requesterIsAdmin && isInstructor !== undefined) {
     updateSql.push('isInstructor = ?')
     sqlArgs.push(isInstructor)
   }
 
-  if (requesterIsAdmin && isAdmin !== null) {
+  if (requesterIsAdmin && isAdmin !== undefined) {
     updateSql.push('isAdmin = ?')
     sqlArgs.push(isAdmin)
   }
