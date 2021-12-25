@@ -93,6 +93,7 @@ export default class FileUploader extends React.Component {
                 onload: (response) => onFileChange(response)
               }
             }}
+            acceptedFileTypes={['.zip']}
             maxFileSize='20MB'
             onremovefile={onPreviewRemove}
           />
