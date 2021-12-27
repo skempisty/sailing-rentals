@@ -13,6 +13,8 @@ const upload = multer({ storage })
 
 const ClassRegistrationDto = require('./dto/ClassRegistrationDto')
 
+const { validateClassRegistration } = require('./validation/validateClassRegistration')
+
 const router = express.Router()
 
 /*******************************************************************************
@@ -708,6 +710,8 @@ router.post('/class_registrations', async (req, res) => {
   const { userId, isAdmin } = await decodeJwt(jwtToken)
 
   const classRegistrationDto = new ClassRegistrationDto({ ...req.body, userId })
+
+  await validateClassRegistration(classRegistrationDto)
 
   if (classRegistrationDto.payPalData) {
     const newPaidRegistration = await api.classes.createPaidClassRegistration(classRegistrationDto)
