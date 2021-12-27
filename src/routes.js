@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express')
+const asyncHandler = require('express-async-handler')
 
 const api = require('./apiDispatcher')
 const decodeJwt = require('./utils/decodeJwt')
@@ -704,7 +705,7 @@ router.get('/class_registrations', async (req, res) => {
   res.send(registrations)
 })
 
-router.post('/class_registrations', async (req, res) => {
+router.post('/class_registrations', asyncHandler(async (req, res) => {
   const { authorization: jwtToken } = req.headers
 
   const { userId, isAdmin } = await decodeJwt(jwtToken)
@@ -725,6 +726,6 @@ router.post('/class_registrations', async (req, res) => {
   } else {
     res.status(400).send('Only Admins may register for classes without an attached paypal transaction')
   }
-})
+}))
 
 module.exports = router
