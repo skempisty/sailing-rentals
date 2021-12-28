@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
 
 import logger from './middleware/logger'
+import rejectedThunkHandler from './middleware/rejectedThunkHandler'
 
 import usersApiService from '../services/usersApiService'
 import classesApiService from '../services/classesApiService'
@@ -45,4 +46,5 @@ export default configureStore({
       serializableCheck: false // Don't warn when putting non-serializable objects into Store
     })
     .concat(logger())
+    .concat(rejectedThunkHandler)
 })
