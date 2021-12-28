@@ -17,6 +17,12 @@ exports.validateClassRegistration = async (classRegistration) => {
     throw new ValidationError('Class is completely full')
   }
 
+  const costValidated = await validateClassCost(classRegistration)
+
+  if (!costValidated) {
+    throw new ValidationError('Amount authorized to paypal does not match the class price')
+  }
+
   // TODO: validate that you don't sign up for class twice
 }
 
@@ -30,8 +36,26 @@ async function validateCapacity(classId) {
 
   const registrationCount = await ClassRegistrationDao.getRegistrationCountByClassId(classId)
 
-  console.log('capacity', capacity)
-  console.log('registrationCount', registrationCount)
-
   return capacity - registrationCount > 0
+}
+
+/**
+ * This prevents a clever user from purchasing a class registration with the wrong cost
+ * @param {ClassRegistrationDto} classRegistrationDto
+ * @returns {boolean} true if amount authorized to paypal actually matches the price of the class
+ */
+async function validateClassCost(classRegistrationDto) {
+  if (!classRegistrationDto.payPalData) return true
+
+  const { classId, payPalData: { authorization }} = classRegistrationDto
+
+  const { purchase_units } = authorization
+  const { amount: { value: paypalAmount } } = purchase_units[0]
+
+  const { price } = await ClassesDao.getById(classId)
+
+  const normalizedClassPrice = Number(price).toFixed(2)
+  const normalizedAuthorizedPaypalAmount = Number(paypalAmount).toFixed(2)
+
+  return normalizedClassPrice === normalizedAuthorizedPaypalAmount
 }
