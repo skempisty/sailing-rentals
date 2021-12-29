@@ -6,7 +6,7 @@ const rejectedThunkHandler = (api) => (next) => (action) => {
   const { dispatch } = api
 
   if (isRejected(action)) {
-    dispatch(setShowApiErrorModal(true))
+    dispatch(setShowApiErrorModal({ value: true, error: action.error.message || '' }))
   }
 
   return next(action)

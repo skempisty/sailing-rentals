@@ -14,9 +14,9 @@ export default async function fetchAndCheckStatus (url, expectedStatuses = [ 200
     const res = await fetch(url, fetchOptions)
 
     if (!expectedStatuses.includes(res.status)) {
-        const message = res.statusText || await res.text()
+        const resBody = await res.json()
 
-        throw new ApiException(message, res)
+        throw new ApiException(resBody.error, res)
     } else {
         /*
          * You cannot read a response stream twice.

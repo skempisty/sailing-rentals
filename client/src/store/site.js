@@ -7,7 +7,8 @@ const siteSlice = createSlice({
   name: 'site',
   initialState: {
     loadingMsg: null,
-    showApiErrorModal: false
+    showApiErrorModal: false,
+    apiErrorModalMsg: ''
   },
   reducers: {
     setSiteState: (state, action) => {
@@ -16,7 +17,10 @@ const siteSlice = createSlice({
       state[key] = value
     },
     setShowApiErrorModal: (state, action) => {
-      state.showApiErrorModal = action.payload
+      const { value, error } = action.payload
+
+      state.showApiErrorModal = value
+      state.apiErrorModalMsg = error || ''
     }
   }
 })

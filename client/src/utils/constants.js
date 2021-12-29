@@ -13,7 +13,8 @@ const siteColors = {
     blue: '#004679',
     gold: '#fec307',
     white: '#ffffff',
-    darkGrey: '#343a40'
+    darkGrey: '#343a40',
+    orange: '#E07C3A'
 }
 
 module.exports = {
