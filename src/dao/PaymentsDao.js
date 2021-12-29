@@ -1,6 +1,8 @@
 const db = require('../connectDb')
 const PaymentDto = require('../dto/PaymentDto')
 
+const PAYMENTS_TABLE = `${db.name}.payments`
+
 const PaymentsDao = () => {
   /**
    * @param {ClassRegistrationDto} classRegistrationDto
@@ -43,7 +45,7 @@ const PaymentsDao = () => {
       classRegistrationId
     ]
 
-    const result = await db.query(`INSERT INTO ${db.name}.payments (
+    const result = await db.query(`INSERT INTO ${PAYMENTS_TABLE} (
       orderId,
       amount,
       currency,
@@ -61,13 +63,23 @@ const PaymentsDao = () => {
       classRegistrationId
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, newPayment)
 
-    const [ payment ] = await db.query(`SELECT * FROM ${db.name}.payments WHERE id = ${result.insertId}`)
+    const [ payment ] = await db.query(`SELECT * FROM ${PAYMENTS_TABLE} WHERE id = ${result.insertId}`)
 
     return payment
   }
 
+  /**
+   * Capture Id is saved after the payment is created usually
+   * @param {string} id the payment's id
+   * @param {string} captureId the id received after capturing a payment using an authorization ID. Used for refunds.
+   */
+  const updateCaptureId = async (id, captureId) => {
+    await db.query(`UPDATE ${PAYMENTS_TABLE} SET paypalCaptureId = ? WHERE id = ?`, [captureId, id])
+  }
+
   return {
-    createClassPayment
+    createClassPayment,
+    updateCaptureId
   }
 }
 

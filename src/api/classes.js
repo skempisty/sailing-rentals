@@ -14,6 +14,7 @@ const ClassDto = require('../dto/ClassDto')
 const RentalDto = require('../dto/RentalDto')
 
 const { rentalTypes } = require('../utils/constants')
+const PaypalApi = require('./paypal')
 
 /**
  * ░██████╗░███████╗████████╗
@@ -72,12 +73,20 @@ exports.createFreeClassRegistration = async (classRegistrationDto) => {
   return await ClassRegistrationsDao.create(classRegistrationDto)
 }
 
+/**
+ * @param {ClassRegistrationDto} classRegistrationDto
+ * @returns {Promise<ClassRegistrationDto>}
+ */
 exports.createPaidClassRegistration = async (classRegistrationDto) => {
   const newRegistration = await ClassRegistrationsDao.create(classRegistrationDto)
 
   classRegistrationDto.id = newRegistration.id
 
-  await PaymentsDao.createClassPayment(classRegistrationDto)
+  const payment = await PaymentsDao.createClassPayment(classRegistrationDto)
+
+  const captureId = await PaypalApi.capturePayment(classRegistrationDto.payPalData.authorizationId)
+
+  await PaymentsDao.updateCaptureId(payment.id, captureId)
 
   return newRegistration
 }

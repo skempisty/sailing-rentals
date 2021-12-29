@@ -1,8 +1,16 @@
 const db = require('../connectDb')
 
+const CLASS_REGISTRATIONS_TABLE = `${db.name}.class_registrations`
+
 const ClassRegistrationsDao = () => {
   const getAll = async () => {
-    return await db.query(`SELECT * FROM ${db.name}.class_registrations`)
+    return await db.query(`SELECT * FROM ${CLASS_REGISTRATIONS_TABLE}`)
+  }
+
+  const getRegistrationCountByClassId = async (classId) => {
+    const [ result ] = await db.query(`SELECT COUNT(*) AS count FROM ${CLASS_REGISTRATIONS_TABLE} WHERE classId = ${classId}`)
+
+    return result.count
   }
 
   /**
@@ -14,15 +22,16 @@ const ClassRegistrationsDao = () => {
 
     const newRegistration = [ userId, classId ]
 
-    const result = await db.query(`INSERT INTO ${db.name}.class_registrations (userId, classId) VALUES (?, ?)`, newRegistration)
+    const result = await db.query(`INSERT INTO ${CLASS_REGISTRATIONS_TABLE} (userId, classId) VALUES (?, ?)`, newRegistration)
 
-    const [ createdRegistration ] = await db.query(`SELECT * FROM ${db.name}.class_registrations WHERE id = ${result.insertId}`)
+    const [ createdRegistration ] = await db.query(`SELECT * FROM ${CLASS_REGISTRATIONS_TABLE} WHERE id = ${result.insertId}`)
 
     return createdRegistration
   }
 
   return {
     getAll,
+    getRegistrationCountByClassId,
     create
   }
 }

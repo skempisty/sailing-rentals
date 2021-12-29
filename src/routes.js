@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express')
+const asyncHandler = require('express-async-handler')
 
 const api = require('./apiDispatcher')
 const decodeJwt = require('./utils/decodeJwt')
@@ -12,6 +13,8 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
 const ClassRegistrationDto = require('./dto/ClassRegistrationDto')
+
+const { validateClassRegistration } = require('./validation/validateClassRegistration')
 
 const router = express.Router()
 
@@ -702,12 +705,14 @@ router.get('/class_registrations', async (req, res) => {
   res.send(registrations)
 })
 
-router.post('/class_registrations', async (req, res) => {
+router.post('/class_registrations', asyncHandler(async (req, res) => {
   const { authorization: jwtToken } = req.headers
 
   const { userId, isAdmin } = await decodeJwt(jwtToken)
 
   const classRegistrationDto = new ClassRegistrationDto({ ...req.body, userId })
+
+  await validateClassRegistration(classRegistrationDto)
 
   if (classRegistrationDto.payPalData) {
     const newPaidRegistration = await api.classes.createPaidClassRegistration(classRegistrationDto)
@@ -721,6 +726,6 @@ router.post('/class_registrations', async (req, res) => {
   } else {
     res.status(400).send('Only Admins may register for classes without an attached paypal transaction')
   }
-})
+}))
 
 module.exports = router

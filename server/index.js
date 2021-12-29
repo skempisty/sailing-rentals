@@ -4,6 +4,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const routes = require('../src/routes')
 const jwtAuthenticator = require('../src/middleware/jwtAuthenticator')
+const errorHandler = require('../src/middleware/errorHandler')
 
 const app = express()
 
@@ -54,9 +55,6 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'))
 }
 
-app.use((err, req, res, next) => {
-  console.log(err);
-  next();
-})
+app.use(errorHandler)
 
 module.exports = app

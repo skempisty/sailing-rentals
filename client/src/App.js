@@ -14,6 +14,7 @@ import AdminPanel from './components/pages/AdminPanel'
 import Rentals from './components/pages/Rentals'
 import AddClass from './components/pages/AddClass'
 import ClassRegistration from './components/pages/ClassRegistration'
+import ApiErrorModal from './components/ApiErrorModal'
 
 import setLoginJwt from './utils/setLoginJwt'
 import getSiteData from './api/getSiteData'
@@ -131,6 +132,8 @@ class App extends React.Component {
             }
 
             <Router>
+              <ApiErrorModal/>
+
               <TopNavBar/>
 
               <Switch>
