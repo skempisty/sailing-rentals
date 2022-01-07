@@ -9,6 +9,8 @@ import Title from '../../shared/styled-system/Title'
 import Text from '../../shared/styled-system/Text'
 import ClassInfoWidget from './ClassInfoWidget'
 
+import isNotDeleted from '../../../utils/isNotDeleted'
+
 import { useClasses } from '../../../store/classes'
 
 const ClassCatalog = () => {
@@ -26,7 +28,7 @@ const ClassCatalog = () => {
             <FaArrowCircleDown color='white'/>
           </Flex>
 
-          {upcomingClasses.map((klass) =>
+          {upcomingClasses.filter(isNotDeleted).map((klass) =>
             <Box key={klass.id} marginBottom='1em'>
               <ClassInfoWidget
                 klass={klass}
