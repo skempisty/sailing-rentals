@@ -84,7 +84,7 @@ exports.createPaidClassRegistration = async (classRegistrationDto) => {
 
   const payment = await PaymentsDao.createClassPayment(classRegistrationDto)
 
-  const captureId = await PaypalApi.capturePayment(classRegistrationDto.payPalData.authorizationId)
+  const captureId = await PaypalApi.capturePayment(classRegistrationDto.payPalData.authorization.id)
 
   await PaymentsDao.updateCaptureId(payment.id, captureId)
 
