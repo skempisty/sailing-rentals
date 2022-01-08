@@ -9,6 +9,7 @@ import ContentWrapper from '../../shared/ContentWrapper'
 import ClassCatalog from './ClassCatalog'
 import MyClasses from './MyClasses'
 import ClassInfo from './ClassInfo'
+import InstructorsPanel from './InstructorsPanel'
 
 import { siteColors } from '../../../utils/constants'
 
@@ -17,6 +18,10 @@ import { useClasses } from '../../../store/classes'
 const StyledWrapper = styled.div`
   [role='tab'] {
     color: white;
+  }
+  
+  [title='Instructors'] {
+    color: red;
   }
 `
 
@@ -55,6 +60,12 @@ const ClassRegistration = () => {
             mountOnEnter
             unmountOnExit
           >
+            {true && // if you are an instructor you can see this
+              <Tab eventKey='instructors' title='Instructors'>
+                <InstructorsPanel/>
+              </Tab>
+            }
+
             <Tab eventKey='register' title='Register'>
               <ClassCatalog/>
             </Tab>
