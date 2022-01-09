@@ -78,13 +78,18 @@ exports.createFreeClassRegistration = async (classRegistrationDto) => {
  * @returns {Promise<ClassRegistrationDto>}
  */
 exports.createPaidClassRegistration = async (classRegistrationDto) => {
+  const { payPalData: { authorization } } = classRegistrationDto
+
   const newRegistration = await ClassRegistrationsDao.create(classRegistrationDto)
 
   classRegistrationDto.id = newRegistration.id
 
   const payment = await PaymentsDao.createClassPayment(classRegistrationDto)
 
-  const captureId = await PaypalApi.capturePayment(classRegistrationDto.payPalData.authorizationId)
+  // this is the actual authorization ID you need, not the other similarly named properties on this object
+  const authorizationId = authorization.purchase_units[0].payments.authorizations[0].id
+
+  const captureId = await PaypalApi.capturePayment(authorizationId)
 
   await PaymentsDao.updateCaptureId(payment.id, captureId)
 
