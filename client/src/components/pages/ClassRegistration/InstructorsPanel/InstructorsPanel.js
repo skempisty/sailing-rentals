@@ -22,12 +22,6 @@ const InstructorsPanel = () => {
 
       {upcomingClasses.length > 0 ?
         <>
-          <Flex alignItems='center' marginBottom='0.5em'>
-            <FaArrowCircleDown color='white'/>
-            <span style={{ margin: '0 0.5em' }}>First Available Class</span>
-            <FaArrowCircleDown color='white'/>
-          </Flex>
-
           {upcomingClasses.filter(isNotDeleted).map((klass) =>
             <Box key={klass.id} marginBottom='1em'>
               <ClassInfoWidget
