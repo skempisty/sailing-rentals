@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
+import { RiSailboatFill } from 'react-icons/ri'
+import { FaAppleAlt, FaArrowCircleUp, FaInfoCircle } from 'react-icons/fa'
 import { Tab, Tabs } from 'react-bootstrap'
 
 import Box from '../../shared/styled-system/Box'
+import Flex from '../../shared/styled-system/Flex'
+import Text from '../../shared/styled-system/Text'
 import Title from '../../shared/styled-system/Title'
 import ContentWrapper from '../../shared/ContentWrapper'
 import ClassCatalog from './ClassCatalog'
@@ -14,6 +18,7 @@ import InstructorsPanel from './InstructorsPanel'
 import { siteColors } from '../../../utils/constants'
 
 import { useClasses } from '../../../store/classes'
+import { useSession } from '../../../store/session'
 
 const StyledWrapper = styled.div`
   [role='tab'] {
@@ -33,6 +38,8 @@ const ClassRegistration = () => {
     getClassRegistrationsThunk
   } = useClasses()
 
+  const { currentUser } = useSession()
+
   const fetchData = async () => {
     getClassesThunk()
     getClassRegistrationsThunk()
@@ -41,6 +48,34 @@ const ClassRegistration = () => {
   useEffect(() => {
     fetchData()
   }, [])
+
+  const instructorPanelTitle = (
+    <Flex alignItems='center' color={siteColors.gold}>
+      <FaAppleAlt/>
+      <Text marginLeft='0.5em'>Instructor Panel</Text>
+    </Flex>
+  )
+
+  const registerTitle = (
+    <Flex alignItems='center'>
+      <FaArrowCircleUp/>
+      <Text marginLeft='0.5em'>Register</Text>
+    </Flex>
+  )
+
+  const myClassesTitle = (
+    <Flex alignItems='center'>
+      <RiSailboatFill/>
+      <Text marginLeft='0.5em'>My Classes</Text>
+    </Flex>
+  )
+
+  const classInfoTitle = (
+    <Flex alignItems='center'>
+      <FaInfoCircle/>
+      <Text marginLeft='0.5em'>Class Info</Text>
+    </Flex>
+  )
 
   return (
     <ContentWrapper>
@@ -60,21 +95,21 @@ const ClassRegistration = () => {
             mountOnEnter
             unmountOnExit
           >
-            {true && // if you are an instructor you can see this
-              <Tab eventKey='instructors' title='Instructors'>
+            {currentUser.isInstructor > 0 &&
+              <Tab eventKey='instructors' title={instructorPanelTitle}>
                 <InstructorsPanel/>
               </Tab>
             }
 
-            <Tab eventKey='register' title='Register'>
+            <Tab eventKey='register' title={registerTitle}>
               <ClassCatalog/>
             </Tab>
 
-            <Tab eventKey='myClasses' title='My Classes'>
+            <Tab eventKey='myClasses' title={myClassesTitle}>
               <MyClasses/>
             </Tab>
 
-            <Tab eventKey='classInfo' title='Class Info'>
+            <Tab eventKey='classInfo' title={classInfoTitle}>
               <ClassInfo/>
             </Tab>
           </Tabs>
