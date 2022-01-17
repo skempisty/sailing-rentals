@@ -4,11 +4,13 @@ import { useSelector } from 'react-redux'
 import { useAction } from '../utils/useAction'
 
 import getUsersThunk from './thunks/getUsersThunk'
+import getInstructorsThunk from './thunks/getInstructorsThunk'
 
 const userSlice = createSlice({
   name: 'users',
   initialState: {
-    users: []
+    users: [],
+    instructors: []
   },
   reducers: {
     initUsers: (state, action) => {
@@ -38,6 +40,9 @@ const userSlice = createSlice({
     builder.addCase(getUsersThunk.fulfilled, (state, action) => {
       state.users = action.payload
     })
+    builder.addCase(getInstructorsThunk.fulfilled, (state, action) => {
+      state.instructors = action.payload
+    })
   }
 })
 
@@ -52,7 +57,8 @@ export const useUsers = () => {
 
   return {
     ...users,
-    getUsersThunk: useAction(getUsersThunk)
+    getUsersThunk: useAction(getUsersThunk),
+    getInstructorsThunk: useAction(getInstructorsThunk)
   }
 }
 

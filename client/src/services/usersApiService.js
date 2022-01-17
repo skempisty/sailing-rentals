@@ -36,6 +36,15 @@ const usersApiService = () => {
   }
 
   /**
+   * @returns {Promise<Class[]>}
+   */
+  const getInstructors = async () => {
+    const url = `${Constants.baseUrl}/api/users/instructors`
+
+    return await fetchAndCheckStatus(url)
+  }
+
+  /**
    * ██████╗░░█████╗░░██████╗████████╗
    * ██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
    * ██████╔╝██║░░██║╚█████╗░░░░██║░░░
@@ -104,6 +113,7 @@ const usersApiService = () => {
   return {
     // GET
     getUsers,
+    getInstructors,
     // POST
     /* eslint-disable-next-line multiline-comment-style */
     // PUT

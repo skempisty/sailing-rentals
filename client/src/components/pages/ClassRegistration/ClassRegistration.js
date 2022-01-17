@@ -18,6 +18,7 @@ import InstructorsPanel from './InstructorsPanel'
 import { siteColors } from '../../../utils/constants'
 
 import { useClasses } from '../../../store/classes'
+import { useUsers } from '../../../store/users'
 import { useSession } from '../../../store/session'
 
 const StyledWrapper = styled.div`
@@ -33,6 +34,8 @@ const StyledWrapper = styled.div`
 const ClassRegistration = () => {
   const [activeKey, setActiveKey] = useState()
 
+  const { getInstructorsThunk } = useUsers()
+
   const {
     getClassesThunk,
     getClassRegistrationsThunk
@@ -43,6 +46,7 @@ const ClassRegistration = () => {
   const fetchData = async () => {
     getClassesThunk()
     getClassRegistrationsThunk()
+    getInstructorsThunk()
   }
 
   useEffect(() => {

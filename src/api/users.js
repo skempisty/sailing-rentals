@@ -66,6 +66,10 @@ exports.getUserList = async () => {
   return await db.query(`SELECT * FROM ${db.name}.users ORDER BY users.isAdmin DESC`)
 }
 
+exports.getInstructors = async () => {
+  return await db.query(`SELECT id, imageUrl, firstName, lastName, email, phone  FROM ${db.name}.users WHERE isInstructor = 1 ORDER BY users.isAdmin DESC`)
+}
+
 exports.deleteUser = async (id) => {
   await db.query(`UPDATE ${db.name}.users SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?`, [id])
 

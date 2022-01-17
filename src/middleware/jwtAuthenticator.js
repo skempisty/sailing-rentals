@@ -16,6 +16,7 @@ const pathFilter = (req) => {
     { path: '/api/settings/class_info' },
     { path: '/api/logged_in_data' },
     { path: '/api/users/login' },
+    { path: '/api/users/instructors' },
     { path: '/api/carousel_slides', methods: [ 'GET' ] },
     { path: '/api/posts', methods: [ 'GET' ] },
     { path: '/api/boats', methods: [ 'GET' ] },
