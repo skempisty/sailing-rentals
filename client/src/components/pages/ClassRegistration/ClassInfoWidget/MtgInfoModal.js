@@ -38,15 +38,15 @@ const MtgInfoModal = ({ mtg, show, onHide }) => {
               <img
                 src={instructorUser.imageUrl}
                 alt=''
-                style={{maxWidth: '2em', height: '2em', marginRight: '1em'}}
+                style={{maxWidth: '2em', height: '2em', marginRight: '0.5em'}}
               />
 
               <b>{buildFullName(instructorUser.firstName, instructorUser.lastName)}</b>
             </Box>
             :
-            <Flex>
-              <Spinner animation='grow'/>
-              <Text>Loading Instructor</Text>
+            <Flex alignItems='center'>
+              <Spinner animation='border' size='sm'/>
+              <Text marginLeft='0.25em'>Loading Instructor</Text>
             </Flex>
           }
         </Flex>
