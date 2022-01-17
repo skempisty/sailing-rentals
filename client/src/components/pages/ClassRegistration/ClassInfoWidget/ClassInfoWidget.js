@@ -13,7 +13,7 @@ import ClassDomain from '../../../../domains/Klass'
 import { useClasses } from '../../../../store/classes'
 import { useSession } from '../../../../store/session'
 
-const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
+const ClassInfoWidget = ({ klass, hasRegisterBtn, instructorId }) => {
   const [showClassRegistrationModal, setShowClassRegistrationModal] = useState(false)
 
   const { currentUser } = useSession()
@@ -36,6 +36,8 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
       return 'Register'
     }
   }
+
+  const meetingsToShow = instructorId ? klass.meetings.filter(mtg => mtg.instructorId === instructorId) : klass.meetings
 
   return (
     <>
@@ -79,7 +81,7 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
               </tr></thead>
 
               <tbody>
-                {klass.meetings.map(mtg =>
+                {meetingsToShow.map(mtg =>
                   <MtgInfoRow key={mtg.id} mtg={mtg} hasRegisterBtn={hasRegisterBtn}/>
                 )}
               </tbody>
@@ -102,7 +104,8 @@ const ClassInfoWidget = ({ klass, hasRegisterBtn }) => {
 
 ClassInfoWidget.propTypes = {
   klass: PropTypes.object.isRequired,
-  hasRegisterBtn: PropTypes.bool
+  hasRegisterBtn: PropTypes.bool,
+  instructorId: PropTypes.number // show only a specific instructor's meetings
 }
 
 export default ClassInfoWidget

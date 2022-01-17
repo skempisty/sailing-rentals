@@ -197,6 +197,12 @@ router.get('/users', async (req, res) => {
   }
 })
 
+router.get('/users/instructors', async (req, res) => {
+  const instructors = await api.users.getInstructors()
+
+  res.send(instructors)
+})
+
 router.put('/users/:id', async (req, res) => {
   const { id } = req.params
   const { authorization: jwtToken } = req.headers

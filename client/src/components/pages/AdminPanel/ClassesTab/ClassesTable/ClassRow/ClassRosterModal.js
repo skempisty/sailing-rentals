@@ -62,23 +62,23 @@ const ClassRosterModal = ({ classId, onHide }) => {
                   </tr></thead>
 
                   <tbody>
-                  {instructorUsers.map((user) =>
-                    <tr>
-                      <td>
-                        <img
-                          src={user.imageUrl}
-                          alt=''
-                          style={{ maxWidth: '2em', height: '2em', marginRight: '1em' }}
-                        />
+                    {instructorUsers.map((user) =>
+                      <tr>
+                        <td>
+                          <img
+                            src={user.imageUrl}
+                            alt=''
+                            style={{ maxWidth: '2em', height: '2em', marginRight: '1em' }}
+                          />
 
-                        <b>{buildFullName(user.firstName, user.lastName)}</b>
-                      </td>
+                          <b>{buildFullName(user.firstName, user.lastName)}</b>
+                        </td>
 
-                      <td>{user.email}</td>
+                        <td>{user.email}</td>
 
-                      <td>{user.phone}</td>
-                    </tr>
-                  )}
+                        <td>{user.phone}</td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
               </StyledTableWrapper>
