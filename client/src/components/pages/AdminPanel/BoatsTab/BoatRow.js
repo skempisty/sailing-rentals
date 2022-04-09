@@ -2,10 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { FaEdit, FaHistory, FaBan } from 'react-icons/fa'
+import { FaEdit, FaHistory, FaBan, FaToolbox } from 'react-icons/fa'
 
 import AddBoatModal from './AddBoatModal'
 import DeleteBoatModal from './DeleteBoatModal'
+import DisableBoatModal from './DisableBoatModal'
 
 import SelectMenu from '../../../shared/SelectMenu'
 import SelectMenuItem from '../../../shared/SelectMenuItem'
@@ -16,13 +17,14 @@ class BoatRow extends React.Component {
 
     this.state = {
       showEditBoatModal: false,
-      showDeleteBoatModal: false
+      showDeleteBoatModal: false,
+      showDisableBoatModal: false
     }
   }
 
   render() {
     const { boat } = this.props
-    const { showEditBoatModal, showDeleteBoatModal } = this.state
+    const { showEditBoatModal, showDeleteBoatModal, showDisableBoatModal } = this.state
 
     return (
       <React.Fragment>
@@ -30,6 +32,12 @@ class BoatRow extends React.Component {
           boat={boat}
           show={showEditBoatModal}
           onHide={() => this.setState({ showEditBoatModal: false })}
+        />
+
+        <DisableBoatModal
+          boat={boat}
+          show={showDisableBoatModal}
+          onHide={() => this.setState({ showDisableBoatModal: false })}
         />
 
         <DeleteBoatModal
@@ -56,6 +64,12 @@ class BoatRow extends React.Component {
                 label='Edit'
                 iconComponent={<FaEdit/>}
                 callback={() => this.setState({ showEditBoatModal: true })}
+              />
+
+              <SelectMenuItem
+                label='Disable'
+                iconComponent={<FaToolbox/>}
+                callback={() => this.setState({ showDisableBoatModal: true })}
               />
 
               <SelectMenuItem

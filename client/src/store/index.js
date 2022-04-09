@@ -7,6 +7,7 @@ import rejectedThunkHandler from './middleware/rejectedThunkHandler'
 import usersApiService from '../services/usersApiService'
 import classesApiService from '../services/classesApiService'
 import settingsApiService from '../services/settingsApiService'
+import boatsApiService from '../services/boatsApiService'
 
 import users from './users'
 import boats from './boats'
@@ -40,7 +41,8 @@ export default configureStore({
         extraArgument: {
           usersApiService: usersApiService(),
           classesApiService: classesApiService(),
-          settingsApiService: settingsApiService()
+          settingsApiService: settingsApiService(),
+          boatsApiService: boatsApiService()
         }
       },
       serializableCheck: false // Don't warn when putting non-serializable objects into Store

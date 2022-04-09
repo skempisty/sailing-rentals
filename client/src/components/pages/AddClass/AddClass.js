@@ -10,7 +10,6 @@ import ContentWrapper from '../../shared/ContentWrapper'
 import StyledBreadcrumb from '../../shared/StyledBreadcrumb'
 import MultiStepContent from '../../shared/MultiStepContent'
 import ContentStep from '../../shared/MultiStepContent/ContentStep'
-import RichTextArea from '../../shared/RichTextArea'
 
 import CustomizeClassMtgs from './CustomizeClassMtgs'
 
