@@ -48,6 +48,9 @@ class BoatRow extends React.Component {
 
         <tr>
           <td>{boat.name}</td>
+          <td style={{ color: boat.isDisabled ? 'red' : 'green' }}>
+            {boat.isDisabled ? 'Disabled' : 'Enabled'}
+          </td>
           <td>{boat.model}</td>
           <td>{boat.perHourRentalCost}</td>
 

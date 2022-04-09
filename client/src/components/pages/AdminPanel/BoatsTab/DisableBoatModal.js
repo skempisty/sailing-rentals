@@ -36,8 +36,8 @@ const DisableBoatModal = ({ boat, show, onHide }) => {
         <p>Are you sure you want to {boat.isDisabled ? 'enable' : 'disable'} <b>{boat.name}</b>?</p>
 
         <ul>
-          {(boat.isDisabled ? enableWarningBulletPts : disableWarningBulletPts).map(pt =>
-            <li>{pt}</li>
+          {(boat.isDisabled ? enableWarningBulletPts : disableWarningBulletPts).map((pt, index) =>
+            <li key={index}>{pt}</li>
           )}
         </ul>
       </Modal.Body>
