@@ -173,6 +173,7 @@ const EditClassMtgModal = ({ show, mtg, mtgIndex, onHide }) => {
                 {boats.filter(isNotDeleted).map((boat, index) =>
                   <Dropdown.Item
                     key={`boat-select-${boat.id}-${index}`}
+                    disabled={boat.isDisabled}
                     onSelect={() => handleBoatSelect(boat.id)}
                   >
                     {boat.name}
