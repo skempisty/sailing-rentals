@@ -77,6 +77,7 @@ const initializeDatabase = async function(dbName) {
     'model VARCHAR(255) NOT NULL,' +
     'description TEXT,' +
     'perHourRentalCost DOUBLE(10,2) NOT NULL,' +
+    'isDisabled BOOLEAN DEFAULT false,' +
     'imageUrl VARCHAR(255),' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
