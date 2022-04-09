@@ -38,6 +38,7 @@ class BoatsTab extends React.Component {
           <Table responsive style={{ margin: '0' }}>
             <thead><tr>
               <th>Boat Name</th>
+              <th>Status</th>
               <th>Model</th>
               <th>$Price/Hour</th>
               <th/>

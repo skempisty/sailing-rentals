@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { useSelector } from 'react-redux'
+import { useAction } from "../utils/useAction"
+import updateBoatThunk from "./thunks/updateBoatThunk"
 
 const boatSlice = createSlice({
   name: 'boats',
@@ -24,6 +26,15 @@ const boatSlice = createSlice({
 
       state.boats[boatIndex] = updatedBoat
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(updateBoatThunk.fulfilled, (state, action) => {
+      const updatedBoat = action.payload
+
+      const boatIndex = state.boats.findIndex(b => b.id === updatedBoat.id)
+
+      state.boats[boatIndex] = updatedBoat
+    })
   }
 })
 
@@ -37,7 +48,8 @@ export const useBoats = () => {
   const boats = useSelector(state => state.boats)
 
   return {
-    ...boats
+    ...boats,
+    updateBoat: useAction(updateBoatThunk)
   }
 }
 

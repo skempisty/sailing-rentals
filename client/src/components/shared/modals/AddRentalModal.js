@@ -317,9 +317,10 @@ class AddRentalModal extends React.Component {
                       {boats.filter(isNotDeleted).map((boat, index) =>
                         <Dropdown.Item
                           key={`boat-select-${boat.id}-${index}`}
+                          disabled={boat.isDisabled}
                           onSelect={() => this.handleBoatSelect(boat.id)}
                         >
-                          <b>{boat.name}</b>, ${boat.perHourRentalCost}/hr
+                          <b>{boat.name}</b>{this.isStandardType && `, ${boat.perHourRentalCost}/hr`}
                         </Dropdown.Item>
                       )}
                     </Dropdown.Menu>

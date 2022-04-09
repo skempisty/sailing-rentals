@@ -102,6 +102,7 @@ async function validateRental(rentalObj, rentedBy) {
 
   const validation = {}
 
+  // validations just for standard rentals
   if (rentalType === rentalTypes.STANDARD) {
     const noTwoRentalsInOneDayValidated = await validateNoTwoRentalsInOneDay(rentalObj, rentedBy)
 
@@ -120,6 +121,14 @@ async function validateRental(rentalObj, rentedBy) {
   if (!emptyTimeSlotValidated) {
     validation.error = {
       message: 'Provided time slot selection conflicts with an existing rental'
+    }
+  }
+
+  const boatIsEnabledValidated = await validateBoatIsEnabled(rentalObj.boatId)
+
+  if (!boatIsEnabledValidated) {
+    validation.error = {
+      message: 'Boat chosen for rental is either deleted or disabled'
     }
   }
 
@@ -166,4 +175,12 @@ async function validateNoTwoRentalsInOneDay(rentalObj, rentedBy) {
   const conflictingRentals = await db.query(query.join(' '), [ rentedBy, rentalId, dayBegin, dayEnd ])
 
   return !conflictingRentals.length
+}
+
+async function validateBoatIsEnabled(boatId) {
+  const query = `SELECT isDisabled, deletedAt FROM ${db.name}.boats WHERE id = ?`
+
+  const [ boat ] = await db.query(query, [ boatId ])
+
+  return !boat.deletedAt && !boat.isDisabled
 }

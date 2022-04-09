@@ -17,7 +17,7 @@ exports.createBoat = async (createdBy, boatObj) => {
 }
 
 exports.updateBoat = async (id, updateFields) => {
-  const { name, model, perHourRentalCost, description, imageUrl } = updateFields
+  const { name, model, perHourRentalCost, isDisabled, description, imageUrl } = updateFields
 
   const updateSql = ['updatedAt = CURRENT_TIMESTAMP']
   const sqlArgs = []
@@ -35,6 +35,11 @@ exports.updateBoat = async (id, updateFields) => {
   if (perHourRentalCost !== null) {
     updateSql.push('perHourRentalCost = ?')
     sqlArgs.push(perHourRentalCost)
+  }
+
+  if (description !== null) {
+    updateSql.push('isDisabled = ?')
+    sqlArgs.push(isDisabled)
   }
 
   if (description !== null) {

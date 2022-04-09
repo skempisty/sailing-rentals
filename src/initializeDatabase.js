@@ -77,6 +77,7 @@ const initializeDatabase = async function(dbName) {
     'model VARCHAR(255) NOT NULL,' +
     'description TEXT,' +
     'perHourRentalCost DOUBLE(10,2) NOT NULL,' +
+    'isDisabled BOOLEAN DEFAULT false,' +
     'imageUrl VARCHAR(255),' +
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
@@ -98,37 +99,6 @@ const initializeDatabase = async function(dbName) {
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
     'deletedAt TIMESTAMP NULL DEFAULT NULL' +
-    ');'
-  )
-
-  await db.query(`CREATE TABLE ${dbName}.payments (` +
-    'id INT PRIMARY KEY AUTO_INCREMENT,' +
-
-    'orderId VARCHAR(255) NOT NULL,' +
-    'amount DOUBLE(10,2) NOT NULL,' +
-    'currency VARCHAR(255) NOT NULL,' +
-
-    'payerId VARCHAR(255),' +
-    'payerCountryCode VARCHAR(255),' +
-    'payerPostalCode VARCHAR(255),' +
-    'payerEmailAddress VARCHAR(255),' +
-    'payerPhone VARCHAR(255),' +
-    'payerGivenName VARCHAR(255),' +
-    'payerSurname VARCHAR(255),' +
-
-    'payeeEmail VARCHAR(255),' +
-    'payeeMerchantId VARCHAR(255),' +
-    'paypalAuthorizationId VARCHAR(255) NOT NULL,' +
-    'paypalCaptureId VARCHAR(255),' +
-
-    'rentalId INT,' +
-    'classRegistrationId INT,' +
-    'paidBy INT NOT NULL,' +
-    'FOREIGN KEY (rentalId) REFERENCES rentals(id),' +
-    'FOREIGN KEY (classRegistrationId) REFERENCES class_registrations(id),' +
-    'FOREIGN KEY (paidBy) REFERENCES users(id),' +
-    'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
-    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' +
     ');'
   )
 
@@ -179,6 +149,37 @@ const initializeDatabase = async function(dbName) {
     'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
     'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
     'deletedAt TIMESTAMP NULL DEFAULT NULL' +
+    ');'
+  )
+
+  await db.query(`CREATE TABLE ${dbName}.payments (` +
+    'id INT PRIMARY KEY AUTO_INCREMENT,' +
+
+    'orderId VARCHAR(255) NOT NULL,' +
+    'amount DOUBLE(10,2) NOT NULL,' +
+    'currency VARCHAR(255) NOT NULL,' +
+
+    'payerId VARCHAR(255),' +
+    'payerCountryCode VARCHAR(255),' +
+    'payerPostalCode VARCHAR(255),' +
+    'payerEmailAddress VARCHAR(255),' +
+    'payerPhone VARCHAR(255),' +
+    'payerGivenName VARCHAR(255),' +
+    'payerSurname VARCHAR(255),' +
+
+    'payeeEmail VARCHAR(255),' +
+    'payeeMerchantId VARCHAR(255),' +
+    'paypalAuthorizationId VARCHAR(255) NOT NULL,' +
+    'paypalCaptureId VARCHAR(255),' +
+
+    'rentalId INT,' +
+    'classRegistrationId INT,' +
+    'paidBy INT NOT NULL,' +
+    'FOREIGN KEY (rentalId) REFERENCES rentals(id),' +
+    'FOREIGN KEY (classRegistrationId) REFERENCES class_registrations(id),' +
+    'FOREIGN KEY (paidBy) REFERENCES users(id),' +
+    'createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+    'updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' +
     ');'
   )
 
