@@ -12,18 +12,34 @@ const DisableBoatModal = ({ boat, show, onHide }) => {
     const updatedBoat = { ...boat, isDisabled: !boat.isDisabled }
 
     updateBoat({ id: boat.id, boatObj: updatedBoat })
+
+    onHide()
   }
+
+  const enableWarningBulletPts = [
+    `${boat.name} will immediately become available for rentals and class meeting assignments.`,
+    'Congratulations on a good fix!'
+  ]
+  const disableWarningBulletPts = [
+    `${boat.name} will immediately become unavailable for rentals and class meeting assignments.`,
+    'Disabling a boat will NOT automatically refund renters that have already booked this boat. All refunds must be done manually.',
+    'Disabling a boat will NOT cancel any rentals booked for that boat.'
+  ]
 
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
-        <Modal.Title>Disable Boat</Modal.Title>
+        <Modal.Title>{boat.isDisabled ? 'Enable Boat' : 'Disable Boat'}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        <p>Are you sure you want to disable <b>{boat.name}</b>?</p>
+        <p>Are you sure you want to {boat.isDisabled ? 'enable' : 'disable'} <b>{boat.name}</b>?</p>
 
-        <p>some warning that I need to think out better</p>
+        <ul>
+          {(boat.isDisabled ? enableWarningBulletPts : disableWarningBulletPts).map(pt =>
+            <li>{pt}</li>
+          )}
+        </ul>
       </Modal.Body>
 
       <Modal.Footer>
@@ -35,7 +51,7 @@ const DisableBoatModal = ({ boat, show, onHide }) => {
           variant='warning'
           onClick={handleConfirmDisable}
         >
-          Disable
+          {boat.isDisabled ? 'Enable' : 'Disable'}
         </Button>
       </Modal.Footer>
     </Modal>

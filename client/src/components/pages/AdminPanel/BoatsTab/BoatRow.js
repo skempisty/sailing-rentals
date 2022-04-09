@@ -67,7 +67,7 @@ class BoatRow extends React.Component {
               />
 
               <SelectMenuItem
-                label='Disable'
+                label={boat.isDisabled ? 'Enable' : 'Disable'}
                 iconComponent={<FaToolbox/>}
                 callback={() => this.setState({ showDisableBoatModal: true })}
               />
