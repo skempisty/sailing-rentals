@@ -37,13 +37,13 @@ export default class SocialMediaBar extends React.Component {
       <StyledSocialMediaDiv
         $margin={margin}
       >
-        <a href='https://www.facebook.com/NPSFoundationYachtClub' target='_blank' rel='noopener noreferrer'>
+        {/* <a href='https://www.facebook.com/NPSFoundationYachtClub' target='_blank' rel='noopener noreferrer'>
           <FaFacebook
             className='facebook'
             size='1.5em'
             style={{ marginRight: '0.5em' }}
           />
-        </a>
+        </a> */}
 
         <a href='https://www.instagram.com/npsfoundationyachtclub' target='_blank' rel='noopener noreferrer'>
           <FaInstagram
@@ -53,12 +53,12 @@ export default class SocialMediaBar extends React.Component {
           />
         </a>
 
-        <a href='https://discord.gg/xCtugDqTDa' target='_blank' rel='noopener noreferrer'>
+        {/* <a href='https://discord.gg/xCtugDqTDa' target='_blank' rel='noopener noreferrer'>
           <FaDiscord
             className='discord'
             size='1.5em'
           />
-        </a>
+        </a> */}
       </StyledSocialMediaDiv>
     )
   }
