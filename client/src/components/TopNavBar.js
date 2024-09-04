@@ -185,7 +185,7 @@ class TopNavBar extends React.Component {
               <Nav className='mr-auto mobile-nav' style={{ textAlign: 'right' }}>
                 <Nav.Link eventKey onClick={() => history.push('/')}>Home</Nav.Link>
 
-                <Nav.Link eventKey href='https://ca-logos.printavo.com/merch/npsfyc' target='_blank'>
+                <Nav.Link eventKey href='https://ca-logos.printavo.com/merch/nps-sailing-team/' target='_blank'>
                   Apparel
                 </Nav.Link>
 

@@ -45,7 +45,7 @@ export default class SocialMediaBar extends React.Component {
           />
         </a> */}
 
-        <a href='https://www.instagram.com/npsfoundationyachtclub' target='_blank' rel='noopener noreferrer'>
+        <a href='https://www.instagram.com/nps.sail/' target='_blank' rel='noopener noreferrer'>
           <FaInstagram
             className='instagram'
             size='1.5em'
