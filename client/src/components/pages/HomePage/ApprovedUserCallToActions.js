@@ -97,7 +97,7 @@ const ApprovedUserCallToActions = () => {
 
         <Button
           variant='warning'
-          onClick={() => window.open('https://forms.gle/P8tyVrtKfkQVPccC7', '_blank')}
+          onClick={() => window.open('https://forms.gle/vwXxPiKpWR3QgjCe7', '_blank')}
           style={{ marginTop: '0.5em', fontSize: '1.5em' }}
         >
           <Flex justifyContent='center' alignItems='center'>
