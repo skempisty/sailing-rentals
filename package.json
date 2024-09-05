@@ -80,6 +80,9 @@
     "type": "git",
     "url": "git://github.com/skempisty/sailing-rentals.git"
   },
+  "engines": {
+    "node": "20.17.0"
+  },
   "devDependencies": {
     "jest": "^26.6.0",
     "nodemon": "^1.19.2",
