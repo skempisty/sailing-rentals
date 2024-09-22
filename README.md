@@ -24,7 +24,7 @@
 
 #### Install dependencies
 
-- Stable with node `v13.12.0`. Use Nvm to ensure this node version is used
+- Stable with node `v20.17.0`. Use Nvm to ensure this node version is used
 - Yarn `npm install -g yarn`
 
 #### Run from terminal
@@ -33,7 +33,7 @@
 
 2. `npm run dev`
 
-Starts development server (port 5000) and frontend app (port 3000).
+Starts development server (port 5001) and frontend app (port 3000).
 
 Find frontend at:
 
