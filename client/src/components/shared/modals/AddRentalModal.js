@@ -54,7 +54,7 @@ class AddRentalModal extends React.Component {
       date: editRental ? new Date(editRental.start) : new Date(),
       newRentalPeriod: {},
       selectionIsValid: false,
-      paypalButtonReady: false
+      paypalButtonReady: true
     }
   }
 
@@ -416,7 +416,7 @@ class AddRentalModal extends React.Component {
                   const { payer, purchase_units } = authorization
                   const { amount, payee } = purchase_units[0]
 
-                  const { orderID, payerID,  } = data
+                  const { orderID, payerID } = data
 
                   const newRental = new Rental({
                     id: null,
@@ -449,7 +449,6 @@ class AddRentalModal extends React.Component {
 
                   that.resetAndHide()
                 }}
-                onButtonRdy={() => that.setState({ paypalButtonReady: true })}
               />
             </Flex>
             :

@@ -23,6 +23,7 @@
   "dependencies": {
     "@babel/core": "^7.14.0",
     "@paypal/checkout-server-sdk": "^1.0.2",
+    "@paypal/react-paypal-js": "^8.7.0",
     "@reduxjs/toolkit": "^1.5.0",
     "@tinymce/tinymce-react": "^3.13.0",
     "@types/sortablejs": "^1.10.6",
@@ -61,7 +62,6 @@
     "react-filepond": "^7.1.1",
     "react-google-login": "^5.1.21",
     "react-icons": "^4.2.0",
-    "react-paypal-button-v2": "^2.6.3",
     "react-redux": "^7.2.2",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.1.1",
