@@ -53,6 +53,8 @@ const useRentalCalendar = (props) => {
 
     return eventsCopy
       .filter(isNotDeleted)
+      // Only consider my own rentals
+      .filter(rental => rental.rentedBy === currentUser.id)
       // only standard rentals follow this rule
       .filter(rental => Rental.isStandardType(rental.type))
       /*
@@ -89,7 +91,7 @@ const useRentalCalendar = (props) => {
 
     const selectionDateString = JSON.stringify(selectionDate)
 
-    const blockingRental =  myRentals.filter(isNotDeleted).find(rental => {
+    const blockingRental = myRentals.filter(isNotDeleted).find(rental => {
       return selectionDateString === JSON.stringify({
         day: moment(rental.end).date(),
         month: moment(rental.end).month(),

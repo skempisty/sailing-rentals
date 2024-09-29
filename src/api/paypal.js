@@ -29,7 +29,7 @@ exports.capturePaymentWithAuthorizationId = async (authorizationId) => {
  * @returns {Promise<*>}
  */
 exports.capturePayment = async (authorizationId) => {
-  if (process.env.PAYPAL_CLIENT_ID !== 'sb') {
+  if (process.env.PAYPAL_CLIENT_ID !== 'test') {
     /*
      * Actually capture the payment using the auth Id
      */
