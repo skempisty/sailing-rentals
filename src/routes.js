@@ -474,7 +474,7 @@ router.post('/rentals', async (req, res) => {
   }
 
   try {
-    if (process.env.PAYPAL_CLIENT_ID !== 'sb') {
+    if (process.env.PAYPAL_CLIENT_ID !== 'test') {
       /*
        * Verify order information
        */
@@ -496,7 +496,7 @@ router.post('/rentals', async (req, res) => {
 
     let captureId
 
-    if (process.env.PAYPAL_CLIENT_ID !== 'sb') {
+    if (process.env.PAYPAL_CLIENT_ID !== 'test') {
       /*
        * Actually capture the payment using the auth Id
        */
